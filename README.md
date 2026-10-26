@@ -6,7 +6,7 @@ The site in `client/site/` is plain static files: `index.html`, `support.js`, an
 
 ## Deploy
 
-Vercel builds from `client/`. `npm run build` copies `site/` to `dist/`, which Vercel serves.
+Vercel builds from the repo root using `vercel.json`: it copies `client/site/` to `client/dist/` and serves that.
 
 ## Run locally
 

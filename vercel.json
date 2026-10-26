@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "installCommand": "echo \"no dependencies\"",
+  "buildCommand": "cd client && node build.mjs",
+  "outputDirectory": "client/dist"
+}
