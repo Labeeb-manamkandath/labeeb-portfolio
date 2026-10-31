@@ -125,3 +125,13 @@ img { height: auto; }
 .page-head .kicker { margin: 0 0 18px; }
 .page-head .lede { margin: 26px 0 0; }
 .page-body { border-top: 0; padding-top: 0; }
+
+/* The four project sections on the homepage sit back-to-back, so they run tighter than other
+   sections and leave the room (and the attention) for Approach and Process. */
+#voice, #face, #workforce, #talk, .more { padding: clamp(44px, 5.5vw, 80px) 0; }
+#voice .sec__head, #face .sec__head, #workforce .sec__head, #talk .sec__head { margin-bottom: clamp(22px, 2.6vw, 36px); }
+#voice .h-lg, #face .h-lg, #workforce .h-lg, #talk .h-lg { font-size: clamp(28px, 3.3vw, 46px); }
+#voice .lede, #face .lede, #workforce .lede, #talk .lede { font-size: 17px; margin-top: 12px; }
+#voice .cs-link, #face .cs-link, #workforce .cs-link, #talk .cs-link { margin-top: 18px; }
+#voice .notes, #face .notes, #talk .notes { margin-top: clamp(20px, 2.6vw, 32px); }
+#workforce .stats { margin-top: clamp(24px, 3vw, 40px); }
