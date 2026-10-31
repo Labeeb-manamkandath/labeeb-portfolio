@@ -93,7 +93,12 @@ const outcomes = [
                 <div class="ts">
                   <div class="ts__grid">{Array.from({ length: 28 }, (_, d) => <i class={[5, 12, 19, 26].includes(d) ? "off" : d === 15 ? "lv" : ""} style={`--d:${d * 0.04}s`}></i>)}</div>
                   <span class="ts__arrow">→</span>
-                  <div class="ts__pay"><span class="mono">Payroll</span><b>Month closed</b><em class="mono">hours + OT from the timesheet</em></div>
+                  <div class="ts__pay">
+                    <span class="mono ts__h">October · payroll</span>
+                    {[["Days present", "23"], ["Total hours", "216h"], ["OT hours", "18h"], ["Total pay", "AED 2,480"]].map(([k, v], j) => (
+                      <div class={`ts__row${j === 3 ? " ts__row--pay" : ""}`} style={`--d:${1.5 + j * 0.25}s`}><span>{k}</span><b>{v}</b></div>
+                    ))}
+                  </div>
                 </div>
               )}
               {n.id === "leave" && (
@@ -215,24 +220,28 @@ const outcomes = [
   @keyframes wf-chip { from { opacity: 0; transform: translateX(80px) scale(0.8); } }
   .ts { display: flex; align-items: center; gap: 18px; }
   .ts__grid { display: grid; grid-template-columns: repeat(7, 14px); gap: 5px; }
+  .viz--timesheet { height: 210px; }
   .ts__grid i { width: 14px; height: 14px; border-radius: 3px; background: var(--ok-ink); animation: wf-in 0.25s var(--d) both; }
   .ts__grid i.off { background: var(--ink-3); } .ts__grid i.lv { background: var(--info-ink); }
   .ts__arrow { color: var(--tomato); font-size: 22px; animation: wf-fade 0.3s 1.2s both; }
   .ts__pay { background: var(--ink-3); border-radius: 12px; padding: 14px 16px; animation: wf-in 0.5s 1.4s var(--spring) both; }
-  .ts__pay .mono { display: block; font-size: 10px; color: var(--ok-ink); }
-  .ts__pay b { display: block; margin: 4px 0; } .ts__pay em { font-style: normal; font-size: 10px; color: var(--on-ink-2); }
+  .ts__pay { min-width: 210px; padding: 12px 14px; }
+  .ts__pay .ts__h { display: block; font-size: 10px; color: var(--ok-ink); margin-bottom: 6px; }
+  .ts__row { display: flex; justify-content: space-between; gap: 16px; padding: 4px 0; font-size: 13px; color: var(--on-ink-2); border-top: 1px solid var(--on-ink-rule); animation: wf-in 0.4s var(--d) var(--spring) both; }
+  .ts__row b { color: var(--on-ink); font-size: 14px; }
+  .ts__row--pay b { color: var(--ok-ink); font-size: 16px; }
   .lv { display: flex; align-items: center; gap: 18px; }
   .lv__wave { display: flex; gap: 4px; align-items: center; height: 44px; }
   .lv__wave i { width: 5px; height: 30%; border-radius: 3px; background: var(--on-ink-2); animation: wf-talk 0.5s ease-in-out 3 alternate both; }
   .lv__wave i:nth-child(2n) { animation-delay: 0.15s; } .lv__wave i:nth-child(3n) { animation-delay: 0.3s; }
   @keyframes wf-talk { to { height: 100%; background: var(--ok-ink); } }
   .lv__card { background: var(--ink-3); border-radius: 12px; padding: 14px 16px; min-width: 170px; animation: wf-in 0.5s 1.4s var(--spring) both; }
-  .lv__card .mono { display: block; font-size: 10px; color: var(--on-ink-2); }
+  .lv__card > .mono { display: block; font-size: 10px; color: var(--on-ink-2); }
   .lv__card b { display: block; margin: 4px 0 8px; }
   .lv__st { position: relative; display: block; height: 22px; }
   .lv__st span { position: absolute; left: 0; font-size: 10.5px; padding: 3px 8px; border-radius: 999px; }
-  .lv__p { border: 1px solid var(--mid-ink); color: var(--mid-ink); animation: wf-out 0.3s 2.6s both; }
-  .lv__a { background: var(--ok-ink); color: var(--ink); animation: wf-in 0.4s 2.7s var(--spring) both; }
+  .lv__st .lv__p { border: 1px solid var(--mid-ink); color: var(--mid-ink); animation: wf-out 0.3s 2.6s both; }
+  .lv__st .lv__a { background: var(--ok-ink); color: var(--ink); font-weight: 600; animation: wf-in 0.4s 2.7s var(--spring) both; }
   @keyframes wf-out { to { opacity: 0; transform: translateY(-6px); } }
   @keyframes wf-in { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
   @media (max-width: 560px) {

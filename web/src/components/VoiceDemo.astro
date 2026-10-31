@@ -43,7 +43,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
             <select id="vd-lang" class="sel">
               {LANGS.map((l) => <option value={l.code}>{l.label}</option>)}
             </select>
-            <button class="mic" data-mic aria-pressed="false"><span class="mic__dot" aria-hidden="true"></span><span data-mic-label>Start recording</span></button>
+            <button class="mic eager" data-mic aria-pressed="false"><span class="mic__dot" aria-hidden="true"></span><span data-mic-label>Start recording</span></button>
           </div>
           <p class="small" data-rec-note>Uses your browser's built-in speech recognition (Chrome, Edge, Safari). Nothing is stored.</p>
         </div>
@@ -52,7 +52,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
           <p class="hint">No mic? Type what someone on site might say, in any language. <span class="tag tag--live">Live AI</span></p>
           <label class="sr" for="vd-text">Your note</label>
           <textarea id="vd-text" class="ta" rows="4" maxlength="1200" placeholder="e.g. Pump room on B2 is flooding, I moved the panels, need the plumber today."></textarea>
-          <button class="btn btn--light" data-type-go>Structure it <span class="arr">→</span></button>
+          <button class="btn btn--light eager" data-type-go>Structure it <span class="arr">→</span></button>
         </div>
 
         <div class="said">
@@ -82,7 +82,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
           </div>
           <div class="res__foot">
             <span class="small">Tap a label to correct it. Tap any text to edit.</span>
-            <button class="btn btn--light" data-submit>Looks right, submit</button>
+            <button class="btn btn--light eager" data-submit>Looks right, submit</button>
           </div>
         </div>
         <p class="msg" data-msg role="status"></p>

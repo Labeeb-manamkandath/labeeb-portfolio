@@ -136,3 +136,16 @@ img { height: auto; }
 #voice .notes, #face .notes, #talk .notes { margin-top: clamp(20px, 2.6vw, 32px); }
 #workforce .stats { margin-top: clamp(24px, 3vw, 40px); }
 .page-head + .sec { border-top: 0; padding-top: clamp(24px, 4vw, 56px); }
+
+/* Primary "try it" buttons in the demos: they breathe a soft halo, a light sweeps across now and
+   then, they lift toward the cursor and squash when pressed, so they read as "click me". */
+.eager { position: relative; isolation: isolate; overflow: hidden; animation: eager-halo 2.4s ease-out infinite; transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease), filter 0.2s; }
+.eager::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.32) 50%, transparent 65%); transform: translateX(-120%); animation: eager-shine 3.6s 1s ease-in-out infinite; pointer-events: none; }
+.eager:not(:disabled):hover { transform: translateY(-3px) scale(1.03); filter: brightness(1.06); box-shadow: 0 14px 30px -12px rgba(232, 70, 42, 0.7); animation-play-state: paused; }
+.eager:not(:disabled):active { transform: translateY(1px) scale(0.97); transition-duration: 0.08s; }
+.eager:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.eager:disabled, .eager[aria-pressed="true"] { animation: none; }
+.eager:disabled::after, .eager[aria-pressed="true"]::after { display: none; }
+@keyframes eager-halo { 0% { box-shadow: 0 0 0 0 rgba(232, 70, 42, 0.55); } 70%, 100% { box-shadow: 0 0 0 14px rgba(232, 70, 42, 0); } }
+@keyframes eager-shine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) { .eager, .eager::after { animation: none !important; } }
