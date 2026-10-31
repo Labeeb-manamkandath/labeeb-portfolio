@@ -1,0 +1,116 @@
+---
+// The four AI experiences. Only the voice demo is interactive today; the rest say so plainly.
+const items = [
+  {
+    n: "A",
+    title: "Voice → structured notes",
+    body: "Speak in any language. The AI turns it into English bullet points, issues and next actions that a manager can check before anything is sent.",
+    status: { cls: "tag--live-paper", text: "Try it below" },
+    href: "#voice",
+    cta: "Open the demo",
+    viz: "voice",
+  },
+  {
+    n: "B",
+    title: "Toolbox Talk Analyzer",
+    body: "A supervisor gives a safety talk. The AI listens and ticks off each point as covered, partly covered or still to go, live, then logs attendance from a group photo.",
+    status: { cls: "tag--soon", text: "Shipped · demo next" },
+    viz: "talk",
+  },
+  {
+    n: "C",
+    title: "Face registration",
+    body: "Workers register their face once with live positioning feedback and a blink check that confirms a real person is in front of the camera. Daily face check-in builds on it.",
+    status: { cls: "tag--soon", text: "Shipped · demo next" },
+    viz: "face",
+  },
+  {
+    n: "D",
+    title: "AI workforce platform",
+    body: "The system the three pieces above live in: face attendance with geofencing, voice leave requests, overtime routing and the notifications that tie it together.",
+    status: { cls: "tag--soon", text: "Case study next" },
+    viz: "system",
+  },
+];
+---
+<section class="sec ex" id="demos" aria-labelledby="ex-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">AI experiences</span><span class="mono">4 pieces of one product</span></div>
+      <div class="sec__title reveal">
+        <h2 id="ex-h" class="h-lg">Real AI features I designed, shown as things you can use.</h2>
+        <p class="lede">Every piece is marked. <span class="tag tag--live-paper">Live</span> means it really runs in your browser or through Claude. <span class="tag tag--sim-paper">Simulated</span> means scripted, so you can see the flow without a microphone.</p>
+      </div>
+    </div>
+
+    <ol class="ex__grid">
+      {items.map((it) => (
+        <li class={`card reveal card--${it.viz}`}>
+          <div class="card__viz" aria-hidden="true">
+            {it.viz === "voice" && (
+              <div class="v-voice"><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="arrow">→</span><span class="lines"><b></b><b></b><b></b></span></div>
+            )}
+            {it.viz === "talk" && (
+              <ul class="v-talk"><li class="ok">PPE checked</li><li class="ok">Exit routes</li><li class="mid">Working at height</li><li class="no">Emergency contact</li></ul>
+            )}
+            {it.viz === "face" && (
+              <div class="v-face"><span class="ring"></span><span class="face"><i></i><i></i></span><span class="lbl mono">blink</span></div>
+            )}
+            {it.viz === "system" && (
+              <div class="v-sys"><span>Face</span><span>Voice</span><span>Leave</span><span>Overtime</span><span>Alerts</span><b></b></div>
+            )}
+          </div>
+          <div class="card__top"><span class="card__n mono">{it.n}</span><span class={`tag ${it.status.cls}`}>{it.status.text}</span></div>
+          <h3 class="h-md">{it.title}</h3>
+          <p>{it.body}</p>
+          {it.href && <a class="card__link" href={it.href}>{it.cta} <span aria-hidden="true">↓</span></a>}
+        </li>
+      ))}
+    </ol>
+    <p class="ex__note hand reveal">all four are from the same product, used daily on real sites</p>
+  </div>
+</section>
+
+<style>
+  .ex .lede .tag { vertical-align: 2px; margin: 0 2px; }
+  .ex__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+  .card { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 20px; background: var(--card); border: 1px solid var(--rule); border-radius: 16px; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
+  .card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 18px 40px -26px rgba(0,0,0,0.35); }
+  .card:nth-child(even):hover { transform: translateY(-4px) rotate(0.4deg); }
+  .card h3 { margin-top: 4px; }
+  .card p { margin: 0; color: var(--fg-2); font-size: 15.5px; }
+  .card__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .card__n { color: var(--tomato); font-size: 13px; }
+  .card__link { margin-top: auto; padding-top: 6px; font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--ink); align-self: flex-start; }
+  .card__link:hover { color: var(--tomato); border-color: var(--tomato); }
+  .ex__note { margin: 26px 0 0; font-size: 24px; color: var(--tomato); transform: rotate(-1.5deg); }
+
+  .card__viz { height: 150px; border-radius: 11px; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; overflow: hidden; position: relative; }
+  .v-voice { display: flex; align-items: center; gap: 12px; }
+  .bars { display: flex; gap: 3px; align-items: center; height: 40px; }
+  .bars i { width: 4px; height: 30%; background: var(--on-ink-2); border-radius: 2px; animation: ex-b 1s ease-in-out infinite alternate; }
+  .bars i:nth-child(2n) { animation-delay: -0.4s; } .bars i:nth-child(3n) { animation-delay: -0.7s; }
+  @keyframes ex-b { to { height: 100%; } }
+  .arrow { color: var(--tomato); font-size: 20px; }
+  .lines { display: grid; gap: 7px; }
+  .lines b { display: block; height: 8px; width: 64px; border-radius: 4px; border-left: 3px solid var(--ok-ink); background: var(--ink-3); }
+  .lines b:nth-child(2) { border-color: var(--no-ink); width: 52px; } .lines b:nth-child(3) { border-color: var(--info-ink); width: 58px; }
+  .v-talk { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 12.5px; width: 78%; }
+  .v-talk li { display: flex; align-items: center; gap: 8px; }
+  .v-talk li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .v-talk .ok::before { background: var(--ok-ink); } .v-talk .mid::before { background: var(--mid-ink); } .v-talk .no::before { background: transparent; border: 1.5px solid var(--no-ink); }
+  .v-talk .no { color: var(--on-ink-2); }
+  .v-face { position: relative; width: 96px; height: 96px; display: grid; place-items: center; }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--ink-3); border-top-color: var(--ok-ink); border-right-color: var(--ok-ink); animation: ex-spin 2.6s linear infinite; }
+  @keyframes ex-spin { to { transform: rotate(360deg); } }
+  .face { width: 54px; height: 64px; border-radius: 45% 45% 42% 42%; background: var(--ink-3); display: flex; justify-content: center; gap: 12px; padding-top: 24px; }
+  .face i { width: 6px; height: 6px; border-radius: 50%; background: var(--on-ink); animation: ex-blink 2.8s infinite; }
+  @keyframes ex-blink { 0%, 44%, 52%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
+  .v-face .lbl { position: absolute; bottom: -16px; color: var(--ok-ink); font-size: 10px; }
+  .v-sys { position: relative; display: grid; grid-template-columns: repeat(3, auto); gap: 8px; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .v-sys span { padding: 6px 8px; border: 1px solid var(--on-ink-rule); border-radius: 6px; text-align: center; background: var(--ink-2); }
+  .v-sys span:nth-child(5) { border-color: var(--tomato); color: var(--tomato); }
+
+  @media (max-width: 1080px) { .ex__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .ex__grid { grid-template-columns: minmax(0, 1fr); } .card__viz { height: 130px; } }
+</style>

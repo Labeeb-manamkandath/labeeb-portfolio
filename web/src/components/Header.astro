@@ -1,0 +1,37 @@
+---
+const links = [
+  { href: "#demos", label: "AI demos" },
+  { href: "#principles", label: "Approach" },
+  { href: "#process", label: "Process" },
+  { href: "#contact", label: "Contact" },
+];
+---
+<header class="hd">
+  <div class="wrap hd__in">
+    <a class="hd__brand" href="/" aria-label="Labeeb Manamkandath, home">
+      <span class="hd__face"><img src="/images/avatar-wave.webp" alt="" width="787" height="1069" /></span>
+      <span class="hd__name">Labeeb M.</span>
+    </a>
+    <nav aria-label="Main">
+      <ul class="hd__nav">
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <a class="hd__cta" href="mailto:labeebmanamkandath@gmail.com">Say hi</a>
+  </div>
+</header>
+
+<style>
+  .hd { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
+  .hd__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+  .hd__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+  .hd__face { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: var(--mid); border: 1.5px solid var(--ink); }
+  .hd__face img { width: 260%; max-width: none; margin: -6px 0 0 -26px; }
+  .hd__name { font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
+  .hd__nav { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .hd__nav a { display: inline-block; padding: 8px 12px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 500; color: var(--fg-2); transition: background 0.2s, color 0.2s; }
+  .hd__nav a:hover { background: var(--paper-2); color: var(--fg); }
+  .hd__cta { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; border: 1.5px solid var(--ink); padding: 9px 14px; border-radius: 999px; transition: background 0.2s, color 0.2s; }
+  .hd__cta:hover { background: var(--ink); color: var(--paper); }
+  @media (max-width: 760px) { nav { display: none; } }
+</style>

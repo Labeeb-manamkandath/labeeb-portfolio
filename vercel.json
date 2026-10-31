@@ -1,6 +1,7 @@
 {
   "framework": null,
-  "installCommand": "echo \"no dependencies\"",
-  "buildCommand": "cd client && node build.mjs",
-  "outputDirectory": "client/dist"
+  "installCommand": "npm install && cd web && npm install",
+  "buildCommand": "cd web && npm run build",
+  "outputDirectory": "web/dist",
+  "functions": { "api/structure.js": { "maxDuration": 30 } }
 }

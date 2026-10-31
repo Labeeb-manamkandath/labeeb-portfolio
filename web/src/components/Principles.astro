@@ -1,0 +1,70 @@
+---
+// Each principle is backed by something that happened in the workforce product.
+const items = [
+  {
+    t: "Show what the AI understood.",
+    b: "People only trust a result they can check. The Talk Analyzer shows every safety point turning green, yellow or red as the supervisor speaks, so they can see what the AI heard, not just a score at the end.",
+    proof: "Live coverage, point by point",
+  },
+  {
+    t: "Let people correct it.",
+    b: "Voice notes are shown as structured bullets with a review step before anything is sent. Workers can fix a wrong word or a wrong label in one tap.",
+    proof: "+60% trust in testing after adding the edit step",
+  },
+  {
+    t: "Coach, don't audit.",
+    b: "The Talk Analyzer says \"2 points remaining\", not \"2 points missed\". We also slowed its updates down, because changing every second distracted supervisors in the middle of a talk.",
+    proof: "Reframed after supervisor feedback",
+  },
+  {
+    t: "Always have a way out.",
+    b: "AI will fail on a dusty site at 6am. When face check-in can't verify someone, the supervisor can mark attendance manually, so nobody loses a day's pay to a model.",
+    proof: "Manual attendance fallback for supervisors",
+  },
+  {
+    t: "Speak their language.",
+    b: "Most crews were not comfortable writing in English. Letting people talk in their own language, and handing managers English, is what made the feature actually get used.",
+    proof: "82% field adoption by week 3, up from 12%",
+  },
+];
+---
+<section class="sec pr" id="principles" aria-labelledby="pr-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">02 / Approach</span><span class="mono">How I design AI</span></div>
+      <div class="sec__title reveal">
+        <h2 id="pr-h" class="h-lg">Five rules I keep coming back to.</h2>
+        <p class="lede">The model is the easy part to demo. The hard part is what happens when it is unsure, wrong, or talking to someone who has never used an app like this.</p>
+      </div>
+    </div>
+    <ol class="pr__list">
+      {items.map((it, i) => (
+        <li class="pr__row reveal">
+          <span class="pr__n mono">0{i + 1}</span>
+          <h3 class="h-md">{it.t}</h3>
+          <p>{it.b}</p>
+          <span class="pr__proof mono">{it.proof}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .pr__list { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+  .pr__row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(12px, 2vw, 24px); row-gap: 8px; padding: clamp(22px, 2.6vw, 34px) 0; border-bottom: 1px solid var(--rule-strong); align-items: baseline; transition: background 0.3s; }
+  .pr__row:hover { background: var(--paper-2); }
+  .pr__n { grid-column: 1 / span 1; color: var(--tomato); padding-left: 4px; }
+  .pr__row h3 { grid-column: 2 / span 4; }
+  .pr__row p { grid-column: 6 / span 5; margin: 0; color: var(--fg-2); }
+  .pr__proof { grid-column: 11 / span 2; color: var(--ok); text-transform: none; letter-spacing: 0; font-size: 12.5px; line-height: 1.4; }
+  @media (max-width: 960px) {
+    .pr__n { grid-column: 1 / span 1; }
+    .pr__row h3 { grid-column: 2 / -1; }
+    .pr__row p, .pr__proof { grid-column: 2 / -1; }
+  }
+  @media (max-width: 560px) {
+    .pr__n, .pr__row h3, .pr__row p, .pr__proof { grid-column: 1 / -1; }
+    .pr__n { padding-left: 0; }
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+---
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <p class="hero__meta mono reveal">
+      <span>Labeeb Manamkandath</span>
+      <span>Senior Product Designer · AI experiences</span>
+      <span>Dubai, UAE</span>
+    </p>
+
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <h1 id="hero-h" class="h-xl reveal">
+          I design AI that people <span class="hl">trust</span> and actually use.
+        </h1>
+        <p class="lede reveal">
+          For the past two years I've designed an AI-powered workforce platform for construction, MEP, HVAC and facility
+          teams: face check-in, voice requests in a worker's own language, and AI that follows a safety talk as it happens.
+          Whatever the sector, my job is the same. Take what the model can do, and make it simple enough to use and clear
+          enough to trust.
+        </p>
+        <div class="hero__cta reveal">
+          <a class="btn" href="#demos">Try the AI demos <span class="arr">↓</span></a>
+          <a class="btn btn--ghost" href="#principles">How I design AI</a>
+        </div>
+      </div>
+
+      <div class="hero__stage reveal" aria-label="A short animation: a spoken site update becomes structured notes.">
+        <div class="panel" aria-hidden="true">
+          <div class="panel__top">
+            <span class="mono">voice → structure</span>
+            <span class="tag tag--sim">Simulated</span>
+          </div>
+          <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="said">“Level three slab pour is done. Crane two is leaking hydraulic oil again, we need the mechanic before tomorrow.”</p>
+          <ul class="out">
+            <li class="k k--ok"><b>Progress</b><span>Level 3 slab pour finished</span></li>
+            <li class="k k--no"><b>Issue</b><span>Crane 2 leaking hydraulic oil (again)</span></li>
+            <li class="k k--act"><b>Action</b><span>Mechanic for crane 2 · before tomorrow</span></li>
+          </ul>
+          <div class="panel__foot mono"><span>Review before submit</span><span class="edit">✎ edit</span></div>
+        </div>
+        <img class="hero__av" src="/images/avatar-point.webp" alt="3D avatar of Labeeb pointing at the demo" width="662" height="1069" />
+        <span class="note hand" aria-hidden="true">the part I design ↗</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { padding: clamp(28px, 4vw, 48px) 0 clamp(56px, 8vw, 110px); position: relative; overflow: hidden; }
+  .hero::before {
+    /* faint Swiss grid, like a notebook page */
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+    background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 48px 48px; mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+  }
+  .hero .wrap { position: relative; }
+  .hero__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; color: var(--fg-3); padding-bottom: 14px; margin: 0 0 clamp(28px, 4vw, 56px); border-bottom: 1px solid var(--rule-strong); }
+  .hero__meta span:nth-child(2) { color: var(--fg); }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .hero__copy .lede { margin: clamp(22px, 2.6vw, 34px) 0 0; max-width: 46ch; }
+  .hl { position: relative; white-space: nowrap; }
+  .hl::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.04em; height: 0.12em; background: var(--ok); border-radius: 2px; transform-origin: left; animation: hero-line 0.9s var(--ease) 0.6s both; }
+  @keyframes hero-line { from { transform: scaleX(0); } }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+  .hero__stage { position: relative; padding: 0 0 0 clamp(0px, 4vw, 40px); }
+  .panel { position: relative; z-index: 2; background: var(--ink); color: var(--on-ink); border-radius: 18px; padding: 18px; box-shadow: 0 30px 60px -30px rgba(0,0,0,0.45); }
+  .panel__top { display: flex; justify-content: space-between; align-items: center; color: var(--on-ink-2); }
+  .wave { display: flex; align-items: center; gap: 3px; height: 38px; margin: 16px 0 8px; }
+  .wave i { flex: 1; height: 20%; background: var(--on-ink-2); border-radius: 2px; animation: hero-wv 1.1s ease-in-out infinite alternate; }
+  .wave i:nth-child(3n) { animation-delay: -0.3s; } .wave i:nth-child(4n) { animation-delay: -0.7s; } .wave i:nth-child(5n+1) { animation-delay: -0.5s; }
+  @keyframes hero-wv { to { height: 100%; } }
+  .said { margin: 0 0 14px; font-size: 15px; line-height: 1.45; color: var(--on-ink); opacity: 0; animation: hero-fadeIn 0.6s var(--ease) 0.8s forwards; }
+  .out { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .k { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: baseline; padding: 10px 12px; border-radius: 10px; background: var(--ink-3); border-left: 3px solid; opacity: 0; transform: translateY(8px); animation: hero-pop 0.5s var(--ease) forwards; }
+  .k b { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .k span { font-size: 14.5px; }
+  .k--ok { border-color: var(--ok-ink); animation-delay: 1.6s; } .k--ok b { color: var(--ok-ink); }
+  .k--no { border-color: var(--no-ink); animation-delay: 2s; } .k--no b { color: var(--no-ink); }
+  .k--act { border-color: var(--info-ink); animation-delay: 2.4s; } .k--act b { color: var(--info-ink); }
+  .panel__foot { display: flex; justify-content: space-between; margin-top: 14px; color: var(--on-ink-2); opacity: 0; animation: hero-fadeIn 0.5s 2.9s forwards; }
+  .edit { color: var(--on-ink); }
+  @keyframes hero-fadeIn { to { opacity: 1; } }
+  @keyframes hero-pop { to { opacity: 1; transform: none; } }
+  .hero__av { position: absolute; z-index: 1; width: clamp(120px, 13vw, 190px); left: clamp(-120px, -7vw, -70px); bottom: -30%; transform: scaleX(-1); pointer-events: none; }
+  .note { position: absolute; z-index: 3; left: clamp(-60px, -2vw, -10px); top: -34px; font-size: 24px; color: var(--tomato); transform: rotate(-5deg); }
+
+  @media (max-width: 960px) {
+    .hero__grid { grid-template-columns: minmax(0, 1fr); }
+    .hero__stage { padding: 36px 0 0 0; max-width: 520px; width: 100%; margin-left: auto; }
+    .hero__av { left: auto; right: -14px; bottom: auto; top: -40px; width: 96px; transform: none; z-index: 3; }
+    .note { left: 4px; top: 4px; }
+    .panel__top { padding-right: 80px; }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+const roles = [
+  { when: "Nov 2023 — now", role: "Product Designer", co: "Growgene Tech Solutions FZCo, Dubai", desc: "End-to-end mobile and web design for Zaper and YellowZap, including the AI workforce features above. I work with the UX head, stakeholders and developers, from research and flows to high-fidelity UI and handoff." },
+  { when: "2020 — 2023", role: "Graphic Designer", co: "Milky Foods (Remote)", desc: "Brand, campaign and interface work. This is where my habits around typography, layout and visual consistency took shape." },
+];
+const skills = ["Designing AI-powered features", "Discovery & user research", "User flows & information architecture", "Interaction design", "UX planning & validation", "Prototyping in code"];
+const tools = ["Figma", "Framer", "Adobe XD", "Photoshop", "Illustrator", "Microsoft Clarity", "Claude", "Claude Code", "ChatGPT"];
+---
+<section class="sec ab" id="experience" aria-labelledby="ab-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">04 / Experience</span><span class="mono">5+ years</span></div>
+      <div class="sec__title reveal"><h2 id="ab-h" class="h-lg">Product thinking, with a graphic designer's eye.</h2></div>
+    </div>
+
+    <div class="ab__grid">
+      <ol class="ab__roles">
+        {roles.map((r) => (
+          <li class="reveal">
+            <span class="mono ab__when">{r.when}</span>
+            <div><h3 class="h-md">{r.role}</h3><span class="mono ab__co">{r.co}</span><p>{r.desc}</p></div>
+          </li>
+        ))}
+        <li class="reveal">
+          <span class="mono ab__when">2017 — 2020</span>
+          <div><h3 class="h-md">Bachelor's in Information Technology</h3><span class="mono ab__co">Barathiyar University, India</span><p>Enough technical grounding to hold a real conversation with engineering about what a design costs to build.</p></div>
+        </li>
+      </ol>
+      <div class="ab__side reveal">
+        <h3 class="mono">Skills</h3>
+        <ul class="chips">{skills.map((s) => <li>{s}</li>)}</ul>
+        <h3 class="mono">Tools</h3>
+        <ul class="chips chips--tools">{tools.map((s) => <li>{s}</li>)}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ct" id="contact" aria-labelledby="ct-h">
+  <div class="wrap ct__in">
+    <div class="ct__copy">
+      <span class="sec-num">05 / Contact</span>
+      <h2 id="ct-h" class="h-xl">Building something with AI? Let's talk.</h2>
+      <p class="ct__lede">I'm open to product design roles in any sector where AI needs to feel simple and trustworthy.</p>
+      <div class="ct__links">
+        <a class="btn btn--paper" href="mailto:labeebmanamkandath@gmail.com">labeebmanamkandath@gmail.com</a>
+        <a class="btn btn--line" href="https://www.linkedin.com/in/labeeb-manamkandath/" rel="noopener" target="_blank">LinkedIn ↗</a>
+        <a class="btn btn--line" href="https://drive.google.com/file/d/1T2q3xYoZ1Y3RMQuTSOXnXOsSAmCl3WTx/view?usp=sharing" rel="noopener" target="_blank">Resume ↗</a>
+      </div>
+    </div>
+    <figure class="ct__photo">
+      <img src="/images/portrait-labeeb.webp" alt="Labeeb Manamkandath" width="640" height="800" loading="lazy" />
+      <figcaption class="hand">that's me, in Dubai</figcaption>
+    </figure>
+  </div>
+  <div class="wrap ct__foot mono">
+    <span>© 2026 Labeeb Manamkandath</span>
+    <span>Built with Astro and Claude Code. Live AI demos use the Claude API.</span>
+  </div>
+</section>
+
+<style>
+  .ab__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(28px, 5vw, 80px); }
+  .ab__roles { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+  .ab__roles li { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--rule-strong); }
+  .ab__when { color: var(--fg-3); padding-top: 6px; }
+  .ab__co { display: block; color: var(--tomato); margin: 6px 0 10px; text-transform: none; letter-spacing: 0; }
+  .ab__roles p { margin: 0; color: var(--fg-2); max-width: 60ch; }
+  .ab__side h3 { margin: 0 0 12px; color: var(--fg-3); font-weight: 500; }
+  .ab__side h3 + ul { margin-bottom: 30px; }
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips li { padding: 7px 12px; border: 1px solid var(--rule-strong); border-radius: 999px; font-size: 14.5px; background: var(--card); }
+  .chips--tools li { font-family: var(--f-mono); font-size: 12.5px; }
+  @media (max-width: 900px) { .ab__grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .ab__roles li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+
+  .ct { background: var(--ink); color: var(--on-ink); padding: var(--section) 0 28px; }
+  .ct__in { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: clamp(28px, 5vw, 80px); align-items: end; }
+  .ct .h-xl { font-size: clamp(42px, 6.4vw, 96px); margin-top: 14px; }
+  .ct__lede { font-size: clamp(18px, 1.5vw, 21px); color: var(--on-ink-2); max-width: 46ch; margin: 24px 0 0; }
+  .ct__links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn--paper { background: var(--paper); color: var(--ink); border-color: var(--paper); overflow-wrap: anywhere; }
+  .btn--paper:hover { background: var(--tomato); border-color: var(--tomato); color: #fff; }
+  .btn--line { background: transparent; color: var(--on-ink); border-color: var(--on-ink-2); }
+  .btn--line:hover { background: var(--on-ink); color: var(--ink); }
+  .ct__photo { position: relative; margin: 0; }
+  .ct__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 18px; transform: rotate(2deg); border: 6px solid var(--paper); }
+  .ct__photo figcaption { position: absolute; left: -10px; bottom: -30px; font-size: 24px; color: var(--tomato); transform: rotate(-4deg); }
+  .ct__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: clamp(64px, 8vw, 110px); padding-top: 18px; position: relative; color: var(--on-ink-2); text-transform: none; letter-spacing: 0; }
+  .ct__foot::before { content: ""; position: absolute; top: 0; left: var(--gutter); right: var(--gutter); border-top: 1px solid var(--on-ink-rule); }
+  @media (max-width: 860px) { .ct__in { grid-template-columns: minmax(0, 1fr); } .ct__photo { max-width: 300px; } }
+</style>
