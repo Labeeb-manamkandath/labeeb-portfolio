@@ -1,0 +1,163 @@
+---
+// Blip: a little alien hanging in the bottom-right corner of every page. Ask it about Labeeb.
+// Answers come live from Claude (api/ask.js), grounded in this site's own content.
+const starters = ["What does Labeeb do?", "Show me his AI work", "What's his experience?", "How can I contact him?"];
+---
+<div class="bl" data-bl>
+  <div class="bl__panel" id="bl-panel" role="dialog" aria-label="Chat with Blip" hidden>
+    <div class="bl__head">
+      <span class="bl__mini" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#bl-alien" /></svg></span>
+      <div><b>Blip</b><span class="mono">Ask me about Labeeb</span></div>
+      <span class="bl__live mono">Live AI · Claude</span>
+      <button type="button" class="bl__x" data-bl-close aria-label="Close chat">×</button>
+    </div>
+    <div class="bl__log" data-bl-log aria-live="polite">
+      <div class="bl__msg bl__msg--ai"><p>Beep! I'm Blip. I've read everything on this site, so ask me anything about Labeeb: his work, his experience, how he designs AI or how to reach him.</p></div>
+      <div class="bl__starters" data-bl-starters>
+        {starters.map((s) => <button type="button" class="bl__chip">{s}</button>)}
+      </div>
+    </div>
+    <form class="bl__form" data-bl-form>
+      <input name="q" type="text" maxlength="500" autocomplete="off" placeholder="Ask about Labeeb…" aria-label="Your question" />
+      <button type="submit" aria-label="Send">→</button>
+    </form>
+  </div>
+
+  <button type="button" class="bl__btn" data-bl-open aria-expanded="false" aria-controls="bl-panel" aria-label="Chat with Blip, the alien who knows about Labeeb">
+    <span class="bl__thread" aria-hidden="true"></span>
+    <span class="bl__bubble" aria-hidden="true">Ask me about Labeeb!</span>
+    <svg class="bl__alien" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <g id="bl-alien">
+          <path d="M32 3v8" stroke="#151513" stroke-width="2.5" stroke-linecap="round" />
+          <circle cx="32" cy="4" r="3.5" fill="#e8462a" stroke="#151513" stroke-width="2" />
+          <path d="M16 14 8 9M48 14l8-5" stroke="#151513" stroke-width="2.5" stroke-linecap="round" />
+          <ellipse cx="32" cy="32" rx="22" ry="21" fill="#7fd3a0" stroke="#151513" stroke-width="2.5" />
+          <ellipse class="bl__eye" cx="23" cy="31" rx="6.5" ry="8" fill="#151513" />
+          <ellipse class="bl__eye" cx="41" cy="31" rx="6.5" ry="8" fill="#151513" />
+          <circle cx="25" cy="28" r="2.2" fill="#fff" /><circle cx="43" cy="28" r="2.2" fill="#fff" />
+          <path d="M27 43q5 4 10 0" stroke="#151513" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <path d="M22 52q-2 7 2 9M42 52q2 7-2 9" stroke="#151513" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        </g>
+      </defs>
+      <use href="#bl-alien" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-bl]")!;
+  const panel = root.querySelector<HTMLElement>(".bl__panel")!;
+  const open = root.querySelector<HTMLButtonElement>("[data-bl-open]")!;
+  const log = root.querySelector<HTMLElement>("[data-bl-log]")!;
+  const form = root.querySelector<HTMLFormElement>("[data-bl-form]")!;
+  const input = form.querySelector("input")!;
+  const history: { role: string; content: string }[] = [];
+  let busy = false;
+
+  try { if (sessionStorage.getItem("bl-seen")) root.classList.add("is-seen"); } catch {}
+  const setOpen = (on: boolean) => {
+    panel.hidden = !on; open.setAttribute("aria-expanded", String(on)); root.classList.toggle("is-open", on);
+    if (on) { root.classList.add("is-seen"); try { sessionStorage.setItem("bl-seen", "1"); } catch {} setTimeout(() => input.focus(), 50); }
+  };
+  open.addEventListener("click", () => setOpen(panel.hidden));
+  root.querySelector("[data-bl-close]")!.addEventListener("click", () => { setOpen(false); open.focus(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) { setOpen(false); open.focus(); } });
+
+  const add = (cls: string, text: string, links: { href: string; label: string }[] = []) => {
+    const m = document.createElement("div");
+    m.className = `bl__msg ${cls}`;
+    const p = document.createElement("p"); p.textContent = text; m.append(p);
+    if (links.length) {
+      const l = document.createElement("div"); l.className = "bl__links";
+      links.forEach((x) => {
+        const a = document.createElement("a"); a.href = x.href; a.textContent = x.label + (x.href.startsWith("http") ? " ↗" : " →");
+        if (x.href.startsWith("http")) { a.target = "_blank"; a.rel = "noopener"; }
+        l.append(a);
+      });
+      m.append(l);
+    }
+    log.append(m); log.scrollTop = log.scrollHeight;
+    return m;
+  };
+
+  const ask = async (q: string) => {
+    if (busy || !q.trim()) return;
+    busy = true;
+    root.querySelector("[data-bl-starters]")?.remove();
+    add("bl__msg--me", q);
+    history.push({ role: "user", content: q });
+    const wait = add("bl__msg--ai bl__msg--wait", "Beep boop, thinking…");
+    try {
+      const r = await fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      const data = await r.json().catch(() => ({}));
+      wait.remove();
+      if (!r.ok || !data.reply) throw new Error(String(r.status));
+      add("bl__msg--ai", data.reply, data.links || []);
+      history.push({ role: "assistant", content: data.reply });
+    } catch (e) {
+      wait.remove(); history.pop();
+      const busyNow = String((e as Error).message) === "429";
+      add("bl__msg--ai", busyNow ? "Too many questions for my little antenna right now. Try again in a bit, or write to Labeeb directly." : "My signal dropped. You can still reach Labeeb directly.", [
+        { href: "mailto:labeebmanamkandath@gmail.com", label: "Email Labeeb" },
+        { href: "https://www.linkedin.com/in/labeeb-manamkandath/", label: "LinkedIn" },
+      ]);
+    } finally { busy = false; }
+  };
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); const q = input.value; input.value = ""; ask(q); });
+  root.querySelectorAll<HTMLButtonElement>(".bl__chip").forEach((c) => c.addEventListener("click", () => ask(c.textContent || "")));
+</script>
+
+<style is:global>
+  .bl { position: fixed; right: clamp(12px, 2vw, 24px); bottom: 0; z-index: 80; display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; }
+  .bl > * { pointer-events: auto; }
+  /* the alien hangs on a thread from just above the corner and sways */
+  .bl__btn { position: relative; width: 74px; height: 96px; margin: 0 6px 10px 0; padding: 0; border: 0; background: none; cursor: pointer; transform-origin: 50% -60px; animation: bl-sway 4.5s ease-in-out infinite; }
+  .bl__thread { position: absolute; left: 50%; bottom: 86px; width: 1.5px; height: 60px; background: var(--ink); opacity: 0.55; }
+  .bl__alien { position: absolute; left: 3px; bottom: 6px; width: 68px; height: 68px; overflow: visible; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.18)); transition: transform 0.3s var(--spring); }
+  .bl__btn:hover .bl__alien, .bl__btn:focus-visible .bl__alien { transform: scale(1.08) rotate(-4deg); }
+  .bl__btn:focus-visible { outline: 3px solid var(--tomato); outline-offset: 4px; border-radius: 14px; }
+  .bl__eye { animation: bl-blink 4.2s infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes bl-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  @keyframes bl-blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
+  .bl__bubble { position: absolute; right: 70px; bottom: 54px; white-space: nowrap; background: var(--card); border: 1.5px solid var(--ink); border-radius: 14px 14px 4px 14px; padding: 7px 11px; font-family: var(--f-hand); font-size: 20px; line-height: 1; color: var(--fg); animation: bl-pop 0.5s 1.2s var(--spring) both; }
+  .bl.is-seen .bl__bubble, .bl.is-open .bl__bubble { display: none; }
+  @keyframes bl-pop { from { opacity: 0; transform: translateY(6px) scale(0.9); } }
+
+  .bl__panel { width: min(380px, calc(100vw - 24px)); height: min(540px, calc(100vh - 140px)); display: flex; flex-direction: column; margin-bottom: 4px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 20px; box-shadow: 0 24px 60px -24px rgba(0,0,0,0.45); overflow: hidden; animation: bl-in 0.35s var(--ease) both; }
+  .bl__panel[hidden] { display: none; }
+  @keyframes bl-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
+  .bl__head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; background: var(--ink); color: var(--on-ink); }
+  .bl__head b { display: block; font-size: 16px; }
+  .bl__head .mono { display: block; font-size: 11px; color: var(--on-ink-2); text-transform: none; letter-spacing: 0; white-space: nowrap; }
+  .bl__mini { width: 34px; height: 34px; flex: none; }
+  .bl__mini svg { width: 100%; height: 100%; overflow: visible; }
+  .bl__live { margin-left: auto; font-size: 10px !important; color: var(--ok-ink) !important; border: 1px solid currentColor; border-radius: 999px; padding: 3px 7px; white-space: nowrap; }
+  .bl__x { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--on-ink-rule); background: transparent; color: var(--on-ink); font-size: 20px; line-height: 1; cursor: pointer; }
+  .bl__x:hover { background: var(--ink-3); }
+  .bl__log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .bl__msg { max-width: 88%; }
+  .bl__msg p { margin: 0; padding: 10px 13px; border-radius: 16px; font-size: 15px; line-height: 1.45; }
+  .bl__msg--ai p { background: var(--card); border: 1px solid var(--rule); border-bottom-left-radius: 4px; }
+  .bl__msg--me { align-self: flex-end; }
+  .bl__msg--me p { background: var(--ink); color: var(--paper); border-bottom-right-radius: 4px; }
+  .bl__msg--wait p { color: var(--fg-3); font-style: italic; }
+  .bl__links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+  .bl__links a { font-size: 13px; font-weight: 600; text-decoration: none; padding: 6px 10px; border-radius: 999px; border: 1.5px solid var(--ink); background: var(--paper); }
+  .bl__links a:hover { background: var(--ink); color: var(--paper); }
+  .bl__starters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bl__chip { font-size: 13px; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--rule-strong); background: transparent; cursor: pointer; }
+  .bl__chip:hover { border-color: var(--ink); background: var(--card); }
+  .bl__form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--rule); background: var(--card); }
+  .bl__form input { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--rule-strong); background: var(--paper); color: var(--fg); }
+  .bl__form input:focus { outline: 2px solid var(--tomato); outline-offset: 1px; }
+  .bl__form button { width: 42px; border-radius: 50%; border: 0; background: var(--tomato); color: #fff; font-size: 18px; cursor: pointer; }
+  .bl.is-open .bl__btn { animation: none; }
+  .bl.is-open .bl__thread { display: none; }
+  @media (max-width: 560px) {
+    .bl__btn { width: 60px; height: 82px; } .bl__alien { width: 54px; height: 54px; } .bl__thread { bottom: 70px; height: 50px; }
+    .bl__bubble { right: 56px; bottom: 44px; font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bl__btn, .bl__eye { animation: none; } }
+</style>
