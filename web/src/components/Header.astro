@@ -4,6 +4,7 @@ const { current } = Astro.props;
 const links = [
   { href: "/#demos", label: "AI work", key: "home" },
   { href: "/projects", label: "Projects", key: "projects" },
+  { href: "/approach", label: "Approach", key: "approach" },
   { href: "/about", label: "About", key: "about" },
   { href: "#contact", label: "Contact", key: "contact" },
 ];
@@ -29,7 +30,7 @@ const links = [
   .hd__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
   .hd__face { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: var(--mid); border: 1.5px solid var(--ink); }
   .hd__face img { width: 260%; max-width: none; margin: -6px 0 0 -26px; }
-  .hd__name { font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
+  .hd__name { white-space: nowrap; font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
   .hd__nav { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
   .hd__nav a { display: inline-block; padding: 8px 12px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 500; color: var(--fg-2); transition: background 0.2s, color 0.2s; }
   .hd__nav a[aria-current="page"] { background: var(--ink); color: var(--paper); }
@@ -39,6 +40,7 @@ const links = [
   @media (max-width: 760px) {
     .hd__cta { display: none; }
     .hd__nav li:first-child, .hd__nav li:last-child { display: none; }
-    .hd__nav a { padding: 7px 11px; font-size: 14.5px; }
+    .hd__nav { gap: 0; }
+    .hd__nav a { padding: 7px 9px; font-size: 14px; }
   }
 </style>

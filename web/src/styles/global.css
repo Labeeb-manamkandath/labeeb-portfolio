@@ -135,3 +135,4 @@ img { height: auto; }
 #voice .cs-link, #face .cs-link, #workforce .cs-link, #talk .cs-link { margin-top: 18px; }
 #voice .notes, #face .notes, #talk .notes { margin-top: clamp(20px, 2.6vw, 32px); }
 #workforce .stats { margin-top: clamp(24px, 3vw, 40px); }
+.page-head + .sec { border-top: 0; padding-top: clamp(24px, 4vw, 56px); }

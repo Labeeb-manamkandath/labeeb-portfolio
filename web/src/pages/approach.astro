@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Principles from "../components/Principles.astro";
+import Process from "../components/Process.astro";
+import Contact from "../components/Contact.astro";
+---
+<Base title="Approach · Labeeb Manamkandath" description="How Labeeb Manamkandath designs AI features people trust, and how AI fits into his own design process.">
+  <Header current="approach" />
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="mono kicker reveal"><b>Approach</b> Rules and process</p>
+        <h1 class="h-xl reveal">Simple enough to use. Clear enough to trust.</h1>
+        <p class="lede reveal">The rules I design AI features by, and how AI fits into my own way of working.</p>
+      </div>
+    </section>
+    <Principles />
+    <Process />
+  </main>
+  <Contact />
+</Base>
