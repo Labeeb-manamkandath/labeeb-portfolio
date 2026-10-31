@@ -64,6 +64,48 @@ const outcomes = [
       <div class="map__panels">
         {nodes.map((n, i) => (
           <div class="panel" role="tabpanel" id={`wf-p-${n.id}`} aria-labelledby={`wf-t-${n.id}`} hidden={i !== 0}>
+            <div class={`viz viz--${n.id}`} aria-hidden="true">
+              <span class="viz__tag mono">Illustration</span>
+              {n.id === "checkin" && (
+                <div class="ci">
+                  <div class="ci__geo"><span class="ci__ring"></span><span class="ci__pin"></span><span class="mono ci__lbl">On site</span></div>
+                  <div class="ci__face"><span class="ci__head"><i></i><i></i></span><span class="ci__scan"></span><span class="ci__corner"></span></div>
+                  <div class="ci__ok"><b>✓</b><span><strong>Checked in</strong><em class="mono">face matched · inside geofence</em></span></div>
+                </div>
+              )}
+              {n.id === "day" && (
+                <div class="ds">
+                  {[["Check-in", "07:58"], ["Check-out", "17:32"], ["Total", "9h 34m"], ["OT", "1h 34m"], ["Break", "1h 00m"]].map(([k, v], j) => (
+                    <div class="ds__c" style={`--d:${j * 0.12}s`}><span class="mono">{k}</span><b>{v}</b></div>
+                  ))}
+                  <div class="ds__bar"><span class="ds__work"></span><span class="ds__brk"></span><span class="ds__work2"></span><span class="ds__ot"></span></div>
+                </div>
+              )}
+              {n.id === "project" && (
+                <div class="pj2">
+                  <div class="pj2__card"><span class="mono">Today · checked in 07:58</span><b>Your project</b>
+                    <div class="pj2__slot"><span class="pj2__chip">Tower B · MEP works</span></div>
+                  </div>
+                  <div class="pj2__list"><span>Tower A</span><span class="on">Tower B</span><span>Villa 12</span></div>
+                </div>
+              )}
+              {n.id === "timesheet" && (
+                <div class="ts">
+                  <div class="ts__grid">{Array.from({ length: 28 }, (_, d) => <i class={[5, 12, 19, 26].includes(d) ? "off" : d === 15 ? "lv" : ""} style={`--d:${d * 0.04}s`}></i>)}</div>
+                  <span class="ts__arrow">→</span>
+                  <div class="ts__pay"><span class="mono">Payroll</span><b>Month closed</b><em class="mono">hours + OT from the timesheet</em></div>
+                </div>
+              )}
+              {n.id === "leave" && (
+                <div class="lv">
+                  <div class="lv__wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <span class="ts__arrow">→</span>
+                  <div class="lv__card"><span class="mono">Leave request</span><b>Thu–Fri · 2 days</b>
+                    <span class="lv__st"><span class="lv__p mono">Pending</span><span class="lv__a mono">Approved ✓</span></span>
+                  </div>
+                </div>
+              )}
+            </div>
             <div class="row"><span class="mono row__k">The worker</span><p>{n.worker}</p></div>
             <div class={`row ${n.ai ? "row--ai" : "row--sys"}`}><span class="mono row__k">{n.ai ? "The AI" : "The system"}</span><p>{n.sys}</p></div>
             <div class="row row--me"><span class="mono row__k">What I designed</span><p>{n.design}</p></div>
@@ -124,6 +166,83 @@ const outcomes = [
   .stats b { font-size: clamp(30px, 3vw, 44px); line-height: 1; color: var(--tomato); }
   .stats span { color: var(--fg); font-size: 17px; font-weight: 600; line-height: 1.35; }
   .wf__src { margin: 18px 0 0; color: var(--fg-3); text-transform: none; letter-spacing: 0; }
+
+
+  /* per-tab animated illustrations; they replay each time a tab is opened (hidden → shown) */
+  .viz { position: relative; height: 170px; border-radius: 14px; background: var(--ink-2); border: 1px solid var(--on-ink-rule); display: grid; place-items: center; overflow: hidden; margin-bottom: 4px; }
+  .viz__tag { position: absolute; top: 10px; right: 12px; font-size: 10px; color: var(--on-ink-2); }
+  .viz .mono { text-transform: uppercase; letter-spacing: 0.05em; }
+  .ci { display: flex; align-items: center; gap: clamp(14px, 3vw, 32px); }
+  .ci__geo { position: relative; width: 84px; height: 84px; display: grid; place-items: center; }
+  .ci__ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px dashed var(--info-ink); animation: wf-ring 1.6s var(--ease) both; }
+  .ci__pin { width: 12px; height: 12px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--tomato); animation: wf-drop 0.6s 0.3s var(--spring) both; }
+  .ci__lbl { position: absolute; bottom: -18px; font-size: 10px; color: var(--info-ink); white-space: nowrap; animation: wf-fade 0.4s 0.8s both; }
+  .ci__face { position: relative; width: 78px; height: 96px; border-radius: 40px; border: 2px solid var(--on-ink-rule); display: grid; place-items: center; overflow: hidden; animation: wf-ok-border 0.3s 1.9s both; }
+  .ci__head { width: 44px; height: 54px; border-radius: 45% 45% 42% 42%; background: var(--ink-3); display: flex; justify-content: center; gap: 10px; padding-top: 20px; }
+  .ci__head i { width: 5px; height: 5px; border-radius: 50%; background: var(--on-ink); }
+  .ci__scan { position: absolute; left: 0; right: 0; height: 2px; background: var(--ok-ink); box-shadow: 0 0 12px var(--ok-ink); animation: wf-scan 1.2s 0.5s ease-in-out 1 both; }
+  .ci__ok { display: flex; gap: 10px; align-items: center; animation: wf-in 0.5s 2s var(--spring) both; }
+  .ci__ok b { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--ok-ink); color: var(--ink); }
+  .ci__ok strong { display: block; font-size: 16px; } .ci__ok em { font-style: normal; font-size: 10.5px; color: var(--on-ink-2); }
+  @keyframes wf-ring { from { transform: scale(0.3); opacity: 0; } }
+  @keyframes wf-drop { from { transform: translateY(-30px) rotate(-45deg); opacity: 0; } }
+  @keyframes wf-fade { from { opacity: 0; } }
+  @keyframes wf-scan { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+  @keyframes wf-ok-border { to { border-color: var(--ok-ink); } }
+  .ds { width: 90%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .ds__c { background: var(--ink-3); border-radius: 10px; padding: 10px; animation: wf-in 0.45s calc(var(--d) + 0.1s) var(--spring) both; }
+  .ds__c .mono { display: block; font-size: 9.5px; color: var(--on-ink-2); }
+  .ds__c b { font-size: clamp(14px, 1.5vw, 19px); }
+  .ds__c:nth-child(4) b { color: var(--mid-ink); }
+  .ds__bar { grid-column: 1 / -1; display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--ink-3); }
+  .ds__bar span { height: 100%; transform-origin: left; animation: wf-grow 0.5s var(--ease) both; }
+  .ds__work { width: 42%; background: var(--ok-ink); animation-delay: 0.7s !important; }
+  .ds__brk { width: 10%; background: var(--on-ink-2); animation-delay: 1.1s !important; }
+  .ds__work2 { width: 32%; background: var(--ok-ink); animation-delay: 1.4s !important; }
+  .ds__ot { width: 16%; background: var(--mid-ink); animation-delay: 1.8s !important; }
+  @keyframes wf-grow { from { transform: scaleX(0); } }
+  .pj2 { display: flex; align-items: center; gap: 24px; }
+  .pj2__card { background: var(--ink-3); border-radius: 12px; padding: 14px 16px; min-width: 200px; }
+  .pj2__card .mono { display: block; font-size: 10px; color: var(--on-ink-2); }
+  .pj2__card b { display: block; margin: 6px 0 8px; }
+  .pj2__slot { height: 30px; border: 1.5px dashed var(--on-ink-rule); border-radius: 999px; display: flex; align-items: center; padding: 2px; }
+  .pj2__chip { padding: 4px 12px; border-radius: 999px; background: var(--tomato); color: #fff; font-size: 13px; font-weight: 600; animation: wf-chip 0.6s 1.3s var(--spring) both; }
+  .pj2__list { display: grid; gap: 6px; }
+  .pj2__list span { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--on-ink-rule); font-size: 13px; color: var(--on-ink-2); animation: wf-in 0.35s var(--spring) both; }
+  .pj2__list span:nth-child(2) { animation-delay: 0.1s; } .pj2__list span:nth-child(3) { animation-delay: 0.2s; }
+  .pj2__list .on { animation: wf-in 0.35s 0.1s var(--spring) both, wf-pick 0.3s 0.8s both; }
+  @keyframes wf-pick { to { border-color: var(--tomato); color: var(--on-ink); } }
+  @keyframes wf-chip { from { opacity: 0; transform: translateX(80px) scale(0.8); } }
+  .ts { display: flex; align-items: center; gap: 18px; }
+  .ts__grid { display: grid; grid-template-columns: repeat(7, 14px); gap: 5px; }
+  .ts__grid i { width: 14px; height: 14px; border-radius: 3px; background: var(--ok-ink); animation: wf-in 0.25s var(--d) both; }
+  .ts__grid i.off { background: var(--ink-3); } .ts__grid i.lv { background: var(--info-ink); }
+  .ts__arrow { color: var(--tomato); font-size: 22px; animation: wf-fade 0.3s 1.2s both; }
+  .ts__pay { background: var(--ink-3); border-radius: 12px; padding: 14px 16px; animation: wf-in 0.5s 1.4s var(--spring) both; }
+  .ts__pay .mono { display: block; font-size: 10px; color: var(--ok-ink); }
+  .ts__pay b { display: block; margin: 4px 0; } .ts__pay em { font-style: normal; font-size: 10px; color: var(--on-ink-2); }
+  .lv { display: flex; align-items: center; gap: 18px; }
+  .lv__wave { display: flex; gap: 4px; align-items: center; height: 44px; }
+  .lv__wave i { width: 5px; height: 30%; border-radius: 3px; background: var(--on-ink-2); animation: wf-talk 0.5s ease-in-out 3 alternate both; }
+  .lv__wave i:nth-child(2n) { animation-delay: 0.15s; } .lv__wave i:nth-child(3n) { animation-delay: 0.3s; }
+  @keyframes wf-talk { to { height: 100%; background: var(--ok-ink); } }
+  .lv__card { background: var(--ink-3); border-radius: 12px; padding: 14px 16px; min-width: 170px; animation: wf-in 0.5s 1.4s var(--spring) both; }
+  .lv__card .mono { display: block; font-size: 10px; color: var(--on-ink-2); }
+  .lv__card b { display: block; margin: 4px 0 8px; }
+  .lv__st { position: relative; display: block; height: 22px; }
+  .lv__st span { position: absolute; left: 0; font-size: 10.5px; padding: 3px 8px; border-radius: 999px; }
+  .lv__p { border: 1px solid var(--mid-ink); color: var(--mid-ink); animation: wf-out 0.3s 2.6s both; }
+  .lv__a { background: var(--ok-ink); color: var(--ink); animation: wf-in 0.4s 2.7s var(--spring) both; }
+  @keyframes wf-out { to { opacity: 0; transform: translateY(-6px); } }
+  @keyframes wf-in { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
+  @media (max-width: 560px) {
+    .viz { height: 200px; }
+    .ds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ci__geo { display: none; }
+    .pj2__list { display: none; }
+    .ts__grid { grid-template-columns: repeat(7, 11px); } .ts__grid i { width: 11px; height: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .viz *, .viz *::before { animation: none !important; } .lv__p { opacity: 0; } }
 
   @media (max-width: 860px) {
     .map { grid-template-columns: minmax(0, 1fr); }
