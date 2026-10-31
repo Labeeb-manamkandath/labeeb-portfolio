@@ -1,0 +1,248 @@
+---
+import { TOPIC, POINTS, PHOTO_PEOPLE } from "../data/talk-sample.js";
+const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
+---
+<section class="sec td" id="talk" aria-labelledby="td-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">02 / Demo</span><span class="mono">Toolbox Talk Analyzer · shipped</span></div>
+      <div class="sec__title reveal">
+        <h2 id="td-h" class="h-lg">AI that coaches a safety talk while it's happening.</h2>
+        <p class="lede">
+          Every morning a supervisor gives a 5 to 10 minute safety talk. The AI listens and ticks off each point on the
+          checklist as covered, partly covered or still to go, so nothing important gets skipped. Press play to hear one.
+        </p>
+      </div>
+    </div>
+
+    <div class="tdev reveal" data-td>
+      <div class="tdev__bar">
+        <div class="tdev__topic"><span class="mono">Topic</span><b>{TOPIC}</b></div>
+        <span class="tag tag--sim">Simulated · scripted talk</span>
+        <div class="tdev__ctl">
+          <span class="mono tdev__time" data-time>00:00</span>
+          <button class="tbtn tbtn--go" data-play><span class="tbtn__dot" aria-hidden="true"></span><span data-play-label>Start talk</span></button>
+          <button class="tbtn" data-done disabled>Done</button>
+        </div>
+      </div>
+
+      <div class="tdev__progress" aria-hidden="true"><i data-bar></i></div>
+
+      <div class="tdev__body">
+        <div class="tdev__talk">
+          <span class="mono tdev__lbl">What the supervisor is saying</span>
+          <ol class="talk" data-talk aria-live="polite"></ol>
+          <p class="talk__idle" data-idle>Press <b>Start talk</b>. The script plays in the supervisor's voice, as text.</p>
+        </div>
+
+        <div class="tdev__list">
+          <div class="tdev__head">
+            <span class="mono tdev__lbl">Checklist</span>
+            <span class="mono"><b data-pct>0%</b> covered</span>
+          </div>
+          <ul class="pts">
+            {POINTS.map((p) => (
+              <li class="pt" data-pt={p.id}><i aria-hidden="true"></i><span>{p.text}</span><em class="mono" data-st>To go</em></li>
+            ))}
+          </ul>
+          <ul class="legend mono" aria-label="Legend">
+            <li><i class="l-ok"></i>Covered</li><li><i class="l-mid"></i>Partly</li><li><i class="l-no"></i>Still to go</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sum" data-sum hidden>
+        <div class="sum__score">
+          <span class="mono">Talk summary</span>
+          <b data-sum-pct>0%</b>
+          <p data-sum-line></p>
+        </div>
+        <div class="sum__left">
+          <span class="mono">Points remaining</span>
+          <ul data-sum-left></ul>
+          <p class="small">Cover these tomorrow, or add a quick word before work starts.</p>
+        </div>
+        <div class="sum__photo">
+          <span class="mono">Log attendance from a group photo</span>
+          <div class="photo" data-photo>
+            {people.map((i) => (
+              <span class="ppl" style={`--i:${i}`}><b class="ppl__box"></b><i class="ppl__head"></i><i class="ppl__body"></i></span>
+            ))}
+          </div>
+          <button class="tbtn tbtn--go" data-scan>Take group photo</button>
+          <p class="small" data-scan-msg></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes td__notes">
+      <div class="nt reveal"><span class="hand">why "remaining", not "missed"?</span><p>A red "missed" reads like an audit of the supervisor. "2 points remaining" says the same thing as coaching, which is what the tool is for.</p></div>
+      <div class="nt reveal"><span class="hand">why does it update slowly?</span><p>The first version updated every second, and that distracted supervisors in the middle of their talk. Now it updates every few seconds.</p></div>
+      <div class="nt reveal"><span class="hand">why a group photo?</span><p>One photo after the talk, matched against the faces workers registered, logs everyone at once instead of one by one.</p></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { POINTS, LINES } from "../data/talk-sample.js";
+
+  const root = document.querySelector("[data-td]");
+  const $ = (s) => root.querySelector(s);
+  const $$ = (s) => [...root.querySelectorAll(s)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 30 : ms));
+  const LABEL = { full: "Covered", part: "Partly", none: "To go" };
+  let state = {}; let run = 0; let clock = null; let seconds = 0;
+
+  function reset() {
+    state = Object.fromEntries(POINTS.map((p) => [p.id, "none"]));
+    $("[data-talk]").innerHTML = ""; $("[data-idle]").hidden = false;
+    $("[data-sum]").hidden = true; $("[data-scan-msg]").textContent = "";
+    $("[data-photo]").classList.remove("scanned", "scanning");
+    $("[data-scan]").disabled = false;
+    seconds = 0; tick(0); paint();
+  }
+  function tick(d) { seconds += d; const m = String(Math.floor(seconds / 60)).padStart(2, "0"); $("[data-time]").textContent = `${m}:${String(seconds % 60).padStart(2, "0")}`; }
+  function pct() { const v = Object.values(state); return Math.round((v.filter((x) => x === "full").length + 0.5 * v.filter((x) => x === "part").length) / v.length * 100); }
+  function paint() {
+    $$("[data-pt]").forEach((li) => {
+      const s = state[li.dataset.pt];
+      li.className = `pt pt--${s}`;
+      li.querySelector("[data-st]").textContent = LABEL[s];
+    });
+    const p = pct();
+    $("[data-pct]").textContent = `${p}%`;
+    $("[data-bar]").style.width = `${p}%`;
+  }
+
+  async function play() {
+    const me = ++run; reset();
+    $("[data-idle]").hidden = true;
+    $("[data-play-label]").textContent = "Restart";
+    $("[data-done]").disabled = false;
+    clearInterval(clock); clock = setInterval(() => tick(1), 1000);
+    for (const line of LINES) {
+      if (me !== run) return;
+      const li = document.createElement("li");
+      li.textContent = line.t;
+      $("[data-talk]").append(li);
+      const box = $("[data-talk]"); box.scrollTop = box.scrollHeight;
+      await wait(1500 + line.t.length * 22);
+      if (me !== run) return;
+      // the checklist catches up a beat later, like the real product's slower updates
+      for (const [id, lvl] of line.hits) if (state[id] !== "full") state[id] = lvl;
+      paint();
+    }
+    if (me === run) finish();
+  }
+
+  function finish() {
+    ++run; clearInterval(clock);
+    $("[data-done]").disabled = true;
+    const left = POINTS.filter((p) => state[p.id] !== "full");
+    const p = pct();
+    $("[data-sum-pct]").textContent = `${p}%`;
+    $("[data-sum-line]").textContent = left.length
+      ? `Good talk. ${left.length} point${left.length > 1 ? "s" : ""} remaining.`
+      : "Every point covered. Nice one.";
+    $("[data-sum-left]").innerHTML = left.map((x) => `<li class="pt--${state[x.id]}"><i></i>${x.text}<em class="mono">${LABEL[state[x.id]]}</em></li>`).join("");
+    $("[data-sum]").hidden = false;
+  }
+
+  async function scan() {
+    $("[data-scan]").disabled = true;
+    const ph = $("[data-photo]");
+    ph.classList.add("scanning");
+    $("[data-scan-msg]").textContent = "Matching faces…";
+    await wait(1600);
+    ph.classList.remove("scanning"); ph.classList.add("scanned");
+    const n = ph.children.length;
+    $("[data-scan-msg]").textContent = `${n - 1} of ${n} matched and logged. 1 face couldn't be matched, so the supervisor confirms that person by hand.`;
+  }
+
+  $("[data-play]").addEventListener("click", play);
+  $("[data-done]").addEventListener("click", finish);
+  $("[data-scan]").addEventListener("click", scan);
+  reset();
+</script>
+
+<style is:global>
+  .td .tdev { background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .td .tdev__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: clamp(16px, 2vw, 24px) clamp(18px, 2.4vw, 30px); }
+  .td .tdev__topic { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
+  .td .tdev__topic .mono, .td .tdev__lbl { color: var(--on-ink-2); }
+  .td .tdev__topic b { font-size: 20px; letter-spacing: -0.01em; }
+  .td .tdev__ctl { display: flex; align-items: center; gap: 10px; }
+  .td .tdev__time { font-size: 15px; color: var(--on-ink); min-width: 52px; }
+  .td .tbtn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--on-ink-2); background: transparent; color: var(--on-ink); font-weight: 650; cursor: pointer; }
+  .td .tbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .td .tbtn--go { background: var(--on-ink); color: var(--ink); border-color: var(--on-ink); }
+  .td [data-done]:not(:disabled) { background: var(--no); border-color: var(--no); color: #fff; }
+  .td .tbtn__dot { width: 0; height: 0; border-left: 9px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+  .td .tdev__progress { height: 6px; background: var(--ink-3); }
+  .td .tdev__progress i { display: block; height: 100%; width: 0; background: var(--ok-ink); transition: width 0.9s var(--ease); }
+
+  .td .tdev__body { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+  .td .tdev__talk { padding: clamp(18px, 2.4vw, 30px); border-right: 1px solid var(--on-ink-rule); min-height: 380px; display: flex; flex-direction: column; gap: 12px; }
+  .td .talk { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-height: 360px; overflow: auto; }
+  .td .talk li { font-size: 16.5px; line-height: 1.5; animation: td-in 0.5s var(--ease) both; }
+  .td .talk li:last-child { color: var(--on-ink); }
+  .td .talk li:not(:last-child) { color: var(--on-ink-2); }
+  @keyframes td-in { from { opacity: 0; transform: translateY(6px); } }
+  .td .talk__idle { margin: auto 0; color: var(--on-ink-2); }
+
+  .td .tdev__list { padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 12px; }
+  .td .tdev__head { display: flex; justify-content: space-between; color: var(--on-ink-2); }
+  .td .tdev__head b { color: var(--on-ink); font-weight: 500; }
+  .td .pts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .td .pt { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--ink-3); font-size: 15px; transition: background 0.5s; }
+  .td .pt i, .td .sum__left i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--no-ink); transition: background 0.4s, border-color 0.4s; }
+  .td .pt em, .td .sum__left em { font-style: normal; color: var(--on-ink-2); font-size: 11px; }
+  .td .pt--full i, .td .sum__left .pt--full i { background: var(--ok-ink); border-color: var(--ok-ink); }
+  .td .pt--full em { color: var(--ok-ink); }
+  .td .pt--part i, .td .sum__left .pt--part i { background: var(--mid-ink); border-color: var(--mid-ink); }
+  .td .pt--part em { color: var(--mid-ink); }
+  .td .pt--full span { color: var(--on-ink); }
+  .td .pt--none span { color: var(--on-ink-2); }
+  .td .legend { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; color: var(--on-ink-2); font-size: 10.5px; }
+  .td .legend li { display: inline-flex; align-items: center; gap: 6px; }
+  .td .legend i { width: 9px; height: 9px; border-radius: 50%; }
+  .td .l-ok { background: var(--ok-ink); } .td .l-mid { background: var(--mid-ink); } .td .l-no { border: 1.5px solid var(--no-ink); }
+
+  .td .sum { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 4fr) minmax(0, 5fr); gap: clamp(16px, 2.4vw, 32px); padding: clamp(18px, 2.4vw, 30px); border-top: 1px solid var(--on-ink-rule); background: var(--ink-2); animation: td-in 0.5s var(--ease) both; }
+  .td .sum[hidden] { display: none; }
+  .td .sum .mono { color: var(--on-ink-2); }
+  .td .sum__score b { display: block; font-size: clamp(48px, 6vw, 80px); line-height: 1; letter-spacing: -0.04em; margin: 8px 0; color: var(--ok-ink); }
+  .td .sum__score p { margin: 0; font-size: 17px; }
+  .td .sum__left ul { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 6px; }
+  .td .sum__left li { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; font-size: 15px; padding: 9px 12px; border-radius: 10px; background: var(--ink-3); }
+  .td .small { font-size: 13px; color: var(--on-ink-2); margin: 10px 0 0; }
+
+  .td .photo { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 2px; height: 120px; margin: 10px 0 12px; padding: 0 10px; border-radius: 12px; overflow: hidden; background: linear-gradient(#3a3a34, #262622); }
+  .td .ppl { position: relative; width: 34px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transform: translateY(calc(var(--i) * 3px % 12px)); }
+  .td .ppl__head { width: 20px; height: 22px; border-radius: 50%; background: #8c8679; }
+  .td .ppl__body { width: 34px; height: 40px; border-radius: 14px 14px 0 0; margin-top: 3px; background: var(--mid-ink); opacity: 0.85; }
+  .td .ppl:nth-child(3n) .ppl__body { background: #e6e1d4; }
+  .td .ppl__box { position: absolute; bottom: 38px; width: 28px; height: 30px; border: 2px solid var(--ok-ink); border-radius: 5px; opacity: 0; transform: scale(1.3); transition: opacity 0.3s, transform 0.3s var(--ease); transition-delay: calc(var(--i) * 90ms); }
+  .td .photo.scanning::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent); animation: td-scan 0.9s linear infinite; }
+  @keyframes td-scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  .td .photo.scanned .ppl__box { opacity: 1; transform: none; }
+  .td .photo.scanned .ppl:nth-child(7) .ppl__box { border-color: var(--mid-ink); border-style: dashed; }
+
+  .td .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
+  .td .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
+  .td .nt .hand { font-size: 24px; color: var(--tomato); }
+  .td .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
+
+  @media (max-width: 900px) {
+    .td .tdev__body { grid-template-columns: minmax(0, 1fr); }
+    .td .tdev__talk { border-right: 0; border-bottom: 1px solid var(--on-ink-rule); min-height: 220px; }
+    .td .talk { max-height: 240px; }
+    .td .sum { grid-template-columns: minmax(0, 1fr); }
+    .td .notes { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .td .tdev__ctl { width: 100%; }
+    .td .tdev__ctl .tbtn--go { flex: 1; justify-content: center; }
+  }
+</style>
