@@ -17,13 +17,15 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
     <div class="dev reveal" data-vd>
       <!-- input side -->
       <div class="dev__in">
-        <div class="tabs" role="tablist" aria-label="How to give input">
-          <button role="tab" class="tab" id="t-sample" aria-selected="true" aria-controls="p-sample" data-tab="sample">Samples</button>
-          <button role="tab" class="tab" id="t-rec" aria-selected="false" aria-controls="p-rec" data-tab="rec" tabindex="-1">Record</button>
-          <button role="tab" class="tab" id="t-type" aria-selected="false" aria-controls="p-type" data-tab="type" tabindex="-1">Type</button>
+        <div class="tabrow">
+          <div class="tabs" role="tablist" aria-label="How to give input">
+            <button role="tab" class="tab" id="t-rec" aria-selected="true" aria-controls="p-rec" data-tab="rec">Record</button>
+            <button role="tab" class="tab" id="t-type" aria-selected="false" aria-controls="p-type" data-tab="type" tabindex="-1">Type</button>
+          </div>
+          <button class="samp" id="t-sample" aria-pressed="false" aria-controls="p-sample" data-tab="sample">Samples</button>
         </div>
 
-        <div class="pane" id="p-sample" role="tabpanel" aria-labelledby="t-sample">
+        <div class="pane" id="p-sample" aria-labelledby="t-sample" hidden>
           <p class="hint">Recordings from the kinds of people the product serves. <span class="tag tag--sim">Simulated</span></p>
           <div class="chips">
             {SAMPLES.map((s, i) => (
@@ -34,7 +36,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
           </div>
         </div>
 
-        <div class="pane" id="p-rec" role="tabpanel" aria-labelledby="t-rec" hidden>
+        <div class="pane" id="p-rec" role="tabpanel" aria-labelledby="t-rec">
           <p class="hint">Speak a work update, a request or a problem. <span class="tag tag--live">Live in your browser</span></p>
           <div class="rec">
             <label class="mono" for="vd-lang">Language</label>
@@ -187,14 +189,19 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
   }
 
   // tabs
-  const tabs = $$("[data-tab]");
+  // Record and Type are the tabs; Samples sits apart on the other side and swaps in its own pane.
+  const all = $$("[data-tab]");
+  const tabs = all.filter((t) => t.getAttribute("role") === "tab");
+  const samp = $("#t-sample");
   function selectTab(name) {
-    tabs.forEach((t) => {
+    all.forEach((t) => {
       const on = t.dataset.tab === name;
-      t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1;
+      if (t === samp) t.setAttribute("aria-pressed", String(on));
+      else { t.setAttribute("aria-selected", String(on)); t.tabIndex = on || (name === "sample" && t.dataset.tab === "rec") ? 0 : -1; }
       root.querySelector("#" + t.getAttribute("aria-controls")).hidden = !on;
     });
   }
+  samp.addEventListener("click", () => selectTab(samp.getAttribute("aria-pressed") === "true" ? "rec" : "sample"));
   tabs.forEach((t, i) => {
     t.addEventListener("click", () => selectTab(t.dataset.tab));
     t.addEventListener("keydown", (e) => {
@@ -286,6 +293,10 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
   .vd .tabs { display: inline-flex; padding: 4px; background: var(--ink-3); border-radius: 999px; align-self: flex-start; }
   .vd .tab { border: 0; background: none; padding: 8px 14px; border-radius: 999px; cursor: pointer; color: var(--on-ink-2); font-weight: 600; font-size: 14px; }
   .vd .tab[aria-selected="true"] { background: var(--on-ink); color: var(--ink); }
+  .vd .tabrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .vd .samp { border: 1px solid var(--on-ink-rule); background: none; padding: 9px 15px; border-radius: 999px; cursor: pointer; color: var(--on-ink-2); font-weight: 600; font-size: 14px; }
+  .vd .samp:hover { color: var(--on-ink); border-color: var(--on-ink-2); }
+  .vd .samp[aria-pressed="true"] { background: var(--on-ink); color: var(--ink); border-color: var(--on-ink); }
   .vd .hint { margin: 0 0 12px; color: var(--on-ink-2); font-size: 14.5px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .vd .small { font-size: 13px; color: var(--on-ink-2); margin: 10px 0 0; }
   .vd .chips { display: grid; gap: 8px; }
