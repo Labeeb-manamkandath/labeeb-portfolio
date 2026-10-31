@@ -106,6 +106,14 @@ const items = [
   .v-talk li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none; }
   .v-talk .ok::before { background: var(--ok-ink); } .v-talk .mid::before { background: var(--mid-ink); } .v-talk .no::before { background: transparent; border: 1.5px solid var(--no-ink); }
   .v-talk .no { color: var(--on-ink-2); }
+  /* points get ticked off one by one as the talk goes on */
+  .v-talk li { animation: ex-tick 6s infinite both; }
+  .v-talk li::before { animation: ex-dot 6s infinite both; }
+  .v-talk li:nth-child(2), .v-talk li:nth-child(2)::before { animation-delay: 0.9s; }
+  .v-talk li:nth-child(3), .v-talk li:nth-child(3)::before { animation-delay: 1.8s; }
+  .v-talk li:nth-child(4), .v-talk li:nth-child(4)::before { animation-delay: 2.7s; }
+  @keyframes ex-tick { 0% { opacity: 0.35; transform: translateX(-4px); } 6%, 80% { opacity: 1; transform: none; } 92%, 100% { opacity: 0.35; } }
+  @keyframes ex-dot { 0% { transform: scale(0); } 6% { transform: scale(1.35); } 10%, 80% { transform: scale(1); } 92%, 100% { transform: scale(0); } }
   .v-face { position: relative; width: 96px; height: 96px; display: grid; place-items: center; }
   .ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--ink-3); border-top-color: var(--ok-ink); border-right-color: var(--ok-ink); animation: ex-spin 2.6s linear infinite; }
   @keyframes ex-spin { to { transform: rotate(360deg); } }
@@ -115,8 +123,17 @@ const items = [
   .v-face .lbl { position: absolute; bottom: -16px; color: var(--ok-ink); font-size: 10px; }
   .v-sys { position: relative; display: grid; grid-template-columns: repeat(3, auto); gap: 8px; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; }
   .v-sys span { padding: 6px 8px; border: 1px solid var(--on-ink-rule); border-radius: 6px; text-align: center; background: var(--ink-2); }
-  .v-sys span:nth-child(1) { border-color: var(--tomato); color: var(--tomato); }
+  /* the day moves along: check-in, hours, project, timesheet, payroll, leave */
+  .v-sys span { animation: ex-step 6s infinite both; }
+  .v-sys span:nth-child(2) { animation-delay: 1s; } .v-sys span:nth-child(3) { animation-delay: 2s; }
+  .v-sys span:nth-child(4) { animation-delay: 3s; } .v-sys span:nth-child(5) { animation-delay: 4s; }
+  .v-sys span:nth-child(6) { animation-delay: 5s; }
+  @keyframes ex-step {
+    0%, 17%, 100% { border-color: var(--on-ink-rule); color: var(--on-ink); transform: none; }
+    3%, 13% { border-color: var(--tomato); color: var(--tomato); transform: translateY(-2px); }
+  }
 
+  @media (prefers-reduced-motion: reduce) { .v-sys span, .v-talk li, .v-talk li::before { animation: none !important; } .v-sys span:first-child { border-color: var(--tomato); color: var(--tomato); } }
   @media (max-width: 1080px) { .ex__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .ex__grid { grid-template-columns: minmax(0, 1fr); } .card__viz { height: 130px; } }
 </style>

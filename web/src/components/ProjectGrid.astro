@@ -1,25 +1,13 @@
 ---
-// All full case studies, served unchanged from the previous site at /work/.
-const projects = [
-  { key: "zaper", title: "Zaper.ai Website Design", sum: "A B2B AI website rebuilt around a live voice demo: abstract capability turned into a 30-second experience that drives demo sign-ups.", cat: "Zaper · Web", yr: "2024", ai: true },
-  { key: "bazar", title: "Gamified Coming-Soon Experience", sum: "A playful coming-soon page for a neighbourhood grocery business, with WhatsApp ordering built in.", cat: "clickfor.in · Branding + Web", yr: "2026" },
-  { key: "driver", title: "Driver Daily Route Timeline", sum: "A day-at-a-glance timeline that gives drivers and dispatchers one shared view of every job and every staff status.", cat: "YellowZap · Home services", yr: "2024" },
-  { key: "maid", title: "Maid Companion App", sum: "A companion app that gave field maids control of their hours, earnings and bookings.", cat: "YellowZap · Home services", yr: "2023" },
-];
+import { PROJECTS } from "../data/projects.js";
+interface Props { only?: string[] }
+const { only } = Astro.props;
+const projects = only ? PROJECTS.filter((p) => only.includes(p.key)) : PROJECTS;
 ---
-<section class="sec op" id="projects" aria-labelledby="op-h">
-  <div class="wrap">
-    <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">05 / More projects</span><span class="mono">Web, brand and mobile</span></div>
-      <div class="sec__title reveal">
-        <h2 id="op-h" class="h-lg">More projects, problem to shipped.</h2>
-        <p class="lede">Websites, brand work and mobile apps, each with a full case study.</p>
-      </div>
-    </div>
-    <ul class="op__grid">
+<ul class="op__grid">
       {projects.map((p, i) => (
         <li class="reveal">
-          <a class="pj" href={`/work/#${p.key}`}>
+          <a class="pj" href={`/work/${p.key}`}>
             <span class="pj__img"><img src={`/work/covers/${p.key}.jpg`} alt="" loading="lazy" width="1200" height="600" /></span>
             <span class="pj__meta mono"><span>{String(i + 1).padStart(2, "0")} · {p.cat}</span><span>{p.yr}</span></span>
             <span class="pj__t">{p.title}{p.ai && <em class="pj__ai mono">AI</em>}</span>
@@ -29,8 +17,6 @@ const projects = [
         </li>
       ))}
     </ul>
-  </div>
-</section>
 
 <style>
   .op__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 3vw, 44px) clamp(16px, 2.4vw, 32px); }
