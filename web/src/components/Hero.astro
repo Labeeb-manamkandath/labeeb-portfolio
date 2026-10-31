@@ -40,7 +40,7 @@
           <div class="panel__foot mono"><span>Review before submit</span><span class="edit">✎ edit</span></div>
         </div>
         <img class="hero__av" src="/images/avatar-point.webp" alt="3D avatar of Labeeb pointing at the demo" width="662" height="1069" />
-        <span class="note hand" aria-hidden="true">the part I design ↗</span>
+        <span class="note hand" aria-hidden="true">the part I design <svg class="note__arrow" viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c14-2 30 4 36 24"/><path d="M31 25l9 7 3-11"/></svg></span>
       </div>
     </div>
   </div>
@@ -84,6 +84,7 @@
   @keyframes hero-fadeIn { to { opacity: 1; } }
   @keyframes hero-pop { to { opacity: 1; transform: none; } }
   .hero__av { position: absolute; z-index: 1; width: clamp(120px, 13vw, 190px); left: clamp(-120px, -7vw, -70px); bottom: -30%; transform: scaleX(-1); pointer-events: none; }
+  .note__arrow { display: inline-block; width: 40px; height: 34px; vertical-align: -26px; margin-left: 2px; transform: rotate(5deg); }
   .note { position: absolute; z-index: 3; left: clamp(-60px, -2vw, -10px); top: -34px; font-size: 24px; color: var(--tomato); transform: rotate(-5deg); }
 
   @media (max-width: 960px) {
