@@ -30,8 +30,8 @@ const items = [
   },
   {
     n: "D",
-    title: "AI workforce platform",
-    body: "The system the three pieces above live in: face attendance with geofencing, voice leave requests, overtime routing and the notifications that tie it together.",
+    title: "Onsite workforce app",
+    body: "Daily labourers check in and out with their face. That gives them day stats, project hours, a monthly timesheet that feeds payroll, and leave requests.",
     status: { cls: "tag--soon", text: "Case study" },
     href: "#workforce",
     cta: "Explore the system",
@@ -63,7 +63,7 @@ const items = [
               <div class="v-face"><span class="ring"></span><span class="face"><i></i><i></i></span><span class="lbl mono">blink</span></div>
             )}
             {it.viz === "system" && (
-              <div class="v-sys"><span>Face</span><span>Voice</span><span>Leave</span><span>Overtime</span><span>Alerts</span><b></b></div>
+              <div class="v-sys"><span>Check-in</span><span>Hours</span><span>Project</span><span>Timesheet</span><span>Payroll</span><span>Leave</span><b></b></div>
             )}
           </div>
           <div class="card__top"><span class="card__n mono">{it.n}</span><span class={`tag ${it.status.cls}`}>{it.status.text}</span></div>
@@ -115,7 +115,7 @@ const items = [
   .v-face .lbl { position: absolute; bottom: -16px; color: var(--ok-ink); font-size: 10px; }
   .v-sys { position: relative; display: grid; grid-template-columns: repeat(3, auto); gap: 8px; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; }
   .v-sys span { padding: 6px 8px; border: 1px solid var(--on-ink-rule); border-radius: 6px; text-align: center; background: var(--ink-2); }
-  .v-sys span:nth-child(5) { border-color: var(--tomato); color: var(--tomato); }
+  .v-sys span:nth-child(1) { border-color: var(--tomato); color: var(--tomato); }
 
   @media (max-width: 1080px) { .ex__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .ex__grid { grid-template-columns: minmax(0, 1fr); } .card__viz { height: 130px; } }

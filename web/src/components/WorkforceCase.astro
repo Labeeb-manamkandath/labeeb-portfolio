@@ -1,65 +1,63 @@
 ---
-// Flagship case study, told as a system map. Every fact here comes from the Zaper case studies.
+// Flagship case study: Zaper's onsite workforce app, as Labeeb describes it.
 const nodes = [
   {
-    id: "face", k: "Face check-in",
-    worker: "Looks at the phone at the site gate. Done.",
-    ai: "Matches the face to the one they registered and checks they're inside the site's GPS geofence.",
-    design: "One instruction at a time while registering, a blink check, and a manual attendance fallback for supervisors when a match fails.",
+    id: "checkin", k: "Check in & check out",
+    worker: "Checks in at the start of the day and out at the end, with their face, right at the site.",
+    sys: "Matches the face to the one they registered and confirms they're inside the site's GPS geofence.", ai: true,
+    design: "A guided face registration with a blink check, clear feedback when a match fails, and a manual fallback so supervisors can always mark attendance.",
   },
   {
-    id: "voice", k: "Voice in any language",
-    worker: "Taps one big button and talks, in their own language.",
-    ai: "Transcribes it, translates it into English and turns it into structured notes: progress, issues and requests.",
-    design: "A review step before anything is sent, so people can see what the AI understood and fix it.",
+    id: "day", k: "Day stats",
+    worker: "Sees their day at a glance: check-in time, check-out time, total hours, OT hours and break hours.",
+    sys: "Works the hours out from the check-in and check-out, so nobody adds them up by hand.",
+    design: "One screen with the numbers a worker actually cares about, readable at a glance on site.",
   },
   {
-    id: "leave", k: "Voice leave requests",
-    worker: "Says when they need leave and why, instead of filling in a form.",
-    ai: "Turns the recording into a leave request with dates and a reason, then sends it for approval.",
-    design: "Multi-level approval that the supervisor and HR can follow, and a request the worker can check before it's sent.",
+    id: "project", k: "Project tracking",
+    worker: "Their hours are tied to the project they're working on that day.",
+    sys: "Records which project each check-in belongs to, so time lands on the right job.",
+    design: "The project shown with the check-in, so the worker can see it's right instead of finding out at the end of the month.",
   },
   {
-    id: "talk", k: "Toolbox Talk Analyzer",
-    worker: "The supervisor gives the morning safety talk as usual.",
-    ai: "Listens and marks each checklist point as covered, partly covered or still to go, then logs attendance from a group photo.",
-    design: "Coaching language (\"2 points remaining\"), slower updates so it doesn't distract, and a simple summary at the end.",
+    id: "timesheet", k: "Timesheets & payroll",
+    worker: "Gets a monthly timesheet with every day's timings, and knows what their pay is based on.",
+    sys: "Rolls the daily records into a monthly timesheet that feeds payroll.",
+    design: "A timesheet the worker can check line by line, to cut the disputes and corrections around payday.",
   },
   {
-    id: "notify", k: "Notifications & automation",
-    worker: "Gets a payslip and approvals without chasing anyone.",
-    ai: "Works out overtime from check-ins and routes it to the supervisor and HR to approve.",
-    design: "Exceptions show up as issues on the supervisor's cards, so they act on the few things that need them, not every record.",
+    id: "leave", k: "Leave requests",
+    worker: "Applies for leave in the app, by voice in their own language if they prefer.",
+    sys: "Turns the spoken request into a leave application and sends it for approval.", ai: true,
+    design: "A simple request flow with a clear status, so workers aren't left chasing a supervisor to know if leave was approved.",
   },
 ];
-const stats = [
-  { n: "82%", t: "field adoption of voice notes by week 3, up from 12%" },
-  { n: "3×", t: "faster reporting with voice" },
-  { n: "~35%", t: "fewer clarification calls to managers" },
-  { n: "91%", t: "of managers use it daily" },
-  { n: "+60%", t: "trust in testing after adding the edit step" },
-  { n: "6+", t: "languages, for crews where 65% weren't comfortable in English" },
+const outcomes = [
+  { n: "↓", t: "Manual attendance processing" },
+  { n: "↓", t: "Attendance disputes and correction friction" },
+  { n: "↑", t: "Worker visibility into attendance and pay" },
 ];
 ---
 <section class="sec wf" id="workforce" aria-labelledby="wf-h">
   <div class="wrap">
     <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">04 / Case study</span><span class="mono">Zaper · AI workforce platform</span></div>
+      <div class="sec__label reveal"><span class="sec-num">04 / Case study</span><span class="mono">Zaper · Onsite workforce management</span></div>
       <div class="sec__title reveal">
-        <h2 id="wf-h" class="h-lg">One platform where the AI does the paperwork, and people stay in charge.</h2>
+        <h2 id="wf-h" class="h-lg">Check in, check out. Everything else adds up on its own.</h2>
         <p class="lede">
-          Zaper runs attendance, leave, overtime and safety for construction, MEP, HVAC and facility management crews.
-          I designed it end to end with the UX head, stakeholders and developers. Pick a part of the system to see how it
-          works for the worker, what the AI does, and what I designed around it.
+          Attendance used to run on queues, paper and Excel. With Zaper, everyday labourers check in and out with their
+          face, and that gives them their day stats, the project they worked on, a monthly timesheet and, in the end,
+          their payroll. They can apply for leave too. I designed it end to end with the UX head, stakeholders and
+          developers. Pick a part to see how it works.
         </p>
       </div>
     </div>
 
     <div class="map reveal" data-wf>
-      <div class="map__nodes" role="tablist" aria-label="Parts of the platform">
+      <div class="map__nodes" role="tablist" aria-label="Parts of the app">
         {nodes.map((n, i) => (
           <button role="tab" class="node" id={`wf-t-${n.id}`} aria-controls={`wf-p-${n.id}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1} data-node={n.id}>
-            <span class="mono">0{i + 1}</span>{n.k}
+            <span class="mono">0{i + 1}</span>{n.k}{n.ai && <em class="mono node__ai">AI</em>}
           </button>
         ))}
       </div>
@@ -67,7 +65,7 @@ const stats = [
         {nodes.map((n, i) => (
           <div class="panel" role="tabpanel" id={`wf-p-${n.id}`} aria-labelledby={`wf-t-${n.id}`} hidden={i !== 0}>
             <div class="row"><span class="mono row__k">The worker</span><p>{n.worker}</p></div>
-            <div class="row row--ai"><span class="mono row__k">The AI</span><p>{n.ai}</p></div>
+            <div class={`row ${n.ai ? "row--ai" : "row--sys"}`}><span class="mono row__k">{n.ai ? "The AI" : "The system"}</span><p>{n.sys}</p></div>
             <div class="row row--me"><span class="mono row__k">What I designed</span><p>{n.design}</p></div>
           </div>
         ))}
@@ -75,9 +73,9 @@ const stats = [
     </div>
 
     <ul class="stats">
-      {stats.map((s) => <li class="reveal"><b>{s.n}</b><span>{s.t}</span></li>)}
+      {outcomes.map((s) => <li class="reveal"><b>{s.n}</b><span>{s.t}</span></li>)}
     </ul>
-    <p class="wf__src mono reveal">Numbers from Zaper's rollout and usability testing.</p>
+    <p class="wf__src mono reveal">Android and iOS · Mar to Nov 2025 · Zaper AI</p>
 
     <p class="cs-link reveal"><a href="/work/#workforce">Read the full Workforce Management case study <span aria-hidden="true">→</span></a></p>
   </div>
@@ -106,6 +104,8 @@ const stats = [
   .map__nodes { display: grid; gap: 8px; position: relative; }
   .node { display: flex; gap: 14px; align-items: center; text-align: left; padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--rule-strong); background: var(--card); font-size: 18px; font-weight: 650; letter-spacing: -0.01em; cursor: pointer; transition: transform 0.25s var(--ease), background 0.2s, color 0.2s; }
   .node .mono { color: var(--tomato); }
+  .node .node__ai { margin-left: auto; font-style: normal; color: var(--ok); border: 1px solid currentColor; border-radius: 999px; padding: 2px 8px; font-size: 10.5px; }
+  .node[aria-selected="true"] .node__ai { color: var(--ok-ink); }
   .node:hover { transform: translateX(4px); }
   .node[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .map__panels { background: var(--ink); color: var(--on-ink); border-radius: 20px; padding: clamp(18px, 2.4vw, 30px); min-height: 100%; }
@@ -115,24 +115,22 @@ const stats = [
   .row { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 16px; padding: 16px; border-radius: 12px; background: var(--ink-3); border-left: 3px solid var(--on-ink-2); }
   .row p { margin: 0; font-size: 17px; line-height: 1.5; }
   .row__k { color: var(--on-ink-2); padding-top: 3px; }
-  .row--ai { border-color: var(--info-ink); } .row--ai .row__k { color: var(--info-ink); }
+  .row--ai { border-color: var(--ok-ink); } .row--ai .row__k { color: var(--ok-ink); }
+  .row--sys { border-color: var(--info-ink); } .row--sys .row__k { color: var(--info-ink); }
   .row--me { border-color: var(--tomato); } .row--me .row__k { color: var(--tomato); }
 
-  .stats { list-style: none; margin: clamp(36px, 5vw, 64px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1.5px solid var(--ink); }
-  .stats li { padding: 18px 16px 0 0; display: grid; gap: 6px; align-content: start; }
-  .stats b { font-size: clamp(34px, 3.6vw, 52px); line-height: 1; letter-spacing: -0.04em; }
-  .stats span { color: var(--fg-2); font-size: 14.5px; line-height: 1.4; }
+  .stats { list-style: none; margin: clamp(36px, 5vw, 64px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1.5px solid var(--ink); }
+  .stats li { padding: 18px 16px 0 0; display: flex; gap: 12px; align-items: baseline; }
+  .stats b { font-size: clamp(30px, 3vw, 44px); line-height: 1; color: var(--tomato); }
+  .stats span { color: var(--fg); font-size: 17px; font-weight: 600; line-height: 1.35; }
   .wf__src { margin: 18px 0 0; color: var(--fg-3); text-transform: none; letter-spacing: 0; }
 
-  @media (max-width: 1000px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 24px; } }
   @media (max-width: 860px) {
     .map { grid-template-columns: minmax(0, 1fr); }
     .map__nodes { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
     .node { font-size: 15px; padding: 12px 14px; }
     .node:hover { transform: none; }
+    .stats { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
   }
-  @media (max-width: 560px) {
-    .row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+  @media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
 </style>
