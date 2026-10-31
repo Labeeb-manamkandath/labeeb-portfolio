@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
 import Contact from "../components/Contact.astro";
+import Toolbox from "../components/Toolbox.astro";
 const roles = [
   { when: "Nov 2023 — now", role: "Product Designer", co: "Growgene Tech Solutions FZCo, Dubai", desc: "End-to-end mobile and web design for Zaper and YellowZap, including AI features for field workforces. I work with the UX head, stakeholders and developers, from research and flows to high-fidelity UI and handoff." },
   { when: "2020 — 2023", role: "Graphic Designer", co: "Milky Foods (Remote)", desc: "Brand, campaign and interface work. This is where my habits around typography, layout and visual consistency took shape." },
@@ -16,7 +17,6 @@ const expertise = [
   "UX planning & validation",
   "User-centric product development",
 ];
-const tools = ["Figma", "Framer", "Adobe XD", "Adobe Photoshop", "Adobe Illustrator", "Microsoft Clarity", "Claude", "Claude Code", "ChatGPT"];
 ---
 <Base title="About · Labeeb Manamkandath" description="Labeeb Manamkandath is a product designer in Dubai with 5+ years of experience, designing AI features people trust and actually use.">
   <Header current="about" />
@@ -70,7 +70,7 @@ const tools = ["Figma", "Framer", "Adobe XD", "Adobe Photoshop", "Adobe Illustra
           <div class="sec__label reveal"><span class="sec-num">03</span><span class="mono">Tools</span></div>
           <div class="sec__title reveal"><h2 id="tl-h" class="h-lg">What I work with.</h2></div>
         </div>
-        <ul class="tl reveal">{tools.map((t) => <li>{t}</li>)}</ul>
+        <div class="reveal"><Toolbox /></div>
       </div>
     </section>
   </main>
@@ -90,8 +90,6 @@ const tools = ["Figma", "Framer", "Adobe XD", "Adobe Photoshop", "Adobe Illustra
   .xp { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 64px); border-top: 1.5px solid var(--ink); }
   .xp li { display: flex; gap: 16px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--rule-strong); font-size: clamp(20px, 1.9vw, 27px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
   .xp li .mono { color: var(--tomato); }
-  .tl { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
-  .tl li { padding: 10px 16px; border: 1.5px solid var(--ink); border-radius: 999px; font-family: var(--f-mono); font-size: 14px; background: var(--card); }
   @media (max-width: 860px) { .ph { grid-template-columns: minmax(0, 1fr); } .ph__photo { max-width: 260px; } .xp { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 560px) { .roles li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
 </style>

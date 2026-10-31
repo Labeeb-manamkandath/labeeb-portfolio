@@ -1,0 +1,107 @@
+---
+// About page tools: filter by kind, pick a tool, and the ink panel "types" what I use it for.
+// Lines only use what the site already says about my work; no invented projects or numbers.
+const tools = [
+  { n: "Figma", k: "design", t: "Where most of the work happens: user flows, wireframes, high-fidelity UI and the handoff to developers." },
+  { n: "Framer", k: "design", t: "Interactive prototypes and websites, when a static frame can't show how something should feel." },
+  { n: "Adobe XD", k: "design", t: "UI design and clickable prototypes." },
+  { n: "Adobe Photoshop", k: "design", t: "Image editing and campaign visuals, a habit from my graphic design years." },
+  { n: "Adobe Illustrator", k: "design", t: "Brand, icon and vector work." },
+  { n: "Microsoft Clarity", k: "research", t: "Heatmaps and session recordings, to see how people actually use a page instead of guessing." },
+  { n: "Claude", k: "ai", t: "Grouping interview and support notes into themes before I prioritise features, and turning a design into a working, responsive page, like the clickfor.in Bazar page. I check every theme against the original quotes." },
+  { n: "Claude Code", k: "ai", t: "I built this site with it, including the live AI demos on the homepage." },
+  { n: "ChatGPT", k: "ai", t: "Quick first drafts and exploring ideas. The decisions stay with me." },
+];
+const filters = [
+  { k: "all", l: "All" },
+  { k: "design", l: "Design" },
+  { k: "ai", l: "AI" },
+  { k: "research", l: "Research" },
+];
+const start = tools.findIndex((t) => t.n === "Claude");
+---
+<div class="tb" data-tb>
+  <div class="tb__filters" role="group" aria-label="Filter tools">
+    {filters.map((f, i) => <button type="button" class="tb__f mono" data-f={f.k} aria-pressed={i === 0 ? "true" : "false"}>{f.l}</button>)}
+  </div>
+  <div class="tb__grid">
+    <ul class="tb__list">
+      {tools.map((t, i) => (
+        <li data-k={t.k}>
+          <button type="button" class="tb__chip" data-i={i} aria-pressed={i === start ? "true" : "false"}>
+            {t.k === "ai" && <span class="tb__dot" aria-hidden="true"></span>}{t.n}
+          </button>
+        </li>
+      ))}
+    </ul>
+    <div class="tb__panel" aria-live="polite">
+      <div class="tb__top mono"><span class="tb__live"></span><span data-tb-kind>How I use it</span></div>
+      <p class="tb__name" data-tb-name>{tools[start].n}</p>
+      <p class="tb__text"><span data-tb-text>{tools[start].t}</span><span class="tb__caret" aria-hidden="true"></span></p>
+    </div>
+  </div>
+  <script type="application/json" data-tb-data set:html={JSON.stringify(tools)} />
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-tb]").forEach((root) => {
+    const tools = JSON.parse(root.querySelector("[data-tb-data]")!.textContent!);
+    const chips = [...root.querySelectorAll<HTMLButtonElement>(".tb__chip")];
+    const name = root.querySelector("[data-tb-name]")!;
+    const text = root.querySelector("[data-tb-text]")!;
+    const kind = root.querySelector("[data-tb-kind]")!;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const kinds: Record<string, string> = { design: "Design · how I use it", ai: "AI · how I use it", research: "Research · how I use it" };
+    let timer = 0;
+    const show = (i: number) => {
+      const t = tools[i];
+      chips.forEach((c) => c.setAttribute("aria-pressed", String(+c.dataset.i! === i)));
+      name.textContent = t.n;
+      kind.textContent = kinds[t.k];
+      clearInterval(timer);
+      if (reduce) { text.textContent = t.t; return; }
+      let n = 0; text.textContent = "";
+      root.classList.add("is-typing");
+      timer = window.setInterval(() => {
+        n += 2; text.textContent = t.t.slice(0, n);
+        if (n >= t.t.length) { clearInterval(timer); root.classList.remove("is-typing"); }
+      }, 16);
+    };
+    chips.forEach((c) => c.addEventListener("click", () => show(+c.dataset.i!)));
+    root.querySelectorAll<HTMLButtonElement>(".tb__f").forEach((f) => f.addEventListener("click", () => {
+      root.querySelectorAll(".tb__f").forEach((x) => x.setAttribute("aria-pressed", String(x === f)));
+      const k = f.dataset.f!;
+      root.querySelectorAll<HTMLElement>(".tb__list li").forEach((li) => li.classList.toggle("is-off", k !== "all" && li.dataset.k !== k));
+      const cur = chips.findIndex((c) => c.getAttribute("aria-pressed") === "true");
+      if (k !== "all" && tools[cur].k !== k) show(tools.findIndex((t: { k: string }) => t.k === k));
+    }));
+  });
+</script>
+
+<style>
+  .tb__filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .tb__f { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--rule-strong); background: transparent; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: var(--fg-2); transition: background 0.2s, color 0.2s; }
+  .tb__f:hover { color: var(--fg); border-color: var(--ink); }
+  .tb__f[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tb__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(16px, 2.4vw, 32px); align-items: start; }
+  .tb__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .tb__list li { transition: opacity 0.3s var(--ease), transform 0.3s var(--ease); }
+  .tb__list li.is-off { opacity: 0.22; transform: scale(0.96); }
+  .tb__list li.is-off .tb__chip { pointer-events: none; }
+  .tb__chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1.5px solid var(--ink); border-radius: 999px; font-family: var(--f-mono); font-size: 14px; background: var(--card); cursor: pointer; transition: transform 0.25s var(--spring), background 0.2s, color 0.2s; }
+  .tb__chip:hover { transform: translateY(-3px) rotate(-1deg); }
+  .tb__chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .tb__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: tb-pulse 2s infinite; }
+  .tb__chip[aria-pressed="true"] .tb__dot { background: var(--ok-ink); }
+  @keyframes tb-pulse { 0% { box-shadow: 0 0 0 0 rgba(47, 143, 91, 0.5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(47, 143, 91, 0); } }
+  .tb__panel { background: var(--ink); color: var(--on-ink); border-radius: 18px; padding: clamp(18px, 2.2vw, 26px); min-height: 200px; }
+  .tb__top { display: flex; align-items: center; gap: 8px; color: var(--on-ink-2); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .tb__live { width: 7px; height: 7px; border-radius: 50%; background: var(--tomato); }
+  .tb__name { margin: 14px 0 8px; font-size: clamp(22px, 2.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .tb__text { margin: 0; color: var(--on-ink); font-size: 16.5px; line-height: 1.55; }
+  .tb__caret { display: inline-block; width: 8px; height: 1.05em; margin-left: 3px; vertical-align: -2px; background: var(--ok-ink); opacity: 0; }
+  .is-typing .tb__caret { opacity: 1; animation: tb-caret 0.7s steps(1) infinite; }
+  @keyframes tb-caret { 50% { opacity: 0; } }
+  @media (max-width: 860px) { .tb__grid { grid-template-columns: minmax(0, 1fr); } .tb__panel { min-height: 0; } }
+  @media (prefers-reduced-motion: reduce) { .tb__dot { animation: none; } }
+</style>
