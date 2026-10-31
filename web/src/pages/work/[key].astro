@@ -32,6 +32,18 @@ const html = files[`../../data/cases/${key}.html`] as string;
   <Contact />
 </Base>
 
+<script>
+  // The back link returns to wherever the visitor came from on this site (homepage demo,
+  // projects list, another case study), at the same scroll position. Direct visits fall back to /projects.
+  const back = document.querySelector<HTMLAnchorElement>("[data-cs] > section:first-child > a:first-child");
+  let fromSite = false;
+  try { fromSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch {}
+  if (back && fromSite && history.length > 1) {
+    back.textContent = "← Back";
+    back.addEventListener("click", (e) => { e.preventDefault(); history.back(); });
+  }
+</script>
+
 <style>
   .cs-next { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 80px) 0; }
   .cs-next .wrap { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
