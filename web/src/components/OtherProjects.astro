@@ -1,0 +1,49 @@
+---
+// All full case studies, served unchanged from the previous site at /work/.
+const projects = [
+  { key: "zaper", title: "Zaper.ai Website Design", sum: "A B2B AI website rebuilt around a live voice demo: abstract capability turned into a 30-second experience that drives demo sign-ups.", cat: "Zaper · Web", yr: "2024", ai: true },
+  { key: "bazar", title: "Gamified Coming-Soon Experience", sum: "A playful coming-soon page for a neighbourhood grocery business, with WhatsApp ordering built in.", cat: "clickfor.in · Branding + Web", yr: "2026" },
+  { key: "driver", title: "Driver Daily Route Timeline", sum: "A day-at-a-glance timeline that gives drivers and dispatchers one shared view of every job and every staff status.", cat: "YellowZap · Home services", yr: "2024" },
+  { key: "maid", title: "Maid Companion App", sum: "A companion app that gave field maids control of their hours, earnings and bookings.", cat: "YellowZap · Home services", yr: "2023" },
+];
+---
+<section class="sec op" id="projects" aria-labelledby="op-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">05 / More projects</span><span class="mono">Web, brand and mobile</span></div>
+      <div class="sec__title reveal">
+        <h2 id="op-h" class="h-lg">More projects, problem to shipped.</h2>
+        <p class="lede">Websites, brand work and mobile apps, each with a full case study.</p>
+      </div>
+    </div>
+    <ul class="op__grid">
+      {projects.map((p, i) => (
+        <li class="reveal">
+          <a class="pj" href={`/work/#${p.key}`}>
+            <span class="pj__img"><img src={`/work/covers/${p.key}.jpg`} alt="" loading="lazy" width="1200" height="600" /></span>
+            <span class="pj__meta mono"><span>{String(i + 1).padStart(2, "0")} · {p.cat}</span><span>{p.yr}</span></span>
+            <span class="pj__t">{p.title}{p.ai && <em class="pj__ai mono">AI</em>}</span>
+            <span class="pj__s">{p.sum}</span>
+            <span class="pj__go">Read the case study <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .op__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 3vw, 44px) clamp(16px, 2.4vw, 32px); }
+  .pj { display: flex; flex-direction: column; gap: 10px; text-decoration: none; height: 100%; }
+  .pj__img { display: block; aspect-ratio: 2 / 1; border-radius: 16px; overflow: hidden; background: var(--paper-2); border: 1px solid var(--rule); }
+  .pj__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+  .pj:hover .pj__img img { transform: scale(1.035); }
+  .pj__meta { display: flex; justify-content: space-between; gap: 12px; color: var(--fg-3); margin-top: 4px; }
+  .pj__t { font-size: clamp(22px, 2vw, 28px); font-weight: 650; letter-spacing: -0.02em; line-height: 1.15; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pj__ai { font-style: normal; color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 2px 8px; font-size: 10.5px; }
+  .pj__s { color: var(--fg-2); font-size: 15.5px; max-width: 58ch; }
+  .pj__go { margin-top: auto; padding-top: 4px; font-weight: 600; align-self: flex-start; border-bottom: 1.5px solid var(--ink); }
+  .pj:hover .pj__go { color: var(--tomato); border-color: var(--tomato); }
+  .pj:hover .pj__t { color: var(--tomato); }
+  @media (max-width: 760px) { .op__grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
