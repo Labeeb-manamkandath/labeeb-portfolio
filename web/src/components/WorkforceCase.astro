@@ -3,53 +3,43 @@
 const nodes = [
   {
     id: "checkin", k: "Check in & check out",
-    worker: "Checks in at the start of the day and out at the end, with their face, right at the site.",
-    sys: "Matches the face to the one they registered and confirms they're inside the site's GPS geofence.", ai: true,
-    design: "A guided face registration with a blink check, clear feedback when a match fails, and a manual fallback so supervisors can always mark attendance.",
+    worker: "Checks in and out with their face, on site.",
+    sys: "Matches the registered face and checks the site's GPS geofence.", ai: true,
+    design: "Guided registration, clear feedback when a match fails, and a manual fallback for supervisors.",
   },
   {
     id: "day", k: "Day stats",
-    worker: "Sees their day at a glance: check-in time, check-out time, total hours, OT hours and break hours.",
-    sys: "Works the hours out from the check-in and check-out, so nobody adds them up by hand.",
-    design: "One screen with the numbers a worker actually cares about, readable at a glance on site.",
+    worker: "Sees check-in, check-out, total, OT and break hours.",
+    sys: "Works the hours out, so nobody adds them up by hand.",
+    design: "One screen with only the numbers that matter, readable at a glance.",
   },
   {
     id: "project", k: "Project tracking",
-    worker: "Their hours are tied to the project they're working on that day.",
-    sys: "Records which project each check-in belongs to, so time lands on the right job.",
-    design: "The project shown with the check-in, so the worker can see it's right instead of finding out at the end of the month.",
+    worker: "Their hours are tied to that day's project.",
+    sys: "Records the project with each check-in, so time lands on the right job.",
+    design: "The project shown at check-in, so mistakes surface that day, not at month end.",
   },
   {
     id: "timesheet", k: "Timesheets & payroll",
-    worker: "Gets a monthly timesheet with every day's timings, and knows what their pay is based on.",
-    sys: "Rolls the daily records into a monthly timesheet that feeds payroll.",
-    design: "A timesheet the worker can check line by line, to cut the disputes and corrections around payday.",
+    worker: "Gets a monthly timesheet and sees what their pay is based on.",
+    sys: "Rolls daily records into a timesheet that feeds payroll.",
+    design: "A timesheet they can check line by line, to cut payday disputes.",
   },
   {
     id: "leave", k: "Leave requests",
-    worker: "Applies for leave in the app, by voice in their own language if they prefer.",
-    sys: "Turns the spoken request into a leave application and sends it for approval.", ai: true,
-    design: "A simple request flow with a clear status, so workers aren't left chasing a supervisor to know if leave was approved.",
+    worker: "Applies for leave by voice, in their own language.",
+    sys: "Turns the request into a leave application and sends it for approval.", ai: true,
+    design: "A simple flow with a clear status, so nobody chases a supervisor for an answer.",
   },
-];
-const outcomes = [
-  { n: "↓", t: "Manual attendance processing" },
-  { n: "↓", t: "Attendance disputes and correction friction" },
-  { n: "↑", t: "Worker visibility into attendance and pay" },
 ];
 ---
 <section class="sec wf" id="workforce" aria-labelledby="wf-h">
   <div class="wrap">
     <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">03 / Case study</span><span class="mono">Zaper · Time &amp; attendance</span></div>
+      <div class="sec__label reveal"><span class="sec-num">03</span><span class="mono">Time &amp; attendance</span></div>
       <div class="sec__title reveal">
-        <h2 id="wf-h" class="h-lg">Check in, check out. Everything else adds up on its own.</h2>
-        <p class="lede">
-          Attendance used to run on queues, paper and Excel. With Zaper, everyday labourers check in and out with their
-          face, and that gives them their day stats, the project they worked on, a monthly timesheet and, in the end,
-          their payroll. They can apply for leave too. I designed it end to end with the UX head, stakeholders and
-          developers. Pick a part to see how it works.
-        </p>
+        <h2 id="wf-h" class="h-lg">Check in with your face. The rest adds up.</h2>
+        <p class="lede">Day stats, project hours, timesheets, payroll and leave all follow from one check-in. Pick a part to see it.</p>
       </div>
     </div>
 
@@ -118,13 +108,7 @@ const outcomes = [
         ))}
       </div>
     </div>
-
-    <ul class="stats">
-      {outcomes.map((s) => <li class="reveal"><b>{s.n}</b><span>{s.t}</span></li>)}
-    </ul>
-    <p class="wf__src mono reveal">Android and iOS · Mar to Nov 2025 · Zaper AI</p>
-
-    <p class="cs-link reveal"><a href="/work/workforce">Read the full Workforce Management case study <span aria-hidden="true">→</span></a></p>
+    <p class="cs-link reveal"><a href="/work/workforce">Workforce Management case study <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
 

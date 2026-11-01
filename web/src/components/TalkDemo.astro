@@ -5,13 +5,10 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
 <section class="sec td" id="talk" aria-labelledby="td-h">
   <div class="wrap">
     <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">04 / Demo</span><span class="mono">Toolbox Talk Analyzer · shipped</span></div>
+      <div class="sec__label reveal"><span class="sec-num">04</span><span class="mono">Toolbox Talk Analyzer</span></div>
       <div class="sec__title reveal">
-        <h2 id="td-h" class="h-lg">AI that coaches a safety talk while it's happening.</h2>
-        <p class="lede">
-          Every morning a supervisor gives a 5 to 10 minute safety talk. The AI listens and ticks off each point on the
-          checklist as covered, partly covered or still to go, so nothing important gets skipped. Press play to hear one.
-        </p>
+        <h2 id="td-h" class="h-lg">Live coaching for a safety talk.</h2>
+        <p class="lede">The AI listens and ticks off each checklist point as the supervisor speaks. Press Start talk to hear one.</p>
       </div>
     </div>
 
@@ -76,12 +73,12 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
     </div>
 
     <div class="notes td__notes">
-      <div class="nt reveal"><span class="hand">why "remaining", not "missed"?</span><p>A red "missed" reads like an audit of the supervisor. "2 points remaining" says the same thing as coaching, which is what the tool is for.</p></div>
-      <div class="nt reveal"><span class="hand">why does it update slowly?</span><p>The first version updated every second, and that distracted supervisors in the middle of their talk. Now it updates every few seconds.</p></div>
-      <div class="nt reveal"><span class="hand">why a group photo?</span><p>One photo after the talk, matched against the faces workers registered, logs everyone at once instead of one by one.</p></div>
+      <div class="nt reveal"><span class="hand">why "remaining", not "missed"?</span><p>"Missed" reads like an audit. "2 points remaining" reads like coaching.</p></div>
+      <div class="nt reveal"><span class="hand">why does it update slowly?</span><p>Updating every second distracted supervisors mid-talk, so it updates every few seconds.</p></div>
+      <div class="nt reveal"><span class="hand">why a group photo?</span><p>One photo after the talk logs everyone's attendance at once.</p></div>
     </div>
 
-    <p class="cs-link reveal"><a href="/work/toolbox">Read the full Talk Analyzer case study <span aria-hidden="true">→</span></a></p>
+    <p class="cs-link reveal"><a href="/work/toolbox">Talk Analyzer case study <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
 

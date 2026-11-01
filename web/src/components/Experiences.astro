@@ -2,39 +2,39 @@
 // The four AI experiences. Only the voice demo is interactive today; the rest say so plainly.
 const items = [
   {
-    n: "A",
-    title: "Voice → structured notes",
-    body: "Speak in any language. The AI turns it into English bullet points, issues and next actions that a manager can check before anything is sent.",
+    n: "01",
+    title: "Voice notes",
+    body: "Speak in any language, get structured English notes.",
     status: { cls: "tag--live-paper", text: "Live demo" },
     href: "#voice",
-    cta: "Open the demo",
+    cta: "Try it",
     viz: "voice",
   },
   {
-    n: "B",
+    n: "02",
     title: "Face registration",
-    body: "Workers register their face once with live positioning feedback and a blink check that confirms a real person is in front of the camera. Daily face check-in builds on it.",
+    body: "Register once, guided by the camera and a blink check.",
     status: { cls: "tag--live-paper", text: "Live on your device" },
     href: "#face",
-    cta: "Try it with your camera",
+    cta: "Try it",
     viz: "face",
   },
   {
-    n: "C",
+    n: "03",
     title: "Time & attendance",
-    body: "Daily labourers check in and out with their face. That gives them day stats, project hours, a monthly timesheet that feeds payroll, and leave requests.",
+    body: "Face check-in that adds up to timesheets and payroll.",
     status: { cls: "tag--soon", text: "Case study" },
     href: "#workforce",
-    cta: "Explore the app",
+    cta: "Explore",
     viz: "system",
   },
   {
-    n: "D",
+    n: "04",
     title: "Toolbox Talk Analyzer",
-    body: "A supervisor gives a safety talk. The AI listens and ticks off each point as covered, partly covered or still to go, live, then logs attendance from a group photo.",
+    body: "Ticks off a safety talk's checklist while it happens.",
     status: { cls: "tag--sim-paper", text: "Simulated demo" },
     href: "#talk",
-    cta: "Play a talk",
+    cta: "Try it",
     viz: "talk",
   },
 ];
@@ -42,10 +42,10 @@ const items = [
 <section class="sec ex" id="demos" aria-labelledby="ex-h">
   <div class="wrap">
     <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">AI experiences</span><span class="mono">4 pieces of one product</span></div>
+      <div class="sec__label reveal"><span class="sec-num">My AI Works</span><span class="mono">4 features · 1 product</span></div>
       <div class="sec__title reveal">
-        <h2 id="ex-h" class="h-lg">Real AI features I designed, shown as things you can use.</h2>
-        <p class="lede">Every piece is marked. <span class="tag tag--live-paper">Live</span> means it really runs in your browser or through Claude. <span class="tag tag--sim-paper">Simulated</span> means scripted, so you can see the flow without a microphone.</p>
+        <h2 id="ex-h" class="h-lg">Four AI features I designed. Try them below.</h2>
+        <p class="lede"><span class="tag tag--live-paper">Live</span> runs for real. <span class="tag tag--sim-paper">Simulated</span> is scripted.</p>
       </div>
     </div>
 
@@ -67,13 +67,12 @@ const items = [
             )}
           </div>
           <div class="card__top"><span class="card__n mono">{it.n}</span><span class={`tag ${it.status.cls}`}>{it.status.text}</span></div>
-          <h3 class="h-md">{it.title}</h3>
+          <h3 class="h-md"><a class="card__t" href={it.href}>{it.title}</a></h3>
           <p>{it.body}</p>
           {it.href && <a class="card__link" href={it.href}>{it.cta} <span aria-hidden="true">↓</span></a>}
         </li>
       ))}
     </ol>
-    <p class="ex__note hand reveal">all four are from the same product, used daily on real sites</p>
   </div>
 </section>
 
@@ -81,15 +80,12 @@ const items = [
   .ex .lede .tag { vertical-align: 2px; margin: 0 2px; }
   .ex__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
   .card { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 20px; background: var(--card); border: 1px solid var(--rule); border-radius: 16px; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
-  .card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 18px 40px -26px rgba(0,0,0,0.35); }
-  .card:nth-child(even):hover { transform: translateY(-4px) rotate(0.4deg); }
   .card h3 { margin-top: 4px; }
+  .card__t { color: inherit; text-decoration: none; }
   .card p { margin: 0; color: var(--fg-2); font-size: 15.5px; }
   .card__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   .card__n { color: var(--tomato); font-size: 13px; }
   .card__link { margin-top: auto; padding-top: 6px; font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--ink); align-self: flex-start; }
-  .card__link:hover { color: var(--tomato); border-color: var(--tomato); }
-  .ex__note { margin: 26px 0 0; font-size: 24px; color: var(--tomato); transform: rotate(-1.5deg); }
 
   .card__viz { height: 150px; border-radius: 11px; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; overflow: hidden; position: relative; }
   .v-voice { display: flex; align-items: center; gap: 12px; }
@@ -135,5 +131,23 @@ const items = [
 
   @media (prefers-reduced-motion: reduce) { .v-sys span, .v-talk li, .v-talk li::before { animation: none !important; } .v-sys span:first-child { border-color: var(--tomato); color: var(--tomato); } }
   @media (max-width: 1080px) { .ex__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 560px) { .ex__grid { grid-template-columns: minmax(0, 1fr); } .card__viz { height: 130px; } }
+  /* phones: the four sections follow right below, so the overview becomes a short jump list */
+  @media (max-width: 560px) {
+    .ex__grid { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 1px solid var(--rule-strong); }
+    .card { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "n t s" "n p p"; column-gap: 10px; row-gap: 4px; padding: 16px 0; background: none; border: 0; border-bottom: 1px solid var(--rule-strong); border-radius: 0; }
+    .card__viz, .card__link { display: none; }
+    .card__top { display: contents; }
+    .card__n { grid-area: n; padding-top: 4px; }
+    .card .tag { grid-area: s; align-self: start; }
+    .card h3 { grid-area: t; margin: 0; font-size: 19px; }
+    .card p { grid-area: p; font-size: 15px; }
+    .card h3 a::after { content: ""; position: absolute; inset: 0; }
+  }
+  /* hover only where there is a real pointer; on phones a tap-and-scroll would leave it stuck on */
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 18px 40px -26px rgba(0,0,0,0.35); }
+    .card:nth-child(even):hover { transform: translateY(-4px) rotate(0.4deg); }
+    .card__link:hover { color: var(--tomato); border-color: var(--tomato); }
+      .card:hover, .card:nth-child(even):hover { transform: none; box-shadow: none; }
+  }
 </style>
