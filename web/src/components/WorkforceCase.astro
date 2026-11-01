@@ -54,13 +54,22 @@ const nodes = [
       <div class="map__panels">
         {nodes.map((n, i) => (
           <div class="panel" role="tabpanel" id={`wf-p-${n.id}`} aria-labelledby={`wf-t-${n.id}`} hidden={i !== 0}>
-            <div class={`viz viz--${n.id}`} aria-hidden="true">
-              <span class="viz__tag mono">Illustration</span>
+            <div class={`viz viz--${n.id}`} aria-hidden={n.id === "checkin" ? undefined : "true"}>
+              <span class={`viz__tag mono${n.id === "checkin" ? " viz__tag--sim" : ""}`}>{n.id === "checkin" ? "Simulated · try it" : "Illustration"}</span>
               {n.id === "checkin" && (
-                <div class="ci">
-                  <div class="ci__geo"><span class="ci__ring"></span><span class="ci__pin"></span><span class="mono ci__lbl">On site</span></div>
-                  <div class="ci__face"><span class="ci__head"><i></i><i></i></span><span class="ci__scan"></span><span class="ci__corner"></span></div>
-                  <div class="ci__ok"><b>✓</b><span><strong>Checked in</strong><em class="mono">face matched · inside geofence</em></span></div>
+                <div class="ci" data-ci data-state="idle">
+                  <div class="ci__geo" aria-hidden="true"><span class="ci__ring"></span><span class="ci__pin"></span><span class="mono ci__lbl">On site</span></div>
+                  <div class="ci__face" aria-hidden="true"><span class="ci__head"><i></i><i></i></span><span class="ci__scan"></span><span class="ci__flash"></span></div>
+                  <div class="ci__side" aria-live="polite">
+                    <button type="button" class="ci__btn" data-ci-go><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Take selfie to check in</button>
+                    <p class="ci__status mono" data-ci-status></p>
+                    <div class="ci__res" data-ci-res hidden>
+                      <div class="ci__who"><span class="ci__av" aria-hidden="true">AN</span><span><strong>Arjun Nair</strong><em class="mono">Steel fixer · sample</em></span></div>
+                      <div class="ci__meta"><span><em class="mono">Checked in</em><b data-ci-time>07:58</b></span><span><em class="mono">Project</em><b>Tower B · MEP works</b></span></div>
+                      <span class="ci__okline mono"><b aria-hidden="true">✓</b> Face matched · inside geofence</span>
+                      <button type="button" class="ci__again mono" data-ci-again>Retake</button>
+                    </div>
+                  </div>
                 </div>
               )}
               {n.id === "day" && (
@@ -113,6 +122,31 @@ const nodes = [
 </section>
 
 <script>
+  // Simulated selfie check-in: a sample worker, today's local time, the project from the next tab.
+  const ci = document.querySelector<HTMLElement>("[data-ci]");
+  if (ci) {
+    const go = ci.querySelector<HTMLButtonElement>("[data-ci-go]")!;
+    const status = ci.querySelector<HTMLElement>("[data-ci-status]")!;
+    const res = ci.querySelector<HTMLElement>("[data-ci-res]")!;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    let run = 0;
+    const set = (st: string) => { ci.dataset.state = st; };
+    go.addEventListener("click", async () => {
+      const me = ++run;
+      go.hidden = true; res.hidden = true; set("snap");
+      status.textContent = "Taking selfie…"; await wait(450);
+      if (me !== run) return; set("scan");
+      status.textContent = "Matching face…"; await wait(1100);
+      if (me !== run) return;
+      status.textContent = "Checking site location…"; await wait(800);
+      if (me !== run) return;
+      const now = new Date();
+      ci.querySelector("[data-ci-time]")!.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      status.textContent = ""; res.hidden = false; set("done");
+    });
+    ci.querySelector("[data-ci-again]")!.addEventListener("click", () => { run++; res.hidden = true; status.textContent = ""; go.hidden = false; set("idle"); go.focus(); });
+  }
+
   const root = document.querySelector("[data-wf]");
   const tabs = [...root.querySelectorAll("[data-node]")];
   const pick = (t) => tabs.forEach((x) => {
@@ -166,17 +200,38 @@ const nodes = [
   .ci__ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px dashed var(--info-ink); animation: wf-ring 1.6s var(--ease) both; }
   .ci__pin { width: 12px; height: 12px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--tomato); animation: wf-drop 0.6s 0.3s var(--spring) both; }
   .ci__lbl { position: absolute; bottom: -18px; font-size: 10px; color: var(--info-ink); white-space: nowrap; animation: wf-fade 0.4s 0.8s both; }
-  .ci__face { position: relative; width: 78px; height: 96px; border-radius: 40px; border: 2px solid var(--on-ink-rule); display: grid; place-items: center; overflow: hidden; animation: wf-ok-border 0.3s 1.9s both; }
+  .ci__face { position: relative; flex: none; width: 78px; height: 96px; border-radius: 40px; border: 2px solid var(--on-ink-rule); display: grid; place-items: center; overflow: hidden; transition: border-color 0.3s; }
   .ci__head { width: 44px; height: 54px; border-radius: 45% 45% 42% 42%; background: var(--ink-3); display: flex; justify-content: center; gap: 10px; padding-top: 20px; }
   .ci__head i { width: 5px; height: 5px; border-radius: 50%; background: var(--on-ink); }
-  .ci__scan { position: absolute; left: 0; right: 0; height: 2px; background: var(--ok-ink); box-shadow: 0 0 12px var(--ok-ink); animation: wf-scan 1.2s 0.5s ease-in-out 1 both; }
-  .ci__ok { display: flex; gap: 10px; align-items: center; animation: wf-in 0.5s 2s var(--spring) both; }
-  .ci__ok b { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--ok-ink); color: var(--ink); }
-  .ci__ok strong { display: block; font-size: 16px; } .ci__ok em { font-style: normal; font-size: 10.5px; color: var(--on-ink-2); }
+  .ci__scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--ok-ink); box-shadow: 0 0 12px var(--ok-ink); opacity: 0; }
+  .ci__flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  .ci[data-state="snap"] .ci__flash { animation: wf-flash 0.45s ease-out; }
+  .ci[data-state="scan"] .ci__scan { animation: wf-scan 0.95s ease-in-out infinite; }
+  .ci[data-state="scan"] .ci__face { border-color: var(--info-ink); }
+  .ci[data-state="done"] .ci__face { border-color: var(--ok-ink); }
+  .ci[data-state="idle"] .ci__ring, .ci[data-state="snap"] .ci__ring { animation: none; opacity: 0.45; }
+  .ci__side { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .ci__btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; border: 0; background: var(--tomato); color: #fff; font: 600 15px/1 var(--f-sans, inherit); cursor: pointer; transition: transform 0.2s var(--ease); }
+  .ci__btn[hidden] { display: none; }
+  .ci__btn:hover { transform: translateY(-1px); } .ci__btn:focus-visible { outline: 3px solid var(--on-ink); outline-offset: 3px; }
+  .ci__status { margin: 0; font-size: 11px; color: var(--info-ink); min-height: 1em; }
+  .ci__status:empty { display: none; }
+  .ci__res { display: grid; gap: 8px; animation: wf-in 0.45s var(--spring) both; }
+  .ci__res[hidden] { display: none; }
+  .ci__who { display: flex; align-items: center; gap: 10px; }
+  .ci__av { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--ink-3); color: var(--on-ink); font-size: 12px; font-weight: 700; border: 1.5px solid var(--ok-ink); }
+  .ci__who strong { display: block; font-size: 16px; line-height: 1.2; } .ci__who em { font-style: normal; font-size: 10.5px; color: var(--on-ink-2); }
+  .ci__meta { display: flex; gap: 18px; flex-wrap: wrap; }
+  .ci__meta span { display: grid; gap: 2px; } .ci__meta em { font-style: normal; font-size: 10px; color: var(--on-ink-2); } .ci__meta b { font-size: 14px; font-weight: 600; }
+  .ci__okline { font-size: 10.5px; color: var(--ok-ink); } .ci__okline b { font-weight: 700; }
+  .ci__again { justify-self: start; background: none; border: 0; padding: 0; color: var(--on-ink-2); font-size: 10.5px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .viz__tag--sim { color: var(--mid-ink, #e3b341); }
+  .viz--checkin { height: 210px; }
+  @keyframes wf-flash { 0% { opacity: 0.9; } 100% { opacity: 0; } }
   @keyframes wf-ring { from { transform: scale(0.3); opacity: 0; } }
   @keyframes wf-drop { from { transform: translateY(-30px) rotate(-45deg); opacity: 0; } }
   @keyframes wf-fade { from { opacity: 0; } }
-  @keyframes wf-scan { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+  @keyframes wf-scan { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0.2; } }
   @keyframes wf-ok-border { to { border-color: var(--ok-ink); } }
   .ds { width: 90%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
   .ds__c { background: var(--ink-3); border-radius: 10px; padding: 10px; animation: wf-in 0.45s calc(var(--d) + 0.1s) var(--spring) both; }
@@ -234,7 +289,11 @@ const nodes = [
     .ci__geo { display: none; }
     .ci { max-width: calc(100% - 28px); gap: 14px; }
     .ci__face { flex: none; }
-    .ci__ok { min-width: 0; }
+    .viz--checkin { height: auto; min-height: 220px; padding: 40px 16px 18px; }
+    .viz--checkin .ci { max-width: 100%; }
+    .ci[data-state="done"] { width: 100%; }
+    .ci[data-state="done"] .ci__face { display: none; }
+    .ci__btn { font-size: 14px; padding: 10px 14px; }
     .pj2__list { display: none; }
     .viz--timesheet { height: 270px; padding-top: 30px; }
     .ts { gap: 12px; } .ts__arrow { display: none; }
