@@ -149,3 +149,7 @@ img { height: auto; }
 @keyframes eager-halo { 0% { box-shadow: 0 0 0 0 rgba(232, 70, 42, 0.55); } 70%, 100% { box-shadow: 0 0 0 14px rgba(232, 70, 42, 0); } }
 @keyframes eager-shine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
 @media (prefers-reduced-motion: reduce) { .eager, .eager::after { animation: none !important; } }
+
+/* keep anchored sections clear of the sticky header */
+html { scroll-padding-top: 72px; }
+@media (max-width: 760px) { html { scroll-padding-top: 104px; } }

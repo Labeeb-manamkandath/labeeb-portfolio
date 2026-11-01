@@ -248,14 +248,20 @@ const outcomes = [
     .viz { height: 200px; }
     .ds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .ci__geo { display: none; }
+    .ci { max-width: calc(100% - 28px); gap: 14px; }
+    .ci__face { flex: none; }
+    .ci__ok { min-width: 0; }
     .pj2__list { display: none; }
-    .ts__grid { grid-template-columns: repeat(7, 11px); } .ts__grid i { width: 11px; height: 11px; }
+    .viz--timesheet { height: 270px; padding-top: 30px; }
+    .ts { gap: 12px; } .ts__arrow { display: none; }
+    .ts__grid { grid-template-columns: repeat(7, 8px); gap: 3px; } .ts__grid i { width: 8px; height: 8px; border-radius: 2px; }
+    .ts__pay { min-width: 0; padding: 10px 12px; } .ts__row { gap: 12px; font-size: 12px; } .ts__row b { font-size: 13px; } .ts__row--pay b { font-size: 14px; }
   }
   @media (prefers-reduced-motion: reduce) { .viz *, .viz *::before { animation: none !important; } .lv__p { opacity: 0; } }
 
   @media (max-width: 860px) {
     .map { grid-template-columns: minmax(0, 1fr); }
-    .map__nodes { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .map__nodes { gap: 6px; }
     .node { font-size: 15px; padding: 12px 14px; }
     .node:hover { transform: none; }
     .stats { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }

@@ -91,3 +91,6 @@
   [data-cs] [data-g="4"], [data-cs] [data-g="3"]{ grid-template-columns:minmax(0,1fr) !important; }
   [data-cs] [data-g="phone"] > :first-child{ max-width:100%; }
 }
+
+/* long words like "Daily/Weekly/Monthly" must wrap inside narrow side-by-side columns */
+[data-cs] { overflow-wrap: break-word; }

@@ -212,6 +212,7 @@ const steps = [
   .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 21, 19, 0.55); }
   .fd .start[hidden] { display: none; }
   .fd .stage:has(.start:not([hidden])) .cue { display: none; }
+  .fd .stage:has(.start:not([hidden])) .oval__ring { opacity: 0; }
   .fd .fdev__tags .tag { white-space: normal; }
   .fd .start__note { color: var(--on-ink-2); text-transform: none; letter-spacing: 0; text-align: center; margin: 4px 0 0; }
   .fd .fbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1.5px solid var(--on-ink-2); background: transparent; color: var(--on-ink); font-weight: 650; cursor: pointer; }

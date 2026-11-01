@@ -127,7 +127,8 @@ const starters = ["What does Labeeb do?", "Show me his AI work", "What's his exp
   .bl__eye { animation: bl-blink 4.2s infinite; transform-box: fill-box; transform-origin: center; }
   @keyframes bl-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
   @keyframes bl-blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
-  .bl__bubble { position: absolute; right: 70px; bottom: 54px; white-space: nowrap; background: var(--card); border: 1.5px solid var(--ink); border-radius: 14px 14px 4px 14px; padding: 7px 11px; font-family: var(--f-hand); font-size: 20px; line-height: 1; color: var(--fg); animation: bl-pop 0.5s 1.2s var(--spring) both; }
+  .bl__bubble { position: absolute; right: 70px; bottom: 54px; white-space: nowrap; background: var(--card); border: 1.5px solid var(--ink); border-radius: 14px 14px 4px 14px; padding: 7px 11px; font-family: var(--f-hand); font-size: 20px; line-height: 1; color: var(--fg); animation: bl-pop 0.5s 1.2s var(--spring) both, bl-hide 0.4s 8s ease forwards; }
+  @keyframes bl-hide { to { opacity: 0; visibility: hidden; transform: translateY(4px); } }
   .bl.is-seen .bl__bubble, .bl.is-open .bl__bubble { display: none; }
   @keyframes bl-pop { from { opacity: 0; transform: translateY(6px) scale(0.9); } }
 

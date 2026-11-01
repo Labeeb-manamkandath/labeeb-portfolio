@@ -37,8 +37,13 @@ const links = [
   .hd__cta:hover { background: var(--ink); color: var(--paper); }
   @media (max-width: 760px) {
     .hd__cta { display: none; }
-    .hd__nav li:first-child, .hd__nav li:last-child { display: none; }
-    .hd__nav { gap: 0; }
-    .hd__nav a { padding: 7px 9px; font-size: 14px; }
+    .hd__in { flex-wrap: wrap; height: auto; row-gap: 0; padding-top: 12px; }
+    .hd nav { flex: 1 0 100%; margin: 0 -9px; }
+    .hd__nav { gap: 0; justify-content: space-between; }
+    .hd__nav a { padding: 10px 9px 12px; font-size: 14px; white-space: nowrap; }
+  }
+  @media (max-width: 370px) {
+    .hd nav { margin: 0 -5px; }
+    .hd__nav a { padding: 10px 5px 12px; font-size: 13px; }
   }
 </style>
