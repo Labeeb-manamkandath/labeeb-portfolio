@@ -1,0 +1,96 @@
+/* Case studies, carried over from the previous site. The markup is the original, with inline
+   styles that read the old design tokens, so those tokens are mapped onto the new palette here
+   and the old layout rules come along (scoped to [data-cs]). */
+[data-cs] {
+  --surface: var(--paper-2); --bg-2: var(--paper); --text: var(--fg); --text-2: var(--fg-3); --text-3: var(--fg-2);
+  --separator: var(--rule); --rule-soft: var(--rule); --c-ink: var(--ink); --butter: var(--paper-2);
+  --accent: var(--tomato); --accent-deep: #c23a20; --dot: var(--tomato);
+  --cobalt: var(--info); --green: var(--ok); --red: var(--no);
+  --tint-cobalt: rgba(74, 111, 209, 0.1); --tint-green: rgba(47, 143, 91, 0.11); --tint-red: rgba(210, 69, 58, 0.1);
+  --ink-card: var(--ink); --cs-strong: var(--ink); --on-strong: var(--on-ink);
+  --f-display: var(--f-sans); --ease-spring: var(--spring); --ease-out: var(--ease);
+  --r-xs: 4px; --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px; --r-img: 10px;
+  max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter) var(--section);
+  animation: pageIn 0.5s var(--ease) both;
+}
+[data-cs] h1 { font-weight: 700 !important; letter-spacing: -0.035em !important; line-height: 1 !important; }
+[data-cs] h2 { font-weight: 650 !important; letter-spacing: -0.025em !important; }
+[data-cs] h3 { letter-spacing: -0.015em; }
+[data-cs] blockquote, [data-cs] blockquote p { font-weight: 600; }
+[data-cs] cite { font-family: var(--f-mono); font-style: normal; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+[data-cs] img { border-radius: var(--r-img); height: auto; }
+[data-cs] > section:first-child > a:first-child { display: inline-flex !important; align-items: center; gap: 6px; font-family: var(--f-mono) !important; font-size: 12px !important; letter-spacing: .05em; text-transform: uppercase; color: var(--fg) !important; border: 1.5px solid var(--ink); padding: 9px 14px; border-radius: 999px; transition: background-color .2s, color .2s; }
+[data-cs] > section:first-child > a:first-child:hover { background: var(--ink); color: var(--paper) !important; }
+[data-cs] > section > div:has(> img), [data-cs] > section > img { border: 1px solid var(--rule); }
+[data-cs] > section > img { display: block; }
+[data-cs] > section > div:has(> img) > img { border-radius: var(--r-sm); }
+[data-cs] > section > div:first-child[style*="--f-mono"], [data-cs] > section:first-child > a + div[style*="--f-mono"] { color: var(--tomato) !important; }
+[data-cs] [style*="var(--ink-card)"] { --accent: var(--mid-ink); --text: var(--on-ink); --fg: var(--on-ink); --accent-deep: var(--mid-ink); --text-2: var(--on-ink-2); --text-3: rgba(236,232,223,.88); --separator: var(--on-ink-rule); }
+[data-cs] [style*="var(--cs-strong)"] { --accent: var(--mid-ink); --accent-deep: var(--mid-ink); --text-2: var(--on-ink-2); --text-3: rgba(236,232,223,.88); }
+[data-cs] > section + section { border-top: 1px solid var(--rule); }
+[data-cs] > section:nth-child(2), [data-cs] > section:nth-child(3) { border-top: 0; }
+
+
+/* ---------- phone mockups: one frame, one size, screens always inside ---------- */
+.phone{ --pb:7px; position:relative; display:block; box-sizing:content-box; width:min(calc(100% - 2 * var(--pb)), var(--pw, 220px)); aspect-ratio:1400 / 3031; margin:0 auto; border:var(--pb) solid var(--c-ink); border-radius:38px; overflow:hidden; background:#FFFFFF; box-shadow:5px 5px 0 rgba(21,21,19,.12); isolation:isolate; }
+.phone > img{ display:block; width:100% !important; height:100%; object-fit:cover; object-position:50% 0; border-radius:0 !important; }
+/* These screenshots ship with their own cropped bezel: show only the screen area. */
+.phone--bezel > img{ position:absolute; top:0; left:calc(var(--bx) * -1 / var(--sw) * 100%); max-width:none; width:calc(var(--iw) / var(--sw) * 100%) !important; height:auto; margin-top:calc(var(--by) * -1 / var(--sw) * 100%); }
+/* Case-study mockup layouts. The source markup is protected, so these work from its shape:
+   a phone's holder loses its card; a phone + text pair sits side by side; two or more phones form a tight row. */
+[data-cs] :has(> .phone){ background:transparent !important; padding:0 !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; overflow:visible !important; height:auto !important; }
+[data-cs] :has(> .phone) > .phone{ margin:0; }
+/* phone inside a card with its caption below (P1): phone beside the text */
+[data-cs] :has(> .phone:first-child + div){ --pw:180px; display:grid !important; grid-template-columns:auto minmax(0,1fr); gap:clamp(18px,2.4vw,28px); align-items:start; }
+[data-cs] :has(> .phone:first-child + div) > .phone{ width:var(--pw); }
+[data-cs] :has(> .phone:first-child + div) > :not(.phone){ padding:0 !important; }
+/* a phone-only holder next to text (P2/P3/P4/P9) */
+[data-cs] [data-g="phone"], [data-cs] :has(> :first-child > .phone:only-child):not(:has(> :nth-child(2) > .phone)){ --pw:210px; display:grid !important; grid-template-columns:auto minmax(0,1fr) !important; gap:clamp(20px,3vw,44px) !important; align-items:start !important; }
+[data-cs] [data-g="phone"]:has(> :last-child > .phone:only-child){ grid-template-columns:minmax(0,1fr) auto !important; }
+[data-cs] [data-g="phone"] > *{ max-width:none !important; margin-top:0 !important; }
+[data-cs] :has(> :first-child > .phone:only-child):not(:has(> :nth-child(2) > .phone)) > :not(:first-child){ margin-top:0 !important; }
+[data-cs] :has(> .phone:only-child) > .phone{ width:var(--pw); }
+/* a pair inside a narrow column (the 3fr 2fr Zaper layout) stacks instead of squeezing its text */
+[data-cs] [style*="3fr"] > :has(> :first-child > .phone:only-child){ grid-template-columns:minmax(0,1fr) !important; gap:22px !important; }
+/* two or more phones (P5/P6/P7): a tight row */
+[data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)){ --pw:180px; display:flex !important; flex-wrap:wrap; justify-content:flex-start; align-items:flex-start; gap:clamp(16px,2.4vw,32px) !important; }
+[data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)) > *{ flex:0 0 auto; width:calc(var(--pw) + 14px); }
+[data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)) > * > p{ margin-top:12px !important; }
+@media (max-width:600px){
+  [data-cs] :has(> .phone:first-child + div){ --pw:120px; gap:16px; }
+  [data-cs] [data-g="phone"], [data-cs] :has(> :first-child > .phone:only-child):not(:has(> :nth-child(2) > .phone)){ --pw:190px; grid-template-columns:minmax(0,1fr) !important; gap:18px !important; }
+  [data-cs] [data-g="phone"]:has(> :last-child > .phone:only-child){ grid-template-columns:minmax(0,1fr) !important; }
+  [data-cs] [data-g="phone"]:has(> :last-child > .phone:only-child) > :last-child{ order:-1; }
+  [data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)){ --pw:150px; gap:16px !important; }
+}
+
+@keyframes pageIn{ from{ opacity:0; transform:translate3d(0,12px,0); } to{ opacity:1; transform:none; } }
+@media (max-width:1080px){ [data-cs] [data-g="4"]{ grid-template-columns:repeat(2,minmax(0,1fr)) !important; } }
+@media (max-width:980px){
+  [data-cs] [data-thead]{ display:none !important; }
+  [data-cs] [data-tlabel]::before{ content:attr(data-tlabel); display:block; font-family:var(--f-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--fg-3); margin-bottom:4px; }
+  [data-cs] [data-tlabel]{ padding-top:2px; }
+  [data-cs] [data-tlabel] + [data-tlabel], [data-cs] [data-tlabel] ~ [data-tlabel]{ border-top:1px solid var(--separator); padding-top:12px; }
+  [data-cs] [data-g="rowhead"]{ display:none !important; }
+  [data-cs] [data-g="row"]{ grid-template-columns:36px minmax(0,1fr) !important; gap:10px 14px !important; }
+  [data-cs] [data-g="row"] > :nth-child(3){ grid-column:2; }
+  [data-cs] [data-g="row"] > :nth-child(4){ display:none; }
+  [data-cs] [data-g="3"]{ grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  [data-cs] [data-g="3t"]{ grid-template-columns:minmax(0,1fr) !important; gap:8px !important; }
+}
+@media (max-width:900px){
+  [data-cs] [data-g="flow"]{ display:grid !important; grid-template-columns:minmax(0,1fr) !important; gap:12px !important; }
+  [data-cs] [data-g="flow"] > [data-flow-arrow]{ display:none !important; }
+  [data-cs] [data-g="2"][style*="repeat(5"]{ grid-template-columns:minmax(0,1fr) !important; }
+}
+@media (max-width:860px){
+  [data-cs] [data-g="2"], [data-cs] [data-g="phone"]{ grid-template-columns:minmax(0,1fr) !important; gap:20px !important; }
+  [data-cs] [data-g="phone"] > :first-child{ max-width:300px; }
+}
+@media (max-width:600px){
+  [data-cs] [data-g="4"], [data-cs] [data-g="3"]{ grid-template-columns:minmax(0,1fr) !important; }
+  [data-cs] [data-g="phone"] > :first-child{ max-width:100%; }
+}
+
+/* long words like "Daily/Weekly/Monthly" must wrap inside narrow side-by-side columns */
+[data-cs] { overflow-wrap: break-word; }

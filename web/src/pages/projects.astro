@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import Contact from "../components/Contact.astro";
+---
+<Base title="Projects · Labeeb Manamkandath" description="Case studies by Labeeb Manamkandath: AI features for field workforces, websites, brand work and mobile apps.">
+  <Header current="projects" />
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="mono kicker reveal"><b>Projects</b> 8 case studies</p>
+        <h1 class="h-xl reveal">Problem to shipped.</h1>
+        <p class="lede reveal">AI features for field workforces, websites, brand work and mobile apps. Each one has the research, the flows, the screens and what happened after launch.</p>
+      </div>
+    </section>
+    <section class="sec page-body">
+      <div class="wrap"><ProjectGrid /></div>
+    </section>
+  </main>
+  <Contact />
+</Base>

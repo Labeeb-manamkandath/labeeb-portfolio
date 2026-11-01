@@ -1,0 +1,95 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Contact from "../components/Contact.astro";
+import Toolbox from "../components/Toolbox.astro";
+const roles = [
+  { when: "Nov 2023 — now", role: "Product Designer", co: "Growgene Tech Solutions FZCo, Dubai", desc: "End-to-end mobile and web design for Zaper and YellowZap, including AI features for field workforces. I work with the UX head, stakeholders and developers, from research and flows to high-fidelity UI and handoff." },
+  { when: "2020 — 2023", role: "Graphic Designer", co: "Milky Foods (Remote)", desc: "Brand, campaign and interface work. This is where my habits around typography, layout and visual consistency took shape." },
+  { when: "2017 — 2020", role: "Bachelor's in Information Technology", co: "Barathiyar University, India", desc: "Enough technical grounding to hold a real conversation with engineering about what a design costs to build." },
+];
+const expertise = [
+  "AI-integrated product experiences",
+  "Product strategy & UX leadership",
+  "Discovery & user research",
+  "User flows & information architecture",
+  "Interaction design",
+  "UX planning & validation",
+  "User-centric product development",
+];
+---
+<Base title="About · Labeeb Manamkandath" description="Labeeb Manamkandath is a product designer in Dubai with 5+ years of experience, designing AI features people trust and actually use.">
+  <Header current="about" />
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap ph">
+        <div>
+          <p class="mono kicker reveal"><b>About</b> Dubai, UAE · 5+ years</p>
+          <h1 class="h-xl reveal">Product thinking, with a graphic designer's eye.</h1>
+          <p class="lede reveal">I'm a product designer at Growgene Tech Solutions in Dubai, where I design for Zaper and YellowZap: field apps, AI-powered tools and websites used by people who have better things to do than fight an interface.</p>
+        </div>
+        <figure class="ph__photo reveal">
+          <img src="/images/portrait-labeeb.webp" alt="Labeeb Manamkandath" width="640" height="800" />
+          <figcaption class="hand">hi, I'm Labeeb</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="sec" id="experience" aria-labelledby="exp-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">01</span><span class="mono">Experience</span></div>
+          <div class="sec__title reveal"><h2 id="exp-h" class="h-lg">Where I've worked.</h2></div>
+        </div>
+        <ol class="roles">
+          {roles.map((r) => (
+            <li class="reveal">
+              <span class="mono roles__when">{r.when}</span>
+              <div><h3 class="h-md">{r.role}</h3><span class="mono roles__co">{r.co}</span><p>{r.desc}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="ex-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">02</span><span class="mono">Expertise</span></div>
+          <div class="sec__title reveal"><h2 id="ex-h" class="h-lg">What I'm strongest at.</h2></div>
+        </div>
+        <ol class="xp">
+          {expertise.map((x, i) => <li class="reveal"><span class="mono">{String(i + 1).padStart(2, "0")}</span>{x}</li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="tl-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">03</span><span class="mono">Tools</span></div>
+          <div class="sec__title reveal"><h2 id="tl-h" class="h-lg">What I work with.</h2></div>
+        </div>
+        <div class="reveal"><Toolbox /></div>
+      </div>
+    </section>
+  </main>
+  <Contact />
+</Base>
+
+<style>
+  .ph { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 3fr); gap: clamp(28px, 5vw, 80px); align-items: end; }
+  .ph__photo { position: relative; margin: 0; }
+  .ph__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 18px; transform: rotate(2deg); border: 6px solid var(--card); box-shadow: 0 20px 40px -24px rgba(0,0,0,0.35); }
+  .ph__photo figcaption { position: absolute; left: -12px; bottom: -30px; font-size: 26px; color: var(--tomato); transform: rotate(-4deg); }
+  .roles { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+  .roles li { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--rule-strong); }
+  .roles__when { color: var(--fg-3); padding-top: 6px; }
+  .roles__co { display: block; color: var(--tomato); margin: 6px 0 10px; text-transform: none; letter-spacing: 0; }
+  .roles p { margin: 0; color: var(--fg-2); max-width: 62ch; }
+  .xp { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 64px); border-top: 1.5px solid var(--ink); }
+  .xp li { display: flex; gap: 16px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--rule-strong); font-size: clamp(20px, 1.9vw, 27px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+  .xp li .mono { color: var(--tomato); }
+  @media (max-width: 860px) { .ph { grid-template-columns: minmax(0, 1fr); } .ph__photo { max-width: 260px; } .xp { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .roles li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+</style>

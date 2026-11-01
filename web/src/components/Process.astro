@@ -1,0 +1,67 @@
+---
+const cols = [
+  {
+    k: "Research synthesis",
+    items: [
+      { where: "Zaper", text: "Interview and support notes went into Claude to group into themes: attendance issues, shift confusion, language barriers. I checked each theme against the original quotes before prioritising features." },
+      { where: "YellowZap", text: "AI summarised app store and competitor reviews. Complaints about booking clarity and price transparency stood out, and shaped the booking-flow redesign." },
+    ],
+  },
+  {
+    k: "Exploration",
+    items: [
+      { where: "Petty cash agent", text: "For a WhatsApp-based petty cash agent I'm building, AI drafted conversation flows and edge cases like missing receipts and wrong amounts. I refined the strongest ones." },
+      { where: "Designs by Labeeb", text: "For client work, AI moodboards let me test three or four visual ideas before opening Figma." },
+    ],
+  },
+  {
+    k: "Prototyping",
+    items: [
+      { where: "clickfor.in Bazar", text: "I worked with Claude to turn my design into a working, responsive page." },
+      { where: "Motion reels", text: "Motion pieces built as code with AI help, instead of exported from a timeline." },
+    ],
+  },
+];
+---
+<section class="sec pc" id="process" aria-labelledby="pc-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">02 / Process</span><span class="mono">How AI changed my work</span></div>
+      <div class="sec__title reveal">
+        <h2 id="pc-h" class="h-lg">I use AI for the first draft. Decisions stay with me.</h2>
+      </div>
+    </div>
+
+    <div class="pc__cols">
+      {cols.map((c, i) => (
+        <div class="pc__col reveal">
+          <h3 class="pc__k"><span class="sec-num">{String.fromCharCode(97 + i)}.</span> {c.k}</h3>
+          <ul>
+            {c.items.map((it) => (
+              <li><span class="mono">{it.where}</span><p>{it.text}</p></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <blockquote class="pc__quote reveal">
+      <p>AI speeds up the first draft. I still check the output against real user data and make the final design decisions myself.</p>
+      <span class="hand">my rule of thumb</span>
+    </blockquote>
+  </div>
+</section>
+
+<style>
+  .pc__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); }
+  .pc__col { border-top: 1.5px solid var(--ink); padding-top: 16px; }
+  .pc__k { font-size: 20px; letter-spacing: -0.01em; margin: 0 0 14px; font-weight: 650; }
+  .pc__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .pc__col li { background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
+  .pc__col li .mono { color: var(--fg-3); }
+  .pc__col li p { margin: 8px 0 0; font-size: 15.5px; color: var(--fg-2); }
+  .pc__quote { position: relative; margin: clamp(40px, 5vw, 72px) 0 0; padding: clamp(24px, 3vw, 40px); background: var(--ink); color: var(--on-ink); border-radius: 20px; max-width: 900px; }
+  .pc__quote p { margin: 0; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; }
+  .pc__quote .hand { position: absolute; right: 20px; top: -22px; font-size: 24px; color: var(--tomato); transform: rotate(4deg); }
+  @media (max-width: 900px) { .pc__cols { grid-template-columns: minmax(0, 1fr); } }
+</style>

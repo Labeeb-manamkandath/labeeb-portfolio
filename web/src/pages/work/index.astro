@@ -1,0 +1,17 @@
+---
+// Old links pointed at /work/#<key>; send them to the case study's own page.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Projects · Labeeb Manamkandath</title>
+    <script is:inline>
+      var k = location.hash.slice(1), ok = ["voice","case","workforce","toolbox","zaper","bazar","driver","maid"];
+      location.replace(ok.indexOf(k) > -1 ? "/work/" + k : "/projects");
+    </script>
+    <meta http-equiv="refresh" content="0; url=/projects" />
+  </head>
+  <body><a href="/projects">See all projects</a></body>
+</html>

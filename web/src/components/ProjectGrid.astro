@@ -1,0 +1,46 @@
+---
+import { PROJECTS } from "../data/projects.js";
+interface Props { only?: string[] }
+const { only } = Astro.props;
+const projects = only ? PROJECTS.filter((p) => only.includes(p.key)) : PROJECTS;
+---
+<ul class="op__grid">
+      {projects.map((p, i) => (
+        <li class="reveal">
+          <a class="pj" href={`/work/${p.key}`}>
+            <span class="pj__img"><img src={`/work/covers/${p.key}.jpg`} alt="" loading="lazy" width="1200" height="600" /></span>
+            <span class="pj__meta mono"><span>{String(i + 1).padStart(2, "0")} · {p.cat}</span><span>{p.yr}</span></span>
+            <span class="pj__t">{p.title}{p.ai && <em class="pj__ai mono">AI</em>}</span>
+            <span class="pj__s">{p.sum}</span>
+            <span class="pj__go">Read the case study <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+<style>
+  .op__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 3vw, 44px) clamp(16px, 2.4vw, 32px); }
+  .pj { display: flex; flex-direction: column; gap: 10px; text-decoration: none; height: 100%; }
+  .pj__img { display: block; aspect-ratio: 2 / 1; border-radius: 16px; overflow: hidden; background: var(--paper-2); border: 1px solid var(--rule); }
+  .pj__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+  .pj__meta { display: flex; justify-content: space-between; gap: 12px; color: var(--fg-3); margin-top: 4px; }
+  .pj__t { font-size: clamp(22px, 2vw, 28px); font-weight: 650; letter-spacing: -0.02em; line-height: 1.15; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pj__ai { font-style: normal; color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 2px 8px; font-size: 10.5px; }
+  .pj__s { color: var(--fg-2); font-size: 15.5px; max-width: 58ch; }
+  .pj__go { margin-top: auto; padding-top: 4px; font-weight: 600; align-self: flex-start; border-bottom: 1.5px solid var(--ink); }
+  /* phones: one project per block; every other block sits on a soft full-width band, like the My AI Works page */
+  @media (max-width: 760px) {
+    .op__grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0 calc(-1 * var(--gutter)); }
+    .op__grid > li { padding: 40px var(--gutter); }
+    .op__grid > li:nth-child(even) { background: var(--paper-2); }
+    .op__grid > li:first-child { padding-top: 8px; }
+    .pj { gap: 12px; }
+    .pj__img { margin-bottom: 6px; }
+  }
+  /* hover only where there is a real pointer; on phones a tap-and-scroll would leave it stuck on */
+  @media (hover: hover) and (pointer: fine) {
+    .pj:hover .pj__img img { transform: scale(1.035); }
+    .pj:hover .pj__go { color: var(--tomato); border-color: var(--tomato); }
+    .pj:hover .pj__t { color: var(--tomato); }
+  }
+</style>

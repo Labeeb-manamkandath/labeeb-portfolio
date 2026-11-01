@@ -1,0 +1,56 @@
+---
+import "../styles/global.css";
+import Blip from "../components/Blip.astro";
+
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={new URL("/og.png", Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Labeeb Manamkandath",
+      jobTitle: "Senior Product Designer, AI experiences",
+      address: { "@type": "PostalAddress", addressLocality: "Dubai", addressCountry: "AE" },
+      url: "https://www.labeebs.com",
+      sameAs: ["https://www.linkedin.com/in/labeeb-manamkandath/"],
+    })} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <slot />
+    <Blip />
+    <script>
+      // reveal-on-scroll, cheap and skipped entirely for reduced motion
+      const els = document.querySelectorAll(".reveal");
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("in"));
+      } else {
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        }, { rootMargin: "0px 0px -8% 0px" });
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
+    <style>
+      .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 8px; text-decoration: none; }
+      .skip:focus { top: 12px; }
+    </style>
+  </body>
+</html>

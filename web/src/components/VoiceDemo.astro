@@ -1,0 +1,368 @@
+---
+import { SAMPLES, LANGS } from "../data/voice-samples.js";
+---
+<section class="sec vd" id="voice" aria-labelledby="vd-h">
+  <div class="wrap">
+    <div class="sec__head">
+      <div class="sec__label reveal"><span class="sec-num">01</span><span class="mono">Voice notes</span></div>
+      <div class="sec__title reveal">
+        <h2 id="vd-h" class="h-lg">Speak in any language. Get structured notes.</h2>
+        <p class="lede">Workers talk instead of filling in forms. The AI writes it up in English, and they check it before it's sent.</p>
+      </div>
+    </div>
+
+    <div class="dev reveal" data-vd>
+      <!-- input side -->
+      <div class="dev__in">
+        <div class="tabrow">
+          <div class="tabs" role="tablist" aria-label="How to give input">
+            <button role="tab" class="tab" id="t-rec" aria-selected="true" aria-controls="p-rec" data-tab="rec">Record</button>
+            <button role="tab" class="tab" id="t-type" aria-selected="false" aria-controls="p-type" data-tab="type" tabindex="-1">Type</button>
+          </div>
+          <button class="samp" id="t-sample" aria-pressed="false" aria-controls="p-sample" data-tab="sample">Samples</button>
+        </div>
+
+        <div class="pane" id="p-sample" aria-labelledby="t-sample" hidden>
+          <p class="hint">Recordings from the kinds of people the product serves. <span class="tag tag--sim">Simulated</span></p>
+          <div class="chips">
+            {SAMPLES.map((s, i) => (
+              <button class="chip" data-sample={s.id} aria-pressed={i === 0 ? "true" : "false"}>
+                <span>{s.label}</span><span class="mono">{s.langLabel}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="pane" id="p-rec" role="tabpanel" aria-labelledby="t-rec">
+          <p class="hint">Speak a work update, a request or a problem. <span class="tag tag--live">Live in your browser</span></p>
+          <div class="rec">
+            <label class="mono" for="vd-lang">Language</label>
+            <select id="vd-lang" class="sel">
+              {LANGS.map((l) => <option value={l.code}>{l.label}</option>)}
+            </select>
+            <button class="mic eager" data-mic aria-pressed="false"><span class="mic__dot" aria-hidden="true"></span><span data-mic-label>Start recording</span></button>
+          </div>
+          <p class="small" data-rec-note>Uses your browser's built-in speech recognition (Chrome, Edge, Safari). Nothing is stored.</p>
+        </div>
+
+        <div class="pane" id="p-type" role="tabpanel" aria-labelledby="t-type" hidden>
+          <p class="hint">No mic? Type what someone on site might say, in any language. <span class="tag tag--live">Live AI</span></p>
+          <label class="sr" for="vd-text">Your note</label>
+          <textarea id="vd-text" class="ta" rows="4" maxlength="1200" placeholder="e.g. Pump room on B2 is flooding, I moved the panels, need the plumber today."></textarea>
+          <button class="btn btn--light eager" data-type-go>Structure it <span class="arr">→</span></button>
+        </div>
+
+        <div class="said">
+          <div class="said__top"><span class="mono">What was said</span><span data-said-tag></span></div>
+          <p class="said__txt" data-said aria-live="polite"></p>
+        </div>
+      </div>
+
+      <!-- output side -->
+      <div class="dev__out">
+        <ol class="steps" aria-label="What the AI is doing">
+          <li data-step="listen"><i></i>Listen</li>
+          <li data-step="understand"><i></i>Understand</li>
+          <li data-step="translate"><i></i>English</li>
+          <li data-step="structure"><i></i>Structure</li>
+          <li data-step="review"><i></i>You review</li>
+        </ol>
+
+        <div class="res" data-res aria-live="polite">
+          <div class="res__top"><span class="mono" data-res-lang></span><span data-res-tag></span></div>
+          <p class="res__sum" data-res-sum></p>
+          <p class="res__en" data-res-en></p>
+          <ul class="items" data-items></ul>
+          <div class="acts">
+            <span class="mono">Actions</span>
+            <ul data-acts></ul>
+          </div>
+          <div class="res__foot">
+            <span class="small">Tap a label to correct it. Tap any text to edit.</span>
+            <button class="btn btn--light eager" data-submit>Looks right, submit</button>
+          </div>
+        </div>
+        <p class="msg" data-msg role="status"></p>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="nt reveal"><span class="hand">why the edit step?</span><p>Letting people see and fix what the AI understood raised trust scores by 60% in testing.</p></div>
+      <div class="nt reveal"><span class="hand">why one big button?</span><p>No fields, no categories. If reporting takes thought, people don't report.</p></div>
+      <div class="nt reveal"><span class="hand">why pick the language first?</span><p>It made transcription reliable for crews who don't report in English.</p></div>
+    </div>
+    <p class="cs-link reveal"><a href="/work/voice">Voice Insight case study <span aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+
+<script>
+  import { SAMPLES } from "../data/voice-samples.js";
+
+  const root = document.querySelector("[data-vd]");
+  const $ = (s) => root.querySelector(s);
+  const $$ = (s) => [...root.querySelectorAll(s)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  const KINDS = ["progress", "issue", "request", "info"];
+  const KIND_LABEL = { progress: "Progress", issue: "Issue", request: "Request", info: "Info" };
+  let run = 0; // cancels an older run when a new one starts
+
+  const tag = (kind, text) => `<span class="tag ${kind}">${text}</span>`;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function setSteps(active, done = []) {
+    $$("[data-step]").forEach((li) => {
+      li.classList.toggle("on", li.dataset.step === active);
+      li.classList.toggle("done", done.includes(li.dataset.step));
+    });
+  }
+  function msg(text) { $("[data-msg]").textContent = text || ""; }
+  function clearResult() { $("[data-res]").classList.remove("show"); }
+
+  async function streamSaid(text, id) {
+    const el = $("[data-said]");
+    el.textContent = "";
+    const words = text.split(/(\s+)/);
+    for (const w of words) { if (id !== run) return; el.textContent += w; if (w.trim()) await wait(55); }
+  }
+
+  function render(result, live) {
+    $("[data-res-lang]").textContent = `Heard in ${result.language}`;
+    $("[data-res-tag]").innerHTML = live ? tag("tag--live", "Live AI · Claude") : tag("tag--sim", "Simulated · scripted");
+    $("[data-res-sum]").textContent = result.summary;
+    const en = $("[data-res-en]");
+    en.hidden = !result.english || result.language.toLowerCase().startsWith("english");
+    en.textContent = result.english ? `In English: “${result.english}”` : "";
+    $("[data-items]").innerHTML = result.items.map((it) => `
+      <li class="it it--${it.kind}">
+        <button class="it__k" data-kind="${it.kind}" aria-label="Label: ${KIND_LABEL[it.kind]}. Tap to change.">${KIND_LABEL[it.kind]}</button>
+        <div><p class="it__t" contenteditable="true" spellcheck="false">${esc(it.text)}</p><p class="it__w">${esc(it.why)}</p></div>
+      </li>`).join("");
+    $("[data-acts]").innerHTML = result.actions.map((a) => `
+      <li><span contenteditable="true" spellcheck="false">${esc(a.task)}</span><span class="mono">${esc(a.who)} · ${esc(a.when)}</span></li>`).join("");
+    $("[data-res]").classList.add("show");
+    $$(".it").forEach((li, i) => { li.style.animationDelay = `${i * 120}ms`; });
+  }
+
+  async function playSample(id) {
+    const s = SAMPLES.find((x) => x.id === id);
+    const me = ++run;
+    clearResult(); msg("");
+    $("[data-said-tag]").innerHTML = tag("tag--sim", "Sample recording");
+    setSteps("listen");
+    await streamSaid(s.said, me);
+    if (me !== run) return;
+    setSteps("understand", ["listen"]); await wait(500);
+    setSteps("translate", ["listen", "understand"]); await wait(450);
+    setSteps("structure", ["listen", "understand", "translate"]); await wait(550);
+    if (me !== run) return;
+    render(s.result, false);
+    setSteps("review", ["listen", "understand", "translate", "structure"]);
+  }
+
+  async function structureLive(text) {
+    const me = ++run;
+    clearResult(); msg("");
+    setSteps("understand", ["listen"]);
+    try {
+      const r = await fetch("/api/structure", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text }) });
+      const data = await r.json().catch(() => ({}));
+      if (me !== run) return;
+      if (!r.ok) {
+        setSteps(null, ["listen"]);
+        msg(r.status === 503
+          ? "Live AI isn't switched on for this preview yet. Your words above are real; try a sample to see the structured result."
+          : data.error || "That didn't work. Try a sample instead.");
+        return;
+      }
+      setSteps("structure", ["listen", "understand", "translate"]); await wait(250);
+      render(data, true);
+      setSteps("review", ["listen", "understand", "translate", "structure"]);
+    } catch {
+      setSteps(null, ["listen"]);
+      msg("Couldn't reach the live AI. Try a sample instead.");
+    }
+  }
+
+  // tabs
+  // Record and Type are the tabs; Samples sits apart on the other side and swaps in its own pane.
+  const all = $$("[data-tab]");
+  const tabs = all.filter((t) => t.getAttribute("role") === "tab");
+  const samp = $("#t-sample");
+  function selectTab(name) {
+    all.forEach((t) => {
+      const on = t.dataset.tab === name;
+      if (t === samp) t.setAttribute("aria-pressed", String(on));
+      else { t.setAttribute("aria-selected", String(on)); t.tabIndex = on || (name === "sample" && t.dataset.tab === "rec") ? 0 : -1; }
+      root.querySelector("#" + t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  samp.addEventListener("click", () => selectTab(samp.getAttribute("aria-pressed") === "true" ? "rec" : "sample"));
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => selectTab(t.dataset.tab));
+    t.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(n.dataset.tab); n.focus();
+    });
+  });
+
+  // samples
+  $$("[data-sample]").forEach((b) => b.addEventListener("click", () => {
+    $$("[data-sample]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    playSample(b.dataset.sample);
+  }));
+
+  // type
+  $("[data-type-go]").addEventListener("click", () => {
+    const text = $("#vd-text").value.trim();
+    if (!text) { msg("Type a short note first."); return; }
+    $("[data-said-tag]").innerHTML = tag("tag--live", "Typed by you");
+    $("[data-said]").textContent = text;
+    structureLive(text);
+  });
+
+  // record (Web Speech API)
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const mic = $("[data-mic]");
+  let rec = null, finalText = "";
+  if (!SR) {
+    mic.disabled = true;
+    $("[data-rec-note]").textContent = "Your browser doesn't support live speech recognition. Use Type, or try a sample.";
+  }
+  mic.addEventListener("click", () => {
+    if (rec) { rec.stop(); return; }
+    finalText = "";
+    rec = new SR();
+    rec.lang = $("#vd-lang").value;
+    rec.interimResults = true;
+    rec.continuous = true;
+    ++run; clearResult(); msg("");
+    $("[data-said-tag]").innerHTML = tag("tag--live", "Live transcription");
+    $("[data-said]").textContent = "";
+    setSteps("listen");
+    rec.onresult = (e) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t + " "; else interim += t;
+      }
+      $("[data-said]").textContent = (finalText + interim).trim();
+    };
+    rec.onerror = (e) => { msg(e.error === "not-allowed" ? "Microphone access was blocked. Allow it, or use Type." : "Speech recognition stopped. Try again, or use Type."); };
+    rec.onend = () => {
+      rec = null;
+      mic.setAttribute("aria-pressed", "false");
+      $("[data-mic-label]").textContent = "Start recording";
+      const text = finalText.trim();
+      if (text) structureLive(text); else setSteps(null);
+    };
+    rec.start();
+    mic.setAttribute("aria-pressed", "true");
+    $("[data-mic-label]").textContent = "Stop and structure";
+  });
+
+  // corrections: cycle the label, like the real product's edit step
+  root.addEventListener("click", (e) => {
+    const k = e.target.closest("[data-kind]");
+    if (!k) return;
+    const next = KINDS[(KINDS.indexOf(k.dataset.kind) + 1) % KINDS.length];
+    k.dataset.kind = next; k.textContent = KIND_LABEL[next];
+    k.setAttribute("aria-label", `Label: ${KIND_LABEL[next]}. Tap to change.`);
+    k.closest(".it").className = `it it--${next} edited`;
+  });
+  $("[data-submit]").addEventListener("click", () => {
+    setSteps(null, ["listen", "understand", "translate", "structure", "review"]);
+    msg("Submitted. (It's a demo: nothing was sent anywhere.)");
+  });
+
+  // start with the first sample once the demo scrolls into view
+  const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); playSample(SAMPLES[0].id); } }, { threshold: 0.35 });
+  io.observe(root);
+</script>
+
+<style is:global>
+  .vd .dev { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .vd .dev__in { padding: clamp(18px, 2.4vw, 30px); border-right: 1px solid var(--on-ink-rule); display: flex; flex-direction: column; gap: 18px; }
+  .vd .dev__out { padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 18px; min-height: 460px; }
+
+  .vd .tabs { display: inline-flex; padding: 4px; background: var(--ink-3); border-radius: 999px; align-self: flex-start; }
+  .vd .tab { border: 0; background: none; padding: 8px 14px; border-radius: 999px; cursor: pointer; color: var(--on-ink-2); font-weight: 600; font-size: 14px; }
+  .vd .tab[aria-selected="true"] { background: var(--on-ink); color: var(--ink); }
+  .vd .tabrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .vd .samp { border: 1px solid var(--on-ink-rule); background: none; padding: 9px 15px; border-radius: 999px; cursor: pointer; color: var(--on-ink-2); font-weight: 600; font-size: 14px; }
+  .vd .samp:hover { color: var(--on-ink); border-color: var(--on-ink-2); }
+  .vd .samp[aria-pressed="true"] { background: var(--on-ink); color: var(--ink); border-color: var(--on-ink); }
+  .vd .hint { margin: 0 0 12px; color: var(--on-ink-2); font-size: 14.5px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .vd .small { font-size: 13px; color: var(--on-ink-2); margin: 10px 0 0; }
+  .vd .chips { display: grid; gap: 8px; }
+  .vd .chip { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--on-ink-rule); background: transparent; cursor: pointer; font-weight: 600; transition: border-color 0.2s, background 0.2s; }
+  .vd .chip .mono { color: var(--on-ink-2); font-weight: 400; }
+  .vd .chip:hover { border-color: var(--on-ink-2); }
+  .vd .chip[aria-pressed="true"] { background: var(--ink-3); border-color: var(--on-ink); }
+
+  .vd .rec { display: grid; grid-template-columns: auto 1fr; gap: 10px 12px; align-items: center; }
+  .vd .rec .mono { color: var(--on-ink-2); }
+  .vd .sel, .vd .ta { width: 100%; background: var(--ink-3); color: var(--on-ink); border: 1px solid var(--on-ink-rule); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 15px; }
+  .vd .ta { resize: vertical; margin-bottom: 12px; }
+  .vd .mic { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 64px; border-radius: 16px; border: 0; background: var(--tomato); color: #fff; font-weight: 700; font-size: 17px; cursor: pointer; transition: transform 0.2s var(--ease); }
+  .vd .mic:disabled { opacity: 0.4; cursor: not-allowed; }
+  .vd .mic:not(:disabled):hover { transform: scale(1.015); }
+  .vd .mic__dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+  .vd .mic[aria-pressed="true"] .mic__dot { animation: vd-pulse 1s ease-in-out infinite; border-radius: 3px; }
+  @keyframes vd-pulse { 50% { transform: scale(0.7); opacity: 0.6; } }
+  .vd .btn--light { background: var(--tomato); color: #fff; border-color: var(--tomato); min-height: 44px; font-size: 15px; }
+
+  .vd .said { margin-top: auto; border-top: 1px dashed var(--on-ink-rule); padding-top: 16px; }
+  .vd .said__top, .vd .res__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--on-ink-2); }
+  .vd .said__txt { margin: 10px 0 0; font-size: 17px; line-height: 1.5; min-height: 3em; }
+
+  .vd .steps { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-family: var(--f-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--on-ink-2); }
+  .vd .steps li { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--on-ink-rule); transition: color 0.3s, border-color 0.3s; }
+  .vd .steps li i { width: 7px; height: 7px; border-radius: 50%; background: var(--on-ink-rule); }
+  .vd .steps li.on { color: var(--on-ink); border-color: var(--on-ink-2); }
+  .vd .steps li.on i { background: var(--mid-ink); animation: vd-pulse 0.8s infinite; }
+  .vd .steps li.done i { background: var(--ok-ink); }
+  .vd .steps li.done { color: var(--on-ink); }
+
+  .vd .res { opacity: 0; transform: translateY(10px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); pointer-events: none; }
+  .vd .res.show { opacity: 1; transform: none; pointer-events: auto; }
+  .vd .res__sum { font-size: clamp(18px, 1.6vw, 22px); line-height: 1.35; font-weight: 600; margin: 12px 0 6px; letter-spacing: -0.01em; }
+  .vd .res__en { margin: 0 0 14px; color: var(--on-ink-2); font-size: 14.5px; }
+  .vd .items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .vd .it { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: start; padding: 12px; border-radius: 12px; background: var(--ink-3); border-left: 3px solid; animation: vd-pop 0.45s var(--ease) both; }
+  @keyframes vd-pop { from { opacity: 0; transform: translateY(8px); } }
+  .vd .it__k { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 5px 8px; border-radius: 6px; border: 1px solid currentColor; background: none; cursor: pointer; }
+  .vd .it__t { margin: 0; font-size: 15.5px; outline: none; border-radius: 4px; }
+  .vd .it__t:focus { box-shadow: 0 0 0 2px var(--on-ink-2); }
+  .vd .it__w { margin: 4px 0 0; font-size: 13px; color: var(--on-ink-2); }
+  .vd .it--progress { border-color: var(--ok-ink); } .vd .it--progress .it__k { color: var(--ok-ink); }
+  .vd .it--issue { border-color: var(--no-ink); } .vd .it--issue .it__k { color: var(--no-ink); }
+  .vd .it--request { border-color: var(--mid-ink); } .vd .it--request .it__k { color: var(--mid-ink); }
+  .vd .it--info { border-color: var(--info-ink); } .vd .it--info .it__k { color: var(--info-ink); }
+  .vd .it.edited .it__k::after { content: " ✎"; }
+  .vd .acts { margin-top: 14px; color: var(--on-ink-2); }
+  .vd .acts ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+  .vd .acts li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 10px 12px; border: 1px dashed var(--on-ink-rule); border-radius: 10px; color: var(--on-ink); font-size: 15px; }
+  .vd .acts li .mono { color: var(--on-ink-2); }
+  .vd .acts [contenteditable] { outline: none; }
+  .vd .res__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
+  .vd .res__foot .small { margin: 0; }
+  .vd .msg { margin: 0; color: var(--mid-ink); font-size: 14.5px; min-height: 1.2em; }
+
+  .vd .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
+  .vd .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
+  .vd .nt .hand { font-size: 24px; color: var(--tomato); }
+  .vd .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
+
+  .vd .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  @media (max-width: 900px) {
+    .vd .dev { grid-template-columns: minmax(0, 1fr); }
+    .vd .dev__in { border-right: 0; border-bottom: 1px solid var(--on-ink-rule); }
+    .vd .dev__out { min-height: 0; }
+    .vd .notes { grid-template-columns: minmax(0, 1fr); }
+    .vd .it { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .vd .it__k { justify-self: start; }
+  }
+</style>

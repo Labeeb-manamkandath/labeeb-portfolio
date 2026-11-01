@@ -1,0 +1,37 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Experiences from "../components/Experiences.astro";
+import VoiceDemo from "../components/VoiceDemo.astro";
+import TalkDemo from "../components/TalkDemo.astro";
+import FaceDemo from "../components/FaceDemo.astro";
+import WorkforceCase from "../components/WorkforceCase.astro";
+import Contact from "../components/Contact.astro";
+---
+<Base
+  title="Labeeb Manamkandath · Senior Product Designer, AI experiences"
+  description="Product designer in Dubai who designs AI features people trust and actually use: voice in any language, face check-in, live safety-talk coaching. Try the demos."
+>
+  <Header current="home" />
+  <main id="main">
+    <Hero />
+    <Experiences />
+    <VoiceDemo />
+    <FaceDemo />
+    <WorkforceCase />
+    <TalkDemo />
+    <section class="sec more" aria-label="More projects">
+      <div class="wrap more__in">
+        <p class="h-lg">Eight case studies, from AI features to websites and mobile apps.</p>
+        <a class="btn" href="/projects">See all projects <span class="arr">→</span></a>
+      </div>
+    </section>
+  </main>
+  <Contact />
+</Base>
+
+<style>
+  .more__in { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .more__in p { margin: 0; max-width: 22ch; }
+</style>

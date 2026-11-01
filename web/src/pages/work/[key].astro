@@ -1,0 +1,57 @@
+---
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Contact from "../../components/Contact.astro";
+import { PROJECTS } from "../../data/projects.js";
+import "../../styles/case.css";
+
+export function getStaticPaths() {
+  return PROJECTS.map((p) => ({ params: { key: p.key } }));
+}
+const files = import.meta.glob("../../data/cases/*.html", { query: "?raw", import: "default", eager: true });
+const { key } = Astro.params;
+const i = PROJECTS.findIndex((p) => p.key === key);
+const p = PROJECTS[i];
+const next = PROJECTS[(i + 1) % PROJECTS.length];
+const html = files[`../../data/cases/${key}.html`] as string;
+---
+<Base title={`${p.title} · Labeeb Manamkandath`} description={p.sum}>
+  <Header current="projects" />
+  <main id="main">
+    <article data-cs="1" set:html={html} />
+    <nav class="cs-next" aria-label="Next case study">
+      <div class="wrap">
+        <a href={`/work/${next.key}`}>
+          <span class="mono">Next case study</span>
+          <span class="cs-next__t">{next.title} <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="cs-next__all mono" href="/projects">All projects</a>
+      </div>
+    </nav>
+  </main>
+  <Contact />
+</Base>
+
+<script>
+  // The back link returns to wherever the visitor came from on this site (homepage demo,
+  // projects list, another case study), at the same scroll position. Direct visits fall back to /projects.
+  const back = document.querySelector<HTMLAnchorElement>("[data-cs] > section:first-child > a:first-child");
+  let fromSite = false;
+  try { fromSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch {}
+  if (back && fromSite && history.length > 1) {
+    back.textContent = "← Back";
+    back.addEventListener("click", (e) => { e.preventDefault(); history.back(); });
+  }
+</script>
+
+<style>
+  .cs-next { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 80px) 0; }
+  .cs-next .wrap { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+  .cs-next a { text-decoration: none; }
+  .cs-next a:first-child { display: grid; gap: 8px; }
+  .cs-next .mono { color: var(--tomato); }
+  .cs-next__t { font-size: clamp(26px, 3.4vw, 48px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; }
+  .cs-next a:first-child:hover .cs-next__t { color: var(--tomato); }
+  .cs-next__all { border: 1.5px solid var(--ink); border-radius: 999px; padding: 9px 14px; color: var(--fg) !important; }
+  .cs-next__all:hover { background: var(--ink); color: var(--paper) !important; }
+</style>
