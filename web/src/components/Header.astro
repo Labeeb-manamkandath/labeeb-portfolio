@@ -12,7 +12,6 @@ const links = [
 <header class="hd">
   <div class="wrap hd__in">
     <a class="hd__brand" href="/" aria-label="Labeeb Manamkandath, home">
-      <span class="hd__face"><img src="/images/labeeb-avatar-v3.webp" alt="" width="160" height="160" /></span>
       <span class="hd__name">Labeeb M.</span>
     </a>
     <nav aria-label="Main">
@@ -28,8 +27,6 @@ const links = [
   .hd { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
   .hd__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
   .hd__brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
-  .hd__face { display: block; flex: none; width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: var(--mid); border: 1.5px solid var(--ink); }
-  .hd__face img { display: block; object-position: center; width: 100%; height: 100%; object-fit: cover; }
   .hd__name { white-space: nowrap; font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
   .hd__nav { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
   .hd__nav a { display: inline-block; padding: 8px 12px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 500; color: var(--fg-2); transition: background 0.2s, color 0.2s; }
