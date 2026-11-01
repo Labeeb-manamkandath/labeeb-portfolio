@@ -61,7 +61,7 @@ const nodes = [
                   <div class="ci__geo" aria-hidden="true"><span class="ci__ring"></span><span class="ci__pin"></span><span class="mono ci__lbl">On site</span></div>
                   <div class="ci__face" aria-hidden="true"><span class="ci__head"><i></i><i></i></span><span class="ci__scan"></span><span class="ci__flash"></span></div>
                   <div class="ci__side" aria-live="polite">
-                    <button type="button" class="ci__btn" data-ci-go><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Take selfie to check in</button>
+                    <button type="button" class="ci__btn eager" data-ci-go><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Take selfie to check in</button>
                     <p class="ci__status mono" data-ci-status></p>
                     <div class="ci__res" data-ci-res hidden>
                       <div class="ci__who"><span class="ci__av" aria-hidden="true">AN</span><span><strong>Arjun Nair</strong><em class="mono">Steel fixer · sample</em></span></div>
@@ -211,9 +211,8 @@ const nodes = [
   .ci[data-state="done"] .ci__face { border-color: var(--ok-ink); }
   .ci[data-state="idle"] .ci__ring, .ci[data-state="snap"] .ci__ring { animation: none; opacity: 0.45; }
   .ci__side { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .ci__btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; border: 0; background: var(--tomato); color: #fff; font: 600 15px/1 var(--f-sans, inherit); cursor: pointer; transition: transform 0.2s var(--ease); }
+  .ci__btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; border: 0; background: var(--tomato); color: #fff; font: 600 15px/1 var(--f-sans, inherit); cursor: pointer; }
   .ci__btn[hidden] { display: none; }
-  .ci__btn:hover { transform: translateY(-1px); } .ci__btn:focus-visible { outline: 3px solid var(--on-ink); outline-offset: 3px; }
   .ci__status { margin: 0; font-size: 11px; color: var(--info-ink); min-height: 1em; }
   .ci__status:empty { display: none; }
   .ci__res { display: grid; gap: 8px; animation: wf-in 0.45s var(--spring) both; }
