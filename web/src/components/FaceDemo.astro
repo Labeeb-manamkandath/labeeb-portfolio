@@ -27,6 +27,7 @@ const steps = [
             <rect width="100" height="100" fill="rgba(21,21,19,0.62)" mask="url(#fd-m)" />
             <ellipse class="oval__ring" data-ring cx="50" cy="48" rx="25" ry="34" pathLength="100" />
           </svg>
+          <div class="ok" aria-hidden="true"><span class="ok__pulse"></span><svg viewBox="0 0 52 52"><circle class="ok__c" cx="26" cy="26" r="25" /><path class="ok__k" d="M15 27.5l7.5 7.5L38 19" pathLength="1" /></svg></div>
           <p class="cue" data-cue role="status" aria-live="polite">Ready when you are</p>
           <div class="start" data-start>
             <button class="fbtn fbtn--go eager" data-cam>Use my camera</button>
@@ -206,6 +207,25 @@ const steps = [
   .fd .stage .oval__ring { stroke-width: 4px; }
   .fd .cue { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); margin: 0; padding: 8px 14px; border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 650; font-size: 15px; white-space: nowrap; }
   .fd .stage[data-state="done"] .cue { background: var(--ok-ink); }
+  /* success: the oval closes, then a green badge pops in the middle and its check draws itself */
+  .fd .ok { position: absolute; left: 50%; top: 48%; width: clamp(84px, 20%, 128px); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; z-index: 3; visibility: hidden; }
+  .fd .ok svg { position: relative; width: 100%; height: 100%; overflow: visible; }
+  .fd .ok__c { fill: var(--ok-ink); transform-origin: 26px 26px; transform: scale(0); }
+  .fd .ok__k { fill: none; stroke: var(--ink); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .fd .ok__pulse { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--ok-ink); opacity: 0; }
+  .fd .stage[data-state="done"] .ok { visibility: visible; }
+  .fd .stage[data-state="done"] .oval__ring { stroke-dasharray: none; }
+  .fd .stage[data-state="done"] .ok__c { animation: fd-pop 0.5s var(--spring, cubic-bezier(.34,1.56,.64,1)) 0.35s forwards; }
+  .fd .stage[data-state="done"] .ok__k { animation: fd-draw 0.4s ease-out 0.75s forwards; }
+  .fd .stage[data-state="done"] .ok__pulse { animation: fd-pulse 1.4s ease-out 0.8s 2; }
+  .fd .stage[data-state="done"] .sim__face, .fd .stage[data-state="done"] video { opacity: 0.35; transition: opacity 0.4s; }
+  @keyframes fd-pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+  @keyframes fd-draw { to { stroke-dashoffset: 0; } }
+  @keyframes fd-pulse { 0% { opacity: 0.7; transform: scale(1); } 100% { opacity: 0; transform: scale(1.9); } }
+  @media (prefers-reduced-motion: reduce) {
+    .fd .stage[data-state="done"] .ok__c, .fd .stage[data-state="done"] .ok__k { animation-duration: 0.01s; animation-delay: 0s; }
+    .fd .stage[data-state="done"] .ok__pulse { animation: none; }
+  }
   .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 21, 19, 0.55); }
   .fd .start[hidden] { display: none; }
   .fd .stage:has(.start:not([hidden])) .cue { display: none; }
