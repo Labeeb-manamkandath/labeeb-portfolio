@@ -28,12 +28,12 @@ const projects = only ? PROJECTS.filter((p) => only.includes(p.key)) : PROJECTS;
   .pj__ai { font-style: normal; color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 2px 8px; font-size: 10.5px; }
   .pj__s { color: var(--fg-2); font-size: 15.5px; max-width: 58ch; }
   .pj__go { margin-top: auto; padding-top: 4px; font-weight: 600; align-self: flex-start; border-bottom: 1.5px solid var(--ink); }
-  /* phones: one project per block, divided by a rule with room on both sides */
+  /* phones: one project per block; every other block sits on a soft full-width band, like the My AI Works page */
   @media (max-width: 760px) {
-    .op__grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
-    .op__grid > li { padding: 40px 0; border-top: 1px solid var(--rule-strong); }
-    .op__grid > li:first-child { padding-top: 0; border-top: 0; }
-    .op__grid > li:last-child { padding-bottom: 0; }
+    .op__grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0 calc(-1 * var(--gutter)); }
+    .op__grid > li { padding: 40px var(--gutter); }
+    .op__grid > li:nth-child(even) { background: var(--paper-2); }
+    .op__grid > li:first-child { padding-top: 8px; }
     .pj { gap: 12px; }
     .pj__img { margin-bottom: 6px; }
   }

@@ -132,16 +132,12 @@ const items = [
   @media (prefers-reduced-motion: reduce) { .v-sys span, .v-talk li, .v-talk li::before { animation: none !important; } .v-sys span:first-child { border-color: var(--tomato); color: var(--tomato); } }
   @media (max-width: 1080px) { .ex__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   /* phones: the four sections follow right below, so the overview becomes a short jump list */
+  /* phones: same cards as desktop, one per row, animations kept */
   @media (max-width: 560px) {
-    .ex__grid { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 1px solid var(--rule-strong); }
-    .card { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "n t s" "n p p"; column-gap: 10px; row-gap: 4px; padding: 16px 0; background: none; border: 0; border-bottom: 1px solid var(--rule-strong); border-radius: 0; }
-    .card__viz, .card__link { display: none; }
-    .card__top { display: contents; }
-    .card__n { grid-area: n; padding-top: 4px; }
-    .card .tag { grid-area: s; align-self: start; }
-    .card h3 { grid-area: t; margin: 0; font-size: 19px; }
-    .card p { grid-area: p; font-size: 15px; }
-    .card h3 a::after { content: ""; position: absolute; inset: 0; }
+    .ex__grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .card { padding: 12px 12px 20px; }
+    .card__viz { height: 140px; }
+    .card__top { flex-wrap: wrap; }
   }
   /* hover only where there is a real pointer; on phones a tap-and-scroll would leave it stuck on */
   @media (hover: hover) and (pointer: fine) {
