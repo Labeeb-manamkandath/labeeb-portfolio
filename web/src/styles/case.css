@@ -51,7 +51,7 @@
 [data-cs] :has(> :first-child > .phone:only-child):not(:has(> :nth-child(2) > .phone)) > :not(:first-child){ margin-top:0 !important; }
 [data-cs] :has(> .phone:only-child) > .phone{ width:var(--pw); }
 /* a pair inside a narrow column (the 3fr 2fr Zaper layout) stacks instead of squeezing its text */
-[data-cs] [style*="3fr"] > :has(> :first-child > .phone:only-child){ grid-template-columns:minmax(0,1fr) !important; gap:22px !important; }
+[data-cs] [style*="3fr"] > :has(> :first-child > .phone:only-child):not(:has(> :nth-child(2) > .phone)){ grid-template-columns:minmax(0,1fr) !important; gap:22px !important; }
 /* two or more phones (P5/P6/P7): a tight row */
 [data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)){ --pw:180px; display:flex !important; flex-wrap:wrap; justify-content:flex-start; align-items:flex-start; gap:clamp(16px,2.4vw,32px) !important; }
 [data-cs] :has(> :first-child > .phone):has(> :nth-child(2) > .phone):not(:has(> * > .phone:first-child + div)) > *{ flex:0 0 auto; width:calc(var(--pw) + 14px); }
@@ -94,3 +94,6 @@
 
 /* long words like "Daily/Weekly/Monthly" must wrap inside narrow side-by-side columns */
 [data-cs] { overflow-wrap: break-word; }
+
+/* grid and flex children in case studies may shrink, so long annotation lines wrap instead of pushing past the page edge */
+[data-cs] [data-g] > * { min-width: 0; }
