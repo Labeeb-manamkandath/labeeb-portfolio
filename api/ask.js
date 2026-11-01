@@ -2,6 +2,7 @@
 // (api/_knowledge.js, generated from the built pages) and can attach links from a fixed list.
 // Needs ANTHROPIC_API_KEY. Without it, answers 503 and the widget points people to email.
 import Anthropic from "@anthropic-ai/sdk";
+import { reasonFor, logError } from "./_errors.js";
 import { KNOWLEDGE, LINKS } from "./_knowledge.js";
 
 const MAX_CHARS = 500;
@@ -75,8 +76,9 @@ export default async function handler(req, res) {
     const links = [...new Set(out.links || [])].slice(0, 2).map((href) => LINKS.find((l) => l.href === href)).filter(Boolean);
     return res.status(200).json({ reply: out.reply, links });
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) return res.status(429).json({ error: "busy" });
-    if (err instanceof Anthropic.APIError) return res.status(502).json({ error: "upstream" });
-    return res.status(500).json({ error: "failed" });
+    logError("ask", err);
+    const reason = reasonFor(err);
+    if (reason === "busy") return res.status(429).json({ error: "busy", reason });
+    return res.status(502).json({ error: "upstream", reason });
   }
 }

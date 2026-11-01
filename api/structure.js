@@ -2,6 +2,7 @@
 // into English structured notes. Needs ANTHROPIC_API_KEY in the Vercel project.
 // Without the key it answers 503 and the page falls back to its sample data.
 import Anthropic from "@anthropic-ai/sdk";
+import { reasonFor, logError } from "./_errors.js";
 
 const MAX_CHARS = 1200;
 const PER_IP_PER_HOUR = 12;
@@ -83,8 +84,9 @@ export default async function handler(req, res) {
     if (!block) return res.status(502).json({ error: "No result came back." });
     return res.status(200).json({ ...JSON.parse(block.text), model: response.model });
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) return res.status(429).json({ error: "The AI is busy. Try a sample instead." });
-    if (err instanceof Anthropic.APIError) return res.status(502).json({ error: "The AI service had a problem." });
-    return res.status(500).json({ error: "Something went wrong." });
+    logError("structure", err);
+    const reason = reasonFor(err);
+    if (reason === "busy") return res.status(429).json({ error: "The AI is busy right now. Try a sample instead.", reason });
+    return res.status(502).json({ error: "The live AI isn't available right now. Try a sample to see the result.", reason });
   }
 }

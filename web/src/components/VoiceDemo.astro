@@ -172,7 +172,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
         setSteps(null, ["listen"]);
         msg(r.status === 503
           ? "Live AI isn't switched on for this preview yet. Your words above are real; try a sample to see the structured result."
-          : data.error || "That didn't work. Try a sample instead.");
+          : (data.error || "That didn't work. Try a sample instead.") + (data.reason ? ` (${data.reason})` : ""));
         return;
       }
       setSteps("structure", ["listen", "understand", "translate"]); await wait(250);
@@ -325,8 +325,10 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
   .vd .steps li.done i { background: var(--ok-ink); }
   .vd .steps li.done { color: var(--on-ink); }
 
-  .vd .res { opacity: 0; transform: translateY(10px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); pointer-events: none; }
-  .vd .res.show { opacity: 1; transform: none; pointer-events: auto; }
+  /* the result only takes up room once there is one, so an error never leaves a tall empty panel */
+  .vd .res { display: none; }
+  .vd .res.show { display: block; animation: vd-res-in 0.4s var(--ease) both; }
+  @keyframes vd-res-in { from { opacity: 0; transform: translateY(10px); } }
   .vd .res__sum { font-size: clamp(18px, 1.6vw, 22px); line-height: 1.35; font-weight: 600; margin: 12px 0 6px; letter-spacing: -0.01em; }
   .vd .res__en { margin: 0 0 14px; color: var(--on-ink-2); font-size: 14.5px; }
   .vd .items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
