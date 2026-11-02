@@ -3,7 +3,8 @@
 // with before/after screens, a link to the live demo, expandable depth, the final screens, results and reflection.
 // Content lives in src/data/cases2/<key>.js. Existing mockups keep their original size and aspect ratio.
 const { cs } = Astro.props;
-const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Output" };
+const kindLabel = { human: "Person", ai: "AI", sys: "System", check: "Human check", out: "Output" };
+const dim = (v) => ({ w: v.w ?? 780, h: v.h ?? 1688 });
 ---
 <div class="c2">
   <!-- 1. The 30-second read -->
@@ -35,7 +36,7 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
       <div class="sec__label"><span class="sec-num">How I used AI</span><span class="mono">Input → AI → human check → output</span></div>
       <h2 class="c2-h2">{cs.pipeline.title}</h2>
       <p class="c2-intro">{cs.pipeline.intro}</p>
-      <ol class="pipe">
+      <ol class="pipe" style={`--n: ${cs.pipeline.steps.length}`}>
         {cs.pipeline.steps.map((s, i) => (
           <li class={`pipe__s pipe__s--${s.kind}`}>
             <span class="pipe__k mono">{String(i + 1).padStart(2, "0")} · {kindLabel[s.kind]}</span>
@@ -69,20 +70,22 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
                 <div class="is-out"><dt class="mono">Outcome</dt><dd>{s.outcome}</dd></div>
               </dl>
             </div>
-            <div class="story__ba">
-              <figure class="ba ba--before">
-                <figcaption class="mono"><span>Before</span>{s.before.cap}</figcaption>
-                <div class="ba__phone"><img src={s.before.src} width="780" height="1688" alt={`Before: ${s.before.cap}`} loading="lazy" /></div>
-              </figure>
+            <div class={`story__ba${s.before ? "" : " story__ba--one"}`}>
+              {s.before && (
+                <figure class="ba ba--before">
+                  <figcaption class="mono"><span>{s.before.label ?? "Before"}</span>{s.before.cap}</figcaption>
+                  <div class={`ba__phone${s.before.framed ? " is-framed" : ""}`}><img src={s.before.src} width={dim(s.before).w} height={dim(s.before).h} alt={`Before: ${s.before.cap}`} loading="lazy" /></div>
+                </figure>
+              )}
               <figure class="ba ba--after">
-                <figcaption class="mono"><span>After</span>{s.after.cap}</figcaption>
-                <div class="ba__phone"><img src={s.after.src} width="780" height="1688" alt={`After: ${s.after.cap}`} loading="lazy" /></div>
+                <figcaption class="mono"><span>{s.after.label ?? "After"}</span>{s.after.cap}</figcaption>
+                <div class={`ba__phone${s.after.framed ? " is-framed" : ""}`}><img src={s.after.src} width={dim(s.after).w} height={dim(s.after).h} alt={`After: ${s.after.cap}`} loading="lazy" /></div>
               </figure>
             </div>
           </article>
         ))}
       </div>
-      <p class="c2-fine mono">Before/after screens are recreated for this case study from the shipped app. Names are samples.</p>
+      <p class="c2-fine mono">{cs.fine ?? "Before/after screens are recreated for this case study from the shipped app. Names are samples."}</p>
     </div>
   </section>
 
@@ -107,7 +110,7 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
       <div class="screens">
         {cs.screens.map((s) => (
           <figure class="screen">
-            <span class="screen__phone"><img src={s.src} width={s.w} height={s.h} alt={s.t} loading="lazy" /></span>
+            <span class={`screen__phone${s.framed ? " is-framed" : ""}`}><img src={s.src} width={s.w} height={s.h} alt={s.t} loading="lazy" /></span>
             <figcaption><b>{s.t}</b><span>{s.d}</span></figcaption>
           </figure>
         ))}
@@ -179,7 +182,7 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
   .c2-fine { color: var(--fg-3); margin: 18px 0 0; text-transform: none; letter-spacing: 0.01em; }
 
   /* AI pipeline */
-  .pipe { list-style: none; padding: 0; margin: clamp(28px, 3vw, 40px) 0 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; counter-reset: s; }
+  .pipe { list-style: none; padding: 0; margin: clamp(28px, 3vw, 40px) 0 0; display: grid; grid-template-columns: repeat(var(--n, 7), minmax(0, 1fr)); gap: 10px; }
   .pipe__s { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); }
   .pipe__s:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 18px; width: 10px; text-align: center; color: var(--fg-3); font-size: 12px; }
   .pipe__s b { font-size: 16px; letter-spacing: -0.01em; }
@@ -187,6 +190,9 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
   .pipe__k { font-size: 10.5px; color: var(--fg-3); }
   .pipe__s--ai { background: var(--ai-surface); border-color: var(--ai-edge); color: var(--on-ink); }
   .pipe__s--ai p { color: var(--on-ink-2); } .pipe__s--ai .pipe__k { color: #b79bff; }
+  .pipe__s--sys { background: #eef0fb; border-color: #c9cdf0; }
+  .pipe__s--sys .pipe__k { color: var(--info); }
+  .pipe__s--sys .pipe__risk { color: #c0392b; }
   .pipe__s--check { border: 1.5px solid var(--ok); background: rgba(47, 143, 91, 0.07); }
   .pipe__s--check .pipe__k { color: var(--ok); }
   .pipe__risk { margin-top: auto; padding-top: 8px; font-size: 10.5px; line-height: 1.35; color: #ffb3a5; text-transform: none; letter-spacing: 0.01em; }
@@ -214,6 +220,9 @@ const kindLabel = { human: "Person", ai: "AI", check: "Human check", out: "Outpu
   .ba__phone { border-radius: 26px; padding: 5px; background: var(--ink); box-shadow: 0 24px 40px -28px rgba(21, 25, 55, 0.7); }
   .ba--after .ba__phone { background: linear-gradient(140deg, #2f8f5b, #4a6fd1); }
   .ba__phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
+  .story__ba--one { grid-template-columns: minmax(0, 1fr); max-width: 260px; justify-self: center; width: 100%; }
+  .ba__phone.is-framed, .screen__phone.is-framed { padding: 0; background: none !important; box-shadow: none; filter: drop-shadow(0 24px 30px rgba(21, 25, 55, 0.35)); }
+  .ba__phone.is-framed img, .screen__phone.is-framed img { border-radius: 0; }
 
   /* Demo link */
   .c2-demo { display: grid; gap: 6px; padding: clamp(20px, 3vw, 32px); border-radius: 22px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); text-decoration: none; transition: transform 0.25s var(--spring); }

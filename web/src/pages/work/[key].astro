@@ -6,9 +6,12 @@ import { PROJECTS } from "../../data/projects.js";
 import "../../styles/case.css";
 import CaseStudy from "../../components/case2/CaseStudy.astro";
 import voice from "../../data/cases2/voice.js";
+import face from "../../data/cases2/face.js";
+import workforce from "../../data/cases2/workforce.js";
+import toolbox from "../../data/cases2/toolbox.js";
 
 // Case studies rebuilt in the new storytelling format. Others still render their original HTML.
-const V2 = { voice };
+const V2 = { voice, case: face, workforce, toolbox };
 
 export function getStaticPaths() {
   return PROJECTS.map((p) => ({ params: { key: p.key } }));
