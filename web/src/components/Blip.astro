@@ -127,7 +127,7 @@ const starters = ["What does Labeeb do?", "Show me his AI work", "What's his exp
   .bl__eye { animation: bl-blink 4.2s infinite; transform-box: fill-box; transform-origin: center; }
   @keyframes bl-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
   @keyframes bl-blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
-  .bl__bubble { position: absolute; right: 70px; bottom: 54px; white-space: nowrap; background: var(--card); border: 1.5px solid var(--ink); border-radius: 14px 14px 4px 14px; padding: 7px 11px; font-family: var(--f-hand); font-size: 20px; line-height: 1; color: var(--fg); animation: bl-pop 0.5s 1.2s var(--spring) both, bl-hide 0.4s 8s ease forwards; }
+  .bl__bubble { position: absolute; right: 70px; bottom: 54px; white-space: nowrap; background: var(--card); border: 1.5px solid var(--ink); border-radius: 14px 14px 4px 14px; padding: 7px 11px; font-family: var(--f-sans); font-weight: 600; font-size: 14px; line-height: 1.1; color: var(--fg); animation: bl-pop 0.5s 1.2s var(--spring) both, bl-hide 0.4s 8s ease forwards; }
   @keyframes bl-hide { to { opacity: 0; visibility: hidden; transform: translateY(4px); } }
   .bl.is-seen .bl__bubble, .bl.is-open .bl__bubble { display: none; }
   @keyframes bl-pop { from { opacity: 0; transform: translateY(6px) scale(0.9); } }
@@ -135,7 +135,7 @@ const starters = ["What does Labeeb do?", "Show me his AI work", "What's his exp
   .bl__panel { width: min(380px, calc(100vw - 24px)); height: min(540px, calc(100vh - 140px)); display: flex; flex-direction: column; margin-bottom: 4px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 20px; box-shadow: 0 24px 60px -24px rgba(0,0,0,0.45); overflow: hidden; animation: bl-in 0.35s var(--ease) both; }
   .bl__panel[hidden] { display: none; }
   @keyframes bl-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
-  .bl__head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; background: var(--ink); color: var(--on-ink); }
+  .bl__head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; background: var(--ai-surface); color: var(--on-ink); }
   .bl__head > div { min-width: 0; flex: 1; }
   .bl__head b { display: block; font-size: 16px; }
   .bl__head .mono { display: block; font-size: 11px; color: var(--on-ink-2); text-transform: none; letter-spacing: 0; white-space: nowrap; }

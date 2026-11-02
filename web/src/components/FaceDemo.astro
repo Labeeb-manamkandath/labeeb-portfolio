@@ -197,9 +197,9 @@ const steps = [
 </script>
 
 <style is:global>
-  .fd .fdev { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .fd .fdev { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--ai-surface); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); border: 1px solid var(--ai-edge); }
   .fd .fdev__cam { padding: clamp(14px, 2vw, 24px); border-right: 1px solid var(--on-ink-rule); }
-  .fd .stage { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #33332e, #1a1a17); }
+  .fd .stage { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #2c2f5e, #121330); }
   .fd .stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0; }
   .fd .stage.live video { opacity: 1; }
   .fd .oval { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -263,7 +263,7 @@ const steps = [
 
   .fd .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
   .fd .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
-  .fd .nt .hand { font-size: 24px; color: var(--tomato); }
+  .fd .nt .hand { color: var(--fg); }
   .fd .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
 
   @media (max-width: 900px) {

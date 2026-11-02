@@ -166,7 +166,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
 </script>
 
 <style is:global>
-  .td .tdev { background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .td .tdev { background: var(--ai-surface); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); border: 1px solid var(--ai-edge); }
   .td .tdev__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: clamp(16px, 2vw, 24px) clamp(18px, 2.4vw, 30px); }
   .td .tdev__topic { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
   .td .tdev__topic .mono, .td .tdev__lbl { color: var(--on-ink-2); }
@@ -217,7 +217,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
   .td .sum__left li { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; font-size: 15px; padding: 9px 12px; border-radius: 10px; background: var(--ink-3); }
   .td .small { font-size: 13px; color: var(--on-ink-2); margin: 10px 0 0; }
 
-  .td .photo { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 2px; height: 120px; margin: 10px 0 12px; padding: 0 10px; border-radius: 12px; overflow: hidden; background: linear-gradient(#3a3a34, #262622); }
+  .td .photo { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 2px; height: 120px; margin: 10px 0 12px; padding: 0 10px; border-radius: 12px; overflow: hidden; background: linear-gradient(#30336a, #1c1e42); }
   .td .ppl { position: relative; width: 34px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transform: translateY(calc(var(--i) * 3px % 12px)); }
   .td .ppl__head { width: 20px; height: 22px; border-radius: 50%; background: #8c8679; }
   .td .ppl__body { width: 34px; height: 40px; border-radius: 14px 14px 0 0; margin-top: 3px; background: var(--mid-ink); opacity: 0.85; }
@@ -230,7 +230,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
 
   .td .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
   .td .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
-  .td .nt .hand { font-size: 24px; color: var(--tomato); }
+  .td .nt .hand { color: var(--fg); }
   .td .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
 
   @media (max-width: 900px) {

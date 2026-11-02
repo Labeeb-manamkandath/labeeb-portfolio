@@ -94,7 +94,7 @@ const start = tools.findIndex((t) => t.n === "Claude");
   .tb__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: tb-pulse 2s infinite; }
   .tb__chip[aria-pressed="true"] .tb__dot { background: var(--ok-ink); }
   @keyframes tb-pulse { 0% { box-shadow: 0 0 0 0 rgba(47, 143, 91, 0.5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(47, 143, 91, 0); } }
-  .tb__panel { background: var(--ink); color: var(--on-ink); border-radius: 18px; padding: clamp(18px, 2.2vw, 26px); min-height: 200px; }
+  .tb__panel { background: var(--ai-surface); color: var(--on-ink); border-radius: 18px; padding: clamp(18px, 2.2vw, 26px); min-height: 200px; border: 1px solid var(--ai-edge); }
   .tb__top { display: flex; align-items: center; gap: 8px; color: var(--on-ink-2); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; }
   .tb__live { width: 7px; height: 7px; border-radius: 50%; background: var(--tomato); }
   .tb__name { margin: 14px 0 8px; font-size: clamp(22px, 2.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
