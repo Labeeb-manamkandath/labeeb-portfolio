@@ -12,7 +12,7 @@ export default {
     ["Platform", "iOS · Android"],
     ["Timeline", "Mar – Nov 2025 · 9 months"],
   ],
-  hero: { src: "/work/images-min/iphone-16-pro-msrha3ow-66b2.jpg", w: 1400, h: 823, alt: "The Time & attendance app across several phone screens." },
+  hero: { src: "/cases/banners/workforce.webp", w: 1400, h: 823, alt: "The Time & attendance app across several phone screens." },
   summary: [
     { k: "Problem", v: "Punching-machine queues, punch-time manipulation, and paper and Excel passed between HR, supervisors and accounts." },
     { k: "Where AI sits", v: "Face match on a live selfie, combined with a GPS geofence and shift rules. AI also transcribes spoken leave reasons." },
@@ -42,7 +42,7 @@ export default {
       change: "He used manual capture after two retries. The photo was tagged as manual for his supervisor to verify, and his face was then re-registered so it wouldn't happen again.",
       outcome: "A recognition failure became a short detour, not lost attendance.",
       before: { src: "/cases/workforce/wf-match-before.png", label: "First approach", cap: "Fully automatic: try again, with no other way in." },
-      after: { src: "/work/images-min/workforce-manual-attendance.jpg", w: 680, h: 1408, framed: true, label: "Shipped", cap: "Try again, or complete without face, tagged as manual." },
+      after: { src: "/cases/workforce/screens/manual-attendance.webp", w: 680, h: 1408, framed: true, label: "Shipped", cap: "Try again, or complete without face, tagged as manual." },
     },
     {
       t: "Inside the site, but the map said outside.",
@@ -72,12 +72,12 @@ export default {
   fine: "Recreated screens are based on the shipped app. Names and dates are samples. The manual attendance screen is the shipped design.",
   demo: { href: "/#workforce", t: "Try the selfie check-in", d: "A simulated check-in: snap, match, location check, and the result a worker sees." },
   screens: [
-    { src: "/work/images-min/workforce-home.jpg", w: 680, h: 1408, framed: true, t: "Home", d: "Check-in on the first screen, with shift and status at a glance." },
-    { src: "/work/images-min/workforce-ai-confirm.jpg", w: 680, h: 1408, framed: true, t: "AI confirm", d: "Name, role, time and site, with Wrong or Correct." },
-    { src: "/work/images-min/workforce-timesheet.jpg", w: 680, h: 1408, framed: true, t: "Timesheet", d: "Regular hours and overtime kept separate, so workers can spot a wrong record." },
-    { src: "/work/images-min/workforce-payslip.jpg", w: 680, h: 1408, framed: true, t: "Payslip", d: "Salary, overtime and deductions, without asking HR." },
-    { src: "/work/images-min/workforce-leave-apply.jpg", w: 680, h: 1408, framed: true, t: "Leave by voice", d: "Record the reason in your own language. The voice note travels with the request." },
-    { src: "/work/images-min/workforce-team.jpg", w: 680, h: 1408, framed: true, t: "Team (supervisor)", d: "Exceptions show as issues on each card, not buried in a report." },
+    { src: "/cases/workforce/screens/home.webp", w: 680, h: 1408, framed: true, t: "Home", d: "Check-in on the first screen, with shift and status at a glance." },
+    { src: "/cases/workforce/screens/ai-confirm.webp", w: 680, h: 1408, framed: true, t: "AI confirm", d: "Name, role, time and site, with Wrong or Correct." },
+    { src: "/cases/workforce/screens/timesheet.webp", w: 680, h: 1408, framed: true, t: "Timesheet", d: "Regular hours and overtime kept separate, so workers can spot a wrong record." },
+    { src: "/cases/workforce/screens/payslip.webp", w: 680, h: 1408, framed: true, t: "Payslip", d: "Salary, overtime and deductions, without asking HR." },
+    { src: "/cases/workforce/screens/leave-apply.webp", w: 680, h: 1408, framed: true, t: "Leave by voice", d: "Record the reason in your own language. The voice note travels with the request." },
+    { src: "/cases/workforce/screens/team.webp", w: 680, h: 1408, framed: true, t: "Team (supervisor)", d: "Exceptions show as issues on each card, not buried in a report." },
   ],
   deeper: [
     {

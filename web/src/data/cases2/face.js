@@ -13,7 +13,7 @@ export default {
     ["Platform", "iOS · Android"],
     ["Timeline", "Jan 2025 · 6 weeks"],
   ],
-  hero: { src: "/work/images-min/face-hero-mockup.jpg", w: 1400, h: 933, alt: "Phones showing the guided face registration steps." },
+  hero: { src: "/cases/banners/face.webp", w: 1400, h: 933, alt: "Phones showing the guided face registration steps." },
   summary: [
     { k: "Problem", v: "Face check-in only works if registration photos are good. Workers failed in harsh sun and dim buildings, and many couldn't read the instructions." },
     { k: "Where AI sits", v: "Live checks on the phone (one face, centred, close, well lit), then a server quality and match check after upload." },

@@ -14,7 +14,7 @@ export default {
     ["Platform", "iOS · Android"],
     ["Timeline", "Sept 2024 · 8 weeks"],
   ],
-  hero: { src: "/work/images-min/voice-hero-mockup.jpg", w: 1400, h: 974, alt: "Two phones: the manager's insight dashboard and the worker's AI confirm screen." },
+  hero: { src: "/cases/banners/voice.webp", w: 1400, h: 974, alt: "Two phones: the manager's insight dashboard and the worker's AI confirm screen." },
   summary: [
     { k: "Problem", v: "Daily reporting forms took about 10 minutes. Field engineers didn't have them, so updates went to WhatsApp or nowhere." },
     { k: "Where AI sits", v: "Speech-to-text, translation, splitting one note into updates, and labelling each as Issue or Progress." },

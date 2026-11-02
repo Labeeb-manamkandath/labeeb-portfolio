@@ -13,7 +13,7 @@ export default {
     ["Platform", "iOS · Android"],
     ["Timeline", "Nov 2024 · 6 weeks"],
   ],
-  hero: { src: "/work/images-min/toolbox-hero.jpg", w: 1400, h: 934, alt: "Phones showing the toolbox talk checklist and live coverage." },
+  hero: { src: "/cases/banners/toolbox.webp", w: 1400, h: 934, alt: "Phones showing the toolbox talk checklist and live coverage." },
   summary: [
     { k: "Problem", v: "Toolbox talks happen every morning, but nobody could tell if every safety point was covered. Attendance was a paper sheet." },
     { k: "Where AI sits", v: "Listens to the talk and matches it to the checklist: covered, partly covered, not yet covered. Also matches faces in a group photo." },
