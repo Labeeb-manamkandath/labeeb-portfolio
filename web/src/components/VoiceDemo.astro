@@ -87,7 +87,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
     </div>
 
     <div class="notes">
-      <div class="nt reveal"><span class="hand">why the edit step?</span><p>Letting people see and fix what the AI understood raised trust scores by 60% in testing.</p></div>
+      <div class="nt reveal"><span class="hand">why the edit step?</span><p>Letting people see and fix what the AI understood raised trust scores by 60% in our user survey.</p></div>
       <div class="nt reveal"><span class="hand">why one big button?</span><p>No fields, no categories. If reporting takes thought, people don't report.</p></div>
       <div class="nt reveal"><span class="hand">why pick the language first?</span><p>It made transcription reliable for crews who don't report in English.</p></div>
     </div>
@@ -282,7 +282,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
 </script>
 
 <style is:global>
-  .vd .dev { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .vd .dev { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--ai-surface); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); border: 1px solid var(--ai-edge); }
   .vd .dev__in { padding: clamp(18px, 2.4vw, 30px); border-right: 1px solid var(--on-ink-rule); display: flex; flex-direction: column; gap: 18px; }
   .vd .dev__out { padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 18px; min-height: 460px; }
 
@@ -354,7 +354,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
 
   .vd .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
   .vd .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
-  .vd .nt .hand { font-size: 24px; color: var(--tomato); }
+  .vd .nt .hand { color: var(--fg); }
   .vd .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
 
   .vd .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

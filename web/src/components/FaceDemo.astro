@@ -13,7 +13,7 @@ const steps = [
       <div class="sec__label reveal"><span class="sec-num">02</span><span class="mono">Face registration</span></div>
       <div class="sec__title reveal">
         <h2 id="fd-h" class="h-lg">Register a face in one go.</h2>
-        <p class="lede">The camera gives one instruction at a time, and a blink shows it's a real person, not a photo.</p>
+        <p class="lede">The camera gives one instruction at a time and checks the photo live, so it passes before it's taken.</p>
       </div>
     </div>
 
@@ -24,7 +24,7 @@ const steps = [
           <div class="sim" data-sim aria-hidden="true"><span class="sim__face"><i></i><i></i><b></b></span></div>
           <svg class="oval" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <defs><mask id="fd-m"><rect width="100" height="100" fill="#fff" /><ellipse cx="50" cy="48" rx="25" ry="34" fill="#000" /></mask></defs>
-            <rect width="100" height="100" fill="rgba(21,21,19,0.62)" mask="url(#fd-m)" />
+            <rect width="100" height="100" fill="rgba(21, 25, 55,0.62)" mask="url(#fd-m)" />
             <ellipse class="oval__ring" data-ring cx="50" cy="48" rx="25" ry="34" pathLength="100" />
           </svg>
           <div class="ok" aria-hidden="true"><span class="ok__pulse"></span><svg viewBox="0 0 52 52"><circle class="ok__c" cx="26" cy="26" r="25" /><path class="ok__k" d="M15 27.5l7.5 7.5L38 19" pathLength="1" /></svg></div>
@@ -62,7 +62,7 @@ const steps = [
 
     <div class="notes fd__notes">
       <div class="nt reveal"><span class="hand">why one instruction at a time?</span><p>Three instructions at once is noise. The screen only asks for the next thing.</p></div>
-      <div class="nt reveal"><span class="hand">why a blink?</span><p>Anyone can blink. A printed photo can't.</p></div>
+      <div class="nt reveal"><span class="hand">is the blink in the real app?</span><p>Only in this demo. In the shipped version a supervisor is present at registration, which covered that risk.</p></div>
       <div class="nt reveal"><span class="hand">what if it fails on site?</span><p>Supervisors can mark attendance by hand, so nobody loses a day's pay.</p></div>
     </div>
 
@@ -197,9 +197,9 @@ const steps = [
 </script>
 
 <style is:global>
-  .fd .fdev { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--ink); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); }
+  .fd .fdev { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); background: var(--ai-surface); color: var(--on-ink); border-radius: 22px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.5); border: 1px solid var(--ai-edge); }
   .fd .fdev__cam { padding: clamp(14px, 2vw, 24px); border-right: 1px solid var(--on-ink-rule); }
-  .fd .stage { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #33332e, #1a1a17); }
+  .fd .stage { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #2c2f5e, #121330); }
   .fd .stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0; }
   .fd .stage.live video { opacity: 1; }
   .fd .oval { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -226,7 +226,7 @@ const steps = [
     .fd .stage[data-state="done"] .ok__c, .fd .stage[data-state="done"] .ok__k { animation-duration: 0.01s; animation-delay: 0s; }
     .fd .stage[data-state="done"] .ok__pulse { animation: none; }
   }
-  .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 21, 19, 0.55); }
+  .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 25, 55, 0.55); }
   .fd .start[hidden] { display: none; }
   .fd .stage:has(.start:not([hidden])) .cue { display: none; }
   .fd .stage:has(.start:not([hidden])) .oval__ring { opacity: 0; }
@@ -263,7 +263,7 @@ const steps = [
 
   .fd .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); margin-top: clamp(28px, 4vw, 48px); }
   .fd .nt { border-top: 1.5px solid var(--ink); padding-top: 12px; }
-  .fd .nt .hand { font-size: 24px; color: var(--tomato); }
+  .fd .nt .hand { color: var(--fg); }
   .fd .nt p { margin: 6px 0 0; color: var(--fg-2); font-size: 15.5px; }
 
   @media (max-width: 900px) {

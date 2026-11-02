@@ -1,0 +1,290 @@
+---
+// Rebuilt AI case study: a 30-second summary up top, then the AI pipeline, decision stories
+// with before/after screens, a link to the live demo, expandable depth, the final screens, results and reflection.
+// Content lives in src/data/cases2/<key>.js. Existing mockups keep their original size and aspect ratio.
+const { cs } = Astro.props;
+const kindLabel = { human: "Person", ai: "AI", sys: "System", check: "Human check", out: "Output" };
+const dim = (v) => ({ w: v.w ?? 780, h: v.h ?? 1688 });
+---
+<div class="c2">
+  <!-- 1. The 30-second read -->
+  <header class="c2-hero wrap">
+    <a class="c2-back mono" href="/projects">← All projects</a>
+    <div class="sec__label"><span class="sec-num">Case study {cs.num}</span><span class="mono">{cs.product} · {cs.status}</span></div>
+    <h1 class="c2-h1">{cs.title}</h1>
+    <p class="c2-lede">{cs.lede}</p>
+    <dl class="c2-meta">
+      {cs.meta.map(([k, v]) => <div><dt class="mono">{k}</dt><dd>{v}</dd></div>)}
+    </dl>
+    <figure class="c2-shot">
+      <img src={cs.hero.src} width={cs.hero.w} height={cs.hero.h} alt={cs.hero.alt} fetchpriority="high" />
+    </figure>
+    <ol class="c2-sum" aria-label="The case study in 30 seconds">
+      {cs.summary.map((s) => (
+        <li>
+          <span class="mono">{s.k}</span>
+          <p>{s.v}</p>
+          {s.src && <em class="mono">Source: {s.src}</em>}
+        </li>
+      ))}
+    </ol>
+  </header>
+
+  <!-- 2. The AI at a glance -->
+  <section class="c2-sec c2-pipe">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">How I used AI</span><span class="mono">Input → AI → human check → output</span></div>
+      <h2 class="c2-h2">{cs.pipeline.title}</h2>
+      <p class="c2-intro">{cs.pipeline.intro}</p>
+      <ol class="pipe" style={`--n: ${cs.pipeline.steps.length}`}>
+        {cs.pipeline.steps.map((s, i) => (
+          <li class={`pipe__s pipe__s--${s.kind}`}>
+            <span class="pipe__k mono">{String(i + 1).padStart(2, "0")} · {kindLabel[s.kind]}</span>
+            <b>{s.t}</b>
+            <p>{s.d}</p>
+            {s.risk && <span class="pipe__risk mono">⚠ {s.risk}</span>}
+          </li>
+        ))}
+      </ol>
+      <p class="pipe__legend mono"><i class="lg lg--ai"></i>AI step <i class="lg lg--check"></i>Human in the loop <i class="lg lg--risk"></i>Where it can go wrong</p>
+    </div>
+  </section>
+
+  <!-- 3. Decision stories -->
+  <section class="c2-sec">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">What I changed and why</span><span class="mono">{cs.stories.length} decision stories</span></div>
+      <h2 class="c2-h2">Real moments that changed the design.</h2>
+      <div class="stories">
+        {cs.stories.map((s, i) => (
+          <article class="story">
+            <div class="story__text">
+              <span class="story__tag mono">Story {i + 1} · {s.tag}</span>
+              <h3>{s.t}</h3>
+              <dl class="story__steps">
+                <div><dt class="mono">Problem</dt><dd>{s.problem}</dd></div>
+                <div><dt class="mono">What I observed</dt><dd>{s.observed}</dd></div>
+                <div><dt class="mono">What it revealed</dt><dd>{s.discovered}</dd></div>
+                <div class="is-key"><dt class="mono">My decision</dt><dd>{s.decision}</dd></div>
+                <div><dt class="mono">What changed</dt><dd>{s.change}</dd></div>
+                <div class="is-out"><dt class="mono">Outcome</dt><dd>{s.outcome}</dd></div>
+              </dl>
+            </div>
+            <div class={`story__ba${s.before ? "" : " story__ba--one"}`}>
+              {s.before && (
+                <figure class="ba ba--before">
+                  <figcaption class="mono"><span>{s.before.label ?? "Before"}</span>{s.before.cap}</figcaption>
+                  <div class={`ba__phone${s.before.framed ? " is-framed" : ""}`}><img src={s.before.src} width={dim(s.before).w} height={dim(s.before).h} alt={`Before: ${s.before.cap}`} loading="lazy" /></div>
+                </figure>
+              )}
+              <figure class="ba ba--after">
+                <figcaption class="mono"><span>{s.after.label ?? "After"}</span>{s.after.cap}</figcaption>
+                <div class={`ba__phone${s.after.framed ? " is-framed" : ""}`}><img src={s.after.src} width={dim(s.after).w} height={dim(s.after).h} alt={`After: ${s.after.cap}`} loading="lazy" /></div>
+              </figure>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="c2-fine mono">{cs.fine ?? "Before/after screens are recreated for this case study from the shipped app. Names are samples."}</p>
+    </div>
+  </section>
+
+  <!-- 4. Try it -->
+  {cs.demo && (
+    <section class="c2-sec c2-sec--tight">
+      <div class="wrap">
+        <a class="c2-demo" href={cs.demo.href}>
+          <span class="c2-demo__tag mono">Simulated · try it</span>
+          <b>{cs.demo.t} →</b>
+          <span>{cs.demo.d}</span>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- 5. Final experience -->
+  <section class="c2-sec">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">The final experience</span><span class="mono">Shipped screens</span></div>
+      <h2 class="c2-h2">What shipped, and why it works that way.</h2>
+      <div class="screens">
+        {cs.screens.map((s) => (
+          <figure class="screen">
+            <span class={`screen__phone${s.framed ? " is-framed" : ""}`}><img src={s.src} width={s.w} height={s.h} alt={s.t} loading="lazy" /></span>
+            <figcaption><b>{s.t}</b><span>{s.d}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Go deeper -->
+  <section class="c2-sec">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">Go deeper</span><span class="mono">Context, discovery, decisions, barriers</span></div>
+      <h2 class="c2-h2">The full story, if you have three more minutes.</h2>
+      <div class="deeper">
+        {cs.deeper.map((d, i) => (
+          <details open={i === 0}>
+            <summary><span class="mono">{String(i + 1).padStart(2, "0")}</span>{d.t}<i aria-hidden="true">+</i></summary>
+            <div class="deeper__body" set:html={d.body} />
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Results -->
+  <section class="c2-sec">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">Results</span><span class="mono">{cs.results.note}</span></div>
+      <h2 class="c2-h2">What changed after launch.</h2>
+      <ul class="results">
+        {cs.results.items.map((r) => <li><b>{r.v}</b><span>{r.k}</span></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. Reflection -->
+  <section class="c2-sec c2-learn">
+    <div class="wrap">
+      <div class="sec__label"><span class="sec-num">What I learned</span><span class="mono">And what I'd change</span></div>
+      <div class="learn">
+        {cs.learned.map((l) => <div class="learn__i"><b>{l.t}</b><p>{l.d}</p></div>)}
+        <div class="learn__next"><span class="mono">Next time</span><b>{cs.next.t}</b><p>{cs.next.d}</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .c2 { padding-bottom: clamp(24px, 4vw, 48px); }
+  .c2-back { display: inline-flex; margin: clamp(20px, 3vw, 32px) 0 clamp(28px, 4vw, 48px); padding: 9px 14px; border: 1.5px solid var(--ink); border-radius: 999px; text-decoration: none; color: var(--fg); }
+  .c2-back:hover { background: var(--ink); color: var(--paper); }
+  .c2-h1 { font-size: clamp(38px, 6vw, 84px); line-height: 0.98; letter-spacing: -0.04em; margin: 0; max-width: 14ch; }
+  .c2-lede { font-size: clamp(18px, 1.6vw, 22px); line-height: 1.45; color: var(--fg-2); max-width: 46ch; margin: 20px 0 0; }
+  .c2-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: clamp(28px, 3vw, 40px) 0 0; padding-top: 16px; border-top: 1px solid var(--rule-strong); }
+  .c2-meta dt { color: var(--fg-3); margin-bottom: 4px; }
+  .c2-meta dd { margin: 0; font-weight: 600; }
+  .c2-shot { margin: clamp(28px, 4vw, 48px) 0 0; padding: 0; overflow: hidden; border-radius: clamp(18px, 2.4vw, 26px); background: var(--ai-surface); border: 1px solid var(--ai-edge); box-shadow: 0 40px 80px -50px rgba(21, 25, 55, 0.6); }
+  .c2-shot img { display: block; width: 100%; height: auto; }
+  .c2-sum { list-style: none; padding: 0; margin: clamp(16px, 2vw, 24px) 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .c2-sum li { background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .c2-sum li:nth-child(3) { border-color: transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(120deg, var(--tomato), #8b5cf6, var(--info)) border-box; border: 1.5px solid transparent; }
+  .c2-sum li > .mono { color: var(--tomato); }
+  .c2-sum p { margin: 0; font-size: 15.5px; line-height: 1.45; }
+  .c2-sum em { font-style: normal; color: var(--fg-3); font-size: 10.5px; margin-top: auto; }
+
+  .c2-sec { padding: clamp(64px, 8vw, 120px) 0 0; }
+  .c2-sec--tight { padding-top: clamp(40px, 5vw, 64px); }
+  .c2-h2 { font-size: clamp(28px, 3.6vw, 48px); line-height: 1.04; letter-spacing: -0.03em; margin: 0; max-width: 22ch; }
+  .c2-intro { color: var(--fg-2); max-width: 60ch; margin: 14px 0 0; }
+  .c2-fine { color: var(--fg-3); margin: 18px 0 0; text-transform: none; letter-spacing: 0.01em; }
+
+  /* AI pipeline */
+  .pipe { list-style: none; padding: 0; margin: clamp(28px, 3vw, 40px) 0 0; display: grid; grid-template-columns: repeat(var(--n, 7), minmax(0, 1fr)); gap: 10px; }
+  .pipe__s { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); }
+  .pipe__s:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 18px; width: 10px; text-align: center; color: var(--fg-3); font-size: 12px; }
+  .pipe__s b { font-size: 16px; letter-spacing: -0.01em; }
+  .pipe__s p { margin: 0; font-size: 13.5px; line-height: 1.4; color: var(--fg-2); }
+  .pipe__k { font-size: 10.5px; color: var(--fg-3); }
+  .pipe__s--ai { background: var(--ai-surface); border-color: var(--ai-edge); color: var(--on-ink); }
+  .pipe__s--ai p { color: var(--on-ink-2); } .pipe__s--ai .pipe__k { color: #b79bff; }
+  .pipe__s--sys { background: #eef0fb; border-color: #c9cdf0; }
+  .pipe__s--sys .pipe__k { color: var(--info); }
+  .pipe__s--sys .pipe__risk { color: #c0392b; }
+  .pipe__s--check { border: 1.5px solid var(--ok); background: rgba(47, 143, 91, 0.07); }
+  .pipe__s--check .pipe__k { color: var(--ok); }
+  .pipe__risk { margin-top: auto; padding-top: 8px; font-size: 10.5px; line-height: 1.35; color: #ffb3a5; text-transform: none; letter-spacing: 0.01em; }
+  .pipe__legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 16px 0 0; color: var(--fg-3); }
+  .lg { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: -10px; }
+  .lg--ai { background: #2a2c5c; } .lg--check { border: 1.5px solid var(--ok); } .lg--risk { background: #ffb3a5; }
+
+  /* Decision stories */
+  .stories { display: grid; gap: clamp(20px, 3vw, 32px); margin-top: clamp(28px, 3vw, 40px); }
+  .story { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(20px, 3vw, 48px); padding: clamp(20px, 3vw, 36px); border-radius: 24px; background: var(--card); border: 1px solid var(--rule); }
+  .story__tag { color: var(--tomato); }
+  .story h3 { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.12; letter-spacing: -0.02em; margin: 10px 0 18px; }
+  .story__steps { margin: 0; display: grid; gap: 0; }
+  .story__steps > div { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 14px; padding: 10px 0; border-top: 1px solid var(--rule); }
+  .story__steps dt { color: var(--fg-3); padding-top: 3px; }
+  .story__steps dd { margin: 0; font-size: 15.5px; line-height: 1.45; }
+  .story__steps .is-key dt { color: var(--tomato); }
+  .story__steps .is-key dd { font-weight: 600; }
+  .story__steps .is-out dt { color: var(--ok); }
+  .story__ba { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }
+  .ba { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ba figcaption { display: grid; gap: 4px; min-height: 52px; text-transform: none; letter-spacing: 0.01em; color: var(--fg-2); font-size: 11.5px; line-height: 1.35; }
+  .ba figcaption span { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .ba--before figcaption span { color: var(--tomato); } .ba--after figcaption span { color: var(--ok); }
+  .ba__phone { border-radius: 26px; padding: 5px; background: var(--ink); box-shadow: 0 24px 40px -28px rgba(21, 25, 55, 0.7); }
+  .ba--after .ba__phone { background: linear-gradient(140deg, #2f8f5b, #4a6fd1); }
+  .ba__phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
+  .story__ba--one { grid-template-columns: minmax(0, 1fr); max-width: 260px; justify-self: center; width: 100%; }
+  .ba__phone.is-framed, .screen__phone.is-framed { padding: 0; background: none !important; box-shadow: none; filter: drop-shadow(0 24px 30px rgba(21, 25, 55, 0.35)); }
+  .ba__phone.is-framed img, .screen__phone.is-framed img { border-radius: 0; }
+
+  /* Demo link */
+  .c2-demo { display: grid; gap: 6px; padding: clamp(20px, 3vw, 32px); border-radius: 22px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); text-decoration: none; transition: transform 0.25s var(--spring); }
+  .c2-demo:hover { transform: translateY(-3px); }
+  .c2-demo b { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
+  .c2-demo > span:last-child { color: var(--on-ink-2); max-width: 60ch; }
+  .c2-demo__tag { color: var(--mid-ink); }
+
+  /* Final screens */
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(24px, 4vw, 56px); margin-top: clamp(28px, 3vw, 40px); padding: clamp(28px, 4vw, 56px); border-radius: 26px; background: var(--paper-2); }
+  .screen { margin: 0; display: grid; gap: 16px; justify-items: center; text-align: center; }
+  .screen__phone { display: block; width: min(100%, 260px); padding: 6px; border-radius: 34px; background: var(--ink); box-shadow: 0 30px 50px -30px rgba(21, 25, 55, 0.7); }
+  .screen__phone img { display: block; width: 100%; height: auto; border-radius: 28px; }
+  .screen figcaption { display: grid; gap: 6px; max-width: 34ch; }
+  .screen figcaption span { color: var(--fg-2); font-size: 15px; }
+
+  /* Go deeper */
+  .deeper { margin-top: clamp(24px, 3vw, 36px); border-top: 1px solid var(--rule-strong); }
+  .deeper details { border-bottom: 1px solid var(--rule-strong); }
+  .deeper summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 40px 1fr 24px; align-items: center; gap: 10px; padding: 20px 0; font-size: clamp(18px, 1.6vw, 22px); font-weight: 600; letter-spacing: -0.01em; }
+  .deeper summary::-webkit-details-marker { display: none; }
+  .deeper summary .mono { color: var(--tomato); }
+  .deeper summary i { font-style: normal; font-size: 22px; text-align: center; transition: transform 0.25s var(--ease); }
+  .deeper details[open] summary i { transform: rotate(45deg); }
+  .deeper__body { padding: 0 0 24px 50px; max-width: 72ch; color: var(--fg-2); }
+  .deeper__body :global(p) { margin: 0 0 12px; }
+  .deeper__body :global(ul) { margin: 0 0 12px; padding-left: 18px; display: grid; gap: 8px; }
+  .deeper__body :global(b) { color: var(--fg); }
+
+  /* Results */
+  .results { list-style: none; padding: 0; margin: clamp(24px, 3vw, 36px) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 20px; overflow: hidden; }
+  .results li { background: var(--paper); padding: clamp(18px, 2.4vw, 28px); display: grid; gap: 6px; align-content: start; }
+  .results b { font-size: clamp(36px, 4vw, 56px); letter-spacing: -0.04em; line-height: 1; background: linear-gradient(90deg, var(--fg), #4a3fb0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .results span { color: var(--fg-2); font-size: 15px; }
+
+  /* Reflection */
+  .learn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 8px; }
+  .learn__i, .learn__next { padding: clamp(18px, 2.4vw, 26px); border-radius: 20px; border: 1px solid var(--rule); background: var(--card); }
+  .learn b { display: block; font-size: 18px; letter-spacing: -0.01em; line-height: 1.25; }
+  .learn p { margin: 10px 0 0; color: var(--fg-2); font-size: 15px; }
+  .learn__next { background: var(--ai-surface); border-color: var(--ai-edge); color: var(--on-ink); }
+  .learn__next .mono { color: #b79bff; display: block; margin-bottom: 8px; }
+  .learn__next p { color: var(--on-ink-2); }
+
+  @media (max-width: 1100px) {
+    .pipe { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .pipe__s:nth-child(4)::after { display: none; }
+    .story { grid-template-columns: minmax(0, 1fr); }
+    .story__ba { max-width: 560px; }
+  }
+  @media (max-width: 860px) {
+    .c2-meta, .c2-sum { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .results, .learn { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .pipe { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .pipe__s::after { content: "↓" !important; display: block !important; right: auto; left: 50%; transform: translateX(-50%); top: auto; bottom: -17px; }
+    .pipe__s:last-child::after { display: none !important; }
+    .c2-sum { grid-template-columns: minmax(0, 1fr); }
+    .story__steps > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .story__ba { gap: 10px; }
+    .deeper__body { padding-left: 0; }
+    .deeper summary { grid-template-columns: 32px 1fr 24px; }
+  }
+</style>

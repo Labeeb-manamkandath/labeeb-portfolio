@@ -3,7 +3,7 @@
 <section class="ct" id="contact" aria-labelledby="ct-h">
   <div class="wrap ct__in">
     <div class="ct__copy">
-      <span class="sec-num">Contact</span>
+      <div class="sec__label sec__label--dark"><span class="sec-num">Contact</span><span class="mono" style="color:var(--on-ink)">Say hi</span></div>
       <h2 id="ct-h" class="h-xl">Building something with AI? Let's talk.</h2>
       <p class="ct__lede">I'm open to product design roles in any sector where AI needs to feel simple and trustworthy.</p>
       <div class="ct__links">
@@ -19,12 +19,11 @@
   </div>
   <div class="wrap ct__foot mono">
     <span>© 2026 Labeeb Manamkandath</span>
-    <span>Built with Astro and Claude Code. Live AI demos use the Claude API.</span>
   </div>
 </section>
 
 <style>
-  .ct { background: var(--ink); color: var(--on-ink); padding: var(--section) 0 28px; }
+  .ct { background: var(--ai-surface); color: var(--on-ink); padding: var(--section) 0 28px; }
   .ct__in { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: clamp(28px, 5vw, 80px); align-items: end; }
   .ct .h-xl { font-size: clamp(42px, 6.4vw, 96px); margin-top: 14px; }
   .ct__lede { font-size: clamp(18px, 1.5vw, 21px); color: var(--on-ink-2); max-width: 46ch; margin: 24px 0 0; }
@@ -35,7 +34,7 @@
   .btn--line:hover { background: var(--on-ink); color: var(--ink); }
   .ct__photo { position: relative; margin: 0; }
   .ct__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 18px; transform: rotate(2deg); border: 6px solid var(--paper); }
-  .ct__photo figcaption { position: absolute; left: -10px; bottom: -30px; font-size: 24px; color: var(--tomato); transform: rotate(-4deg); }
+  .ct__photo figcaption { position: absolute; left: -10px; bottom: -30px; color: var(--tomato); font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
   .ct__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: clamp(64px, 8vw, 110px); padding-top: 18px; position: relative; color: var(--on-ink-2); text-transform: none; letter-spacing: 0; }
   .ct__foot::before { content: ""; position: absolute; top: 0; left: var(--gutter); right: var(--gutter); border-top: 1px solid var(--on-ink-rule); }
   @media (max-width: 860px) { .ct__in { grid-template-columns: minmax(0, 1fr); } .ct__photo { max-width: 300px; } }

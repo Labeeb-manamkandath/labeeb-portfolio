@@ -32,7 +32,7 @@
 
 
 /* ---------- phone mockups: one frame, one size, screens always inside ---------- */
-.phone{ --pb:7px; position:relative; display:block; box-sizing:content-box; width:min(calc(100% - 2 * var(--pb)), var(--pw, 220px)); aspect-ratio:1400 / 3031; margin:0 auto; border:var(--pb) solid var(--c-ink); border-radius:38px; overflow:hidden; background:#FFFFFF; box-shadow:5px 5px 0 rgba(21,21,19,.12); isolation:isolate; }
+.phone{ --pb:7px; position:relative; display:block; box-sizing:content-box; width:min(calc(100% - 2 * var(--pb)), var(--pw, 220px)); aspect-ratio:1400 / 3031; margin:0 auto; border:var(--pb) solid var(--c-ink); border-radius:38px; overflow:hidden; background:#FFFFFF; box-shadow:5px 5px 0 rgba(21, 25, 55,.12); isolation:isolate; }
 .phone > img{ display:block; width:100% !important; height:100%; object-fit:cover; object-position:50% 0; border-radius:0 !important; }
 /* These screenshots ship with their own cropped bezel: show only the screen area. */
 .phone--bezel > img{ position:absolute; top:0; left:calc(var(--bx) * -1 / var(--sw) * 100%); max-width:none; width:calc(var(--iw) / var(--sw) * 100%) !important; height:auto; margin-top:calc(var(--by) * -1 / var(--sw) * 100%); }

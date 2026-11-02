@@ -60,8 +60,8 @@ const cols = [
   .pc__col li { background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
   .pc__col li .mono { color: var(--fg-3); }
   .pc__col li p { margin: 8px 0 0; font-size: 15.5px; color: var(--fg-2); }
-  .pc__quote { position: relative; margin: clamp(40px, 5vw, 72px) 0 0; padding: clamp(24px, 3vw, 40px); background: var(--ink); color: var(--on-ink); border-radius: 20px; max-width: 900px; }
+  .pc__quote { position: relative; margin: clamp(40px, 5vw, 72px) 0 0; padding: clamp(24px, 3vw, 40px); background: var(--ai-surface); color: var(--on-ink); border-radius: 20px; max-width: 900px; border: 1px solid var(--ai-edge); }
   .pc__quote p { margin: 0; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; }
-  .pc__quote .hand { position: absolute; right: 20px; top: -22px; font-size: 24px; color: var(--tomato); transform: rotate(4deg); }
+  .pc__quote .hand { position: absolute; right: 20px; top: -14px; padding: 6px 10px; border-radius: 6px; background: var(--tomato); color: #fff; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
   @media (max-width: 900px) { .pc__cols { grid-template-columns: minmax(0, 1fr); } }
 </style>

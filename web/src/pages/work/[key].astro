@@ -4,6 +4,14 @@ import Header from "../../components/Header.astro";
 import Contact from "../../components/Contact.astro";
 import { PROJECTS } from "../../data/projects.js";
 import "../../styles/case.css";
+import CaseStudy from "../../components/case2/CaseStudy.astro";
+import voice from "../../data/cases2/voice.js";
+import face from "../../data/cases2/face.js";
+import workforce from "../../data/cases2/workforce.js";
+import toolbox from "../../data/cases2/toolbox.js";
+
+// Case studies rebuilt in the new storytelling format. Others still render their original HTML.
+const V2 = { voice, case: face, workforce, toolbox };
 
 export function getStaticPaths() {
   return PROJECTS.map((p) => ({ params: { key: p.key } }));
@@ -13,12 +21,13 @@ const { key } = Astro.params;
 const i = PROJECTS.findIndex((p) => p.key === key);
 const p = PROJECTS[i];
 const next = PROJECTS[(i + 1) % PROJECTS.length];
+const cs = V2[key as keyof typeof V2];
 const html = files[`../../data/cases/${key}.html`] as string;
 ---
 <Base title={`${p.title} · Labeeb Manamkandath`} description={p.sum}>
   <Header current="projects" />
   <main id="main">
-    <article data-cs="1" set:html={html} />
+    {cs ? <CaseStudy cs={cs} /> : <article data-cs="1" set:html={html} />}
     <nav class="cs-next" aria-label="Next case study">
       <div class="wrap">
         <a href={`/work/${next.key}`}>
