@@ -1,6 +1,6 @@
 @import "@fontsource-variable/schibsted-grotesk";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
 
 
 /* Field notes for intelligent systems: paper is the human side, ink panels are where the AI runs. */
@@ -34,7 +34,7 @@
   --info-ink: #8fa9f0;
 
   --f-sans: "Schibsted Grotesk Variable", "Helvetica Neue", Arial, sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
 
   --gutter: clamp(16px, 3.2vw, 40px);
   --max: 1320px;
