@@ -8,17 +8,17 @@
   --paper: #f4f1ea;
   --paper-2: #ebe6db;
   --card: #fbf9f4;
-  --ink: #151513;
+  --ink: #151937;
   /* AI surfaces: deep indigo instead of plain black, with a violet/blue glow */
   --ink-2: #1b1c3a;
   --ink-3: #262950;
   --ai-surface: radial-gradient(120% 90% at 0% 0%, rgba(139, 92, 246, 0.28), transparent 55%), radial-gradient(100% 80% at 100% 100%, rgba(74, 111, 209, 0.26), transparent 60%), linear-gradient(160deg, #131430, #181a3a);
   --ai-edge: rgba(170, 150, 255, 0.22);
-  --fg: #151513;
-  --fg-2: #47453f;
-  --fg-3: #77736a;
-  --rule: rgba(21, 21, 19, 0.14);
-  --rule-strong: rgba(21, 21, 19, 0.32);
+  --fg: #151937;
+  --fg-2: #464a68;
+  --fg-3: #74778f;
+  --rule: rgba(21, 25, 55, 0.14);
+  --rule-strong: rgba(21, 25, 55, 0.32);
   --tomato: #e8462a;
   --on-ink: #ece8df;
   --on-ink-2: #a9a59b;

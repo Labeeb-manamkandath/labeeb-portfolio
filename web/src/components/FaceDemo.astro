@@ -24,7 +24,7 @@ const steps = [
           <div class="sim" data-sim aria-hidden="true"><span class="sim__face"><i></i><i></i><b></b></span></div>
           <svg class="oval" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <defs><mask id="fd-m"><rect width="100" height="100" fill="#fff" /><ellipse cx="50" cy="48" rx="25" ry="34" fill="#000" /></mask></defs>
-            <rect width="100" height="100" fill="rgba(21,21,19,0.62)" mask="url(#fd-m)" />
+            <rect width="100" height="100" fill="rgba(21, 25, 55,0.62)" mask="url(#fd-m)" />
             <ellipse class="oval__ring" data-ring cx="50" cy="48" rx="25" ry="34" pathLength="100" />
           </svg>
           <div class="ok" aria-hidden="true"><span class="ok__pulse"></span><svg viewBox="0 0 52 52"><circle class="ok__c" cx="26" cy="26" r="25" /><path class="ok__k" d="M15 27.5l7.5 7.5L38 19" pathLength="1" /></svg></div>
@@ -226,7 +226,7 @@ const steps = [
     .fd .stage[data-state="done"] .ok__c, .fd .stage[data-state="done"] .ok__k { animation-duration: 0.01s; animation-delay: 0s; }
     .fd .stage[data-state="done"] .ok__pulse { animation: none; }
   }
-  .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 21, 19, 0.55); }
+  .fd .start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: rgba(21, 25, 55, 0.55); }
   .fd .start[hidden] { display: none; }
   .fd .stage:has(.start:not([hidden])) .cue { display: none; }
   .fd .stage:has(.start:not([hidden])) .oval__ring { opacity: 0; }
