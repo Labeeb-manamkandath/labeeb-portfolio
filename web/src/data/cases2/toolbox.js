@@ -5,7 +5,7 @@ export default {
   num: "04",
   title: "AI Toolbox Talk Analyzer",
   product: "Zaper · Construction safety",
-  status: "Shipped · live on 21 sites",
+  status: "Live on 21 sites",
   lede: "The AI listens to the morning safety talk, checks it against the checklist, and tells the supervisor what was missed. It also logs attendance from one group photo. It's designed to coach the supervisor, not grade him in front of his crew.",
   meta: [
     ["Role", "Senior Product Designer"],

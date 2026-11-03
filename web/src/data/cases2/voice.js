@@ -6,7 +6,7 @@ export default {
   num: "01",
   title: "AI Voice Insight Generator",
   product: "Zaper · Workforce SaaS",
-  status: "Shipped",
+  status: "Live",
   lede: "Site workers speak an update in their own language. The AI turns it into structured reports, and the worker checks them before anything is sent.",
   meta: [
     ["Role", "Senior Product Designer"],
