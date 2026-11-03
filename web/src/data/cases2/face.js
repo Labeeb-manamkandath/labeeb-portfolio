@@ -5,7 +5,7 @@ export default {
   num: "02",
   title: "AI Face Registration Flow",
   product: "Zaper · Workforce SaaS",
-  status: "Shipped",
+  status: "Live",
   lede: "Workers register their face once, on site, so daily check-ins can work by selfie. The hard part wasn't the AI. It was getting a clear photo from someone in harsh sun, who can't read small text, without making them feel watched.",
   meta: [
     ["Role", "Senior Product Designer"],

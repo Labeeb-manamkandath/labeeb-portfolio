@@ -4,7 +4,7 @@ export default {
   num: "03",
   title: "Time & Attendance",
   product: "Zaper · Workforce SaaS",
-  status: "Shipped",
+  status: "Live",
   lede: "A selfie check-in, matched to the worker's face and the site's location, that flows into timesheets, overtime and pay. The AI is fast, but it can be wrong. So nobody ever loses a day's attendance because of it.",
   meta: [
     ["Role", "End-to-end Product Designer"],
