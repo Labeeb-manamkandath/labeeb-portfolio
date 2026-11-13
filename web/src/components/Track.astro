@@ -1,0 +1,49 @@
+<script is:inline>
+// Anonymous, cookieless visit counting for Labeeb's /admin page.
+// A random id in this browser tells new from returning visitors; nothing personal is stored.
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get("notrack") === "1") localStorage.setItem("lb-notrack", "1");
+    if (q.get("track") === "1") localStorage.removeItem("lb-notrack");
+    if (localStorage.getItem("lb-notrack") === "1" || navigator.webdriver) return;
+    var rid = function () { return (Math.random().toString(36).slice(2) + Date.now().toString(36)).slice(0, 20); };
+    var v = localStorage.getItem("lb-vid"), isNew = !v;
+    if (!v) { v = rid(); localStorage.setItem("lb-vid", v); }
+    var s = sessionStorage.getItem("lb-sid"), first = !s;
+    if (!s) { s = rid(); sessionStorage.setItem("lb-sid", s); }
+    var send = function (b) {
+      b.v = v; b.s = s;
+      var body = JSON.stringify(b);
+      if (navigator.sendBeacon && navigator.sendBeacon("/api/track", new Blob([body], { type: "application/json" }))) return;
+      fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true }).catch(function () {});
+    };
+    var path = location.pathname;
+    send({
+      k: "view", p: path, r: document.referrer, ti: document.title,
+      us: q.get("utm_source") || "", um: q.get("utm_medium") || "", uc: q.get("utm_campaign") || "",
+      l: navigator.language || "", sw: screen.width, n: isNew ? 1 : 0, f: first ? 1 : 0,
+    });
+    // time actually spent looking at the page
+    var active = 0, since = document.visibilityState === "visible" ? Date.now() : 0, sent = 0;
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        if (since) { active += Date.now() - since; since = 0; }
+        if (active - sent > 1000) { sent = active; send({ k: "end", p: path, d: active }); }
+      } else since = Date.now();
+    });
+    // outbound clicks worth knowing about
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a) return;
+      var h = a.getAttribute("href") || "", x = "";
+      if (/^mailto:/i.test(h)) x = "Email";
+      else if (/^tel:/i.test(h)) x = "Phone";
+      else if (/linkedin\.com/i.test(h)) x = "LinkedIn";
+      else if (/\.pdf($|\?)|resume|cv/i.test(h)) x = "Resume";
+      else if (/^https?:/i.test(h) && a.hostname !== location.hostname) x = a.hostname.replace(/^www\./, "");
+      if (x) send({ k: "click", p: path, x: x, h: h.slice(0, 200) });
+    }, true);
+  } catch (e) {}
+})();
+</script>
