@@ -1,0 +1,367 @@
+---
+// Private visitor dashboard. Not linked anywhere, not indexed, and never counted as a visit.
+// Data comes from /api/admin, which checks ADMIN_PASSWORD (set by Labeeb in Vercel).
+import "../styles/global.css";
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Visitors · Labeeb M.</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+</head>
+<body class="adm">
+  <header class="adm__bar">
+    <div class="wrap adm__barin">
+      <a class="adm__brand" href="/">Labeeb M.</a>
+      <span class="adm__chip mono"><i></i>Visitors</span>
+      <button class="adm__out" type="button" data-out hidden>Sign out</button>
+    </div>
+  </header>
+
+  <main class="wrap adm__main">
+    <!-- sign in -->
+    <form class="adm__login" data-login>
+      <h1>Your visitors</h1>
+      <p>Enter the admin password you set in Vercel.</p>
+      <label class="mono" for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" required />
+      <button class="btn" type="submit">Open dashboard</button>
+      <p class="adm__err" data-err role="alert"></p>
+    </form>
+
+    <!-- setup notice -->
+    <section class="adm__setup" data-setup hidden>
+      <h1>Almost there</h1>
+      <p data-setup-msg></p>
+    </section>
+
+    <!-- dashboard -->
+    <section data-dash hidden>
+      <div class="adm__head">
+        <div>
+          <h1>Your visitors</h1>
+          <p class="adm__sub" data-sub></p>
+        </div>
+        <div class="adm__tools">
+          <div class="seg" role="group" aria-label="Date range">
+            <button type="button" data-days="1">Today</button>
+            <button type="button" data-days="7">7 days</button>
+            <button type="button" data-days="30" aria-pressed="true">30 days</button>
+            <button type="button" data-days="90">90 days</button>
+          </div>
+          <button class="adm__ref" type="button" data-refresh aria-label="Refresh">↻</button>
+        </div>
+      </div>
+
+      <div class="kpis" data-kpis></div>
+
+      <article class="card">
+        <div class="card__h"><h2>Visitors per day</h2><span class="mono">Dubai time</span></div>
+        <div class="chart" data-chart></div>
+        <details class="tbl"><summary class="mono">View as table</summary><div data-chart-table></div></details>
+      </article>
+
+      <div class="grid" data-lists></div>
+
+      <article class="card">
+        <div class="card__h"><h2>Recent visits</h2><span class="mono">Newest first · tap a row for the path</span></div>
+        <div class="visits" data-visits></div>
+      </article>
+
+      <p class="adm__note">Visitors are anonymous: no names, no cookies and no IP addresses are stored. Location comes from the network and is usually right to the city. This browser is excluded from the counts.</p>
+    </section>
+  </main>
+
+  <div class="tip" data-tip hidden></div>
+
+  <script is:inline>
+  (function () {
+    try { localStorage.setItem("lb-notrack", "1"); } catch (e) {}
+    var $ = function (s) { return document.querySelector(s); };
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+    var nf = new Intl.NumberFormat("en");
+    var regionName; try { regionName = new Intl.DisplayNames(["en"], { type: "region" }); } catch (e) {}
+    var langName; try { langName = new Intl.DisplayNames(["en"], { type: "language" }); } catch (e) {}
+    var country = function (c) { if (!c || c === "??") return "Unknown"; try { return regionName ? regionName.of(c) : c; } catch (e) { return c; } };
+    var flag = function (c) { return c && /^[A-Z]{2}$/.test(c) ? String.fromCodePoint.apply(null, c.split("").map(function (x) { return 127397 + x.charCodeAt(0); })) : "🌐"; };
+    var dur = function (ms) { if (!ms) return "–"; var s = Math.round(ms / 1000); if (s < 60) return s + "s"; var m = Math.floor(s / 60); return m < 60 ? m + "m " + (s % 60) + "s" : Math.floor(m / 60) + "h " + (m % 60) + "m"; };
+    var pct = function (x) { return Math.round(x * 100) + "%"; };
+    var NAMES = { voice: "Voice notes", case: "Face registration", workforce: "Time & attendance", toolbox: "Toolbox Talk", zaper: "Zaper website", bazar: "Bazar", driver: "Driver timeline", maid: "Maid companion" };
+    var page = function (p) { if (p === "/") return "Home"; var m = p.match(/^\/work\/([^/]+)/); if (m) return "Case study · " + (NAMES[m[1]] || m[1]); var t = p.replace(/^\//, "").replace(/\/$/, ""); return t ? t.charAt(0).toUpperCase() + t.slice(1) : p; };
+    var when = function (t) {
+      var d = new Date(t), now = new Date(), diff = (now - d) / 60000;
+      if (diff < 1) return "just now";
+      if (diff < 60) return Math.round(diff) + " min ago";
+      var opt = { timeZone: "Asia/Dubai", hour: "numeric", minute: "2-digit" };
+      var day = d.toLocaleDateString("en-GB", { timeZone: "Asia/Dubai", day: "numeric", month: "short" });
+      var today = now.toLocaleDateString("en-GB", { timeZone: "Asia/Dubai", day: "numeric", month: "short" });
+      return (day === today ? "Today" : day) + ", " + d.toLocaleTimeString("en-GB", opt);
+    };
+
+    var key = ""; try { key = sessionStorage.getItem("lb-admin") || ""; } catch (e) {}
+    var days = 30, data = null;
+
+    function show(which) {
+      $("[data-login]").hidden = which !== "login";
+      $("[data-dash]").hidden = which !== "dash";
+      $("[data-setup]").hidden = which !== "setup";
+      $("[data-out]").hidden = which !== "dash";
+    }
+
+    function load() {
+      if (!key) return show("login");
+      $("[data-dash]").setAttribute("aria-busy", "true");
+      fetch("/api/admin?days=" + days, { headers: { "x-admin-key": key } })
+        .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+        .then(function (x) {
+          $("[data-dash]").removeAttribute("aria-busy");
+          if (x.s === 200) { data = x.j; show("dash"); render(); return; }
+          if (x.s === 503 && x.j.error === "setup") {
+            show("setup");
+            $("[data-setup-msg]").textContent = x.j.need === "ADMIN_PASSWORD"
+              ? "Add an ADMIN_PASSWORD environment variable to the project in Vercel, then redeploy."
+              : "Connect an Upstash Redis store to the project in Vercel (Storage tab), then redeploy. Visits start counting from then.";
+            return;
+          }
+          key = ""; try { sessionStorage.removeItem("lb-admin"); } catch (e) {}
+          show("login"); $("[data-err]").textContent = x.j.error || "Couldn't sign in.";
+        })
+        .catch(function () { show("login"); $("[data-err]").textContent = "Couldn't reach the server. Try again."; });
+    }
+
+    $("[data-login]").addEventListener("submit", function (e) {
+      e.preventDefault(); key = $("#pw").value; $("[data-err]").textContent = "";
+      try { sessionStorage.setItem("lb-admin", key); } catch (er) {}
+      load();
+    });
+    $("[data-out]").addEventListener("click", function () { key = ""; try { sessionStorage.removeItem("lb-admin"); } catch (e) {} $("#pw").value = ""; show("login"); });
+    $("[data-refresh]").addEventListener("click", load);
+    document.querySelectorAll("[data-days]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        days = +b.dataset.days;
+        document.querySelectorAll("[data-days]").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+        load();
+      });
+    });
+
+    function render() {
+      var t = data.totals;
+      $("[data-sub]").textContent = (days === 1 ? "Today" : "Last " + days + " days") + " · updated " + new Date(data.generated).toLocaleTimeString("en-GB", { timeZone: "Asia/Dubai", hour: "numeric", minute: "2-digit" }) + " Dubai time";
+      var k = [
+        ["Visitors", nf.format(t.visitors), nf.format(t.newVisitors) + " new"],
+        ["Page views", nf.format(t.views), t.pagesPerSession.toFixed(1) + " pages per visit"],
+        ["Visits", nf.format(t.sessions), pct(t.bounceRate) + " saw one page"],
+        ["Avg. time on site", dur(t.avgTime), "per visit"],
+        ["On site now", nf.format(t.live), "last 5 minutes", true],
+      ];
+      $("[data-kpis]").innerHTML = k.map(function (x) {
+        return '<div class="kpi' + (x[3] ? " kpi--live" : "") + '"><span class="mono">' + (x[3] ? "<i></i>" : "") + x[0] + '</span><b>' + x[1] + '</b><small>' + x[2] + "</small></div>";
+      }).join("");
+      chart(data.daily);
+      lists();
+      visits();
+    }
+
+    // one series, one axis: visitors per day. Hover or tap a bar for the numbers.
+    function chart(rows) {
+      var el = $("[data-chart]"), W = el.clientWidth || 800, H = 220, padL = 34, padB = 26, padT = 10;
+      var max = Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.visitors; })));
+      var nice = Math.max(4, Math.ceil(max / 4) * 4);
+      var n = rows.length, slot = (W - padL) / n, bw = Math.max(2, Math.min(36, slot - 2));
+      var y = function (v) { return padT + (H - padT - padB) * (1 - v / nice); };
+      var svg = '<svg width="' + W + '" height="' + H + '" role="img" aria-label="Visitors per day">';
+      for (var g = 0; g <= 4; g++) {
+        var gv = nice * g / 4, gy = y(gv);
+        svg += '<line x1="' + padL + '" x2="' + W + '" y1="' + gy + '" y2="' + gy + '" class="gl"/><text x="' + (padL - 8) + '" y="' + (gy + 4) + '" class="ax" text-anchor="end">' + Math.round(gv) + "</text>";
+      }
+      var every = Math.ceil(n / Math.max(1, Math.floor((W - padL) / 56)));
+      rows.forEach(function (r, i) {
+        var x = padL + i * slot + (slot - bw) / 2, h = (H - padT - padB) - (y(r.visitors) - padT);
+        if (r.visitors > 0) {
+          var rr = Math.min(4, bw / 2), top = y(r.visitors);
+          svg += '<path class="bar" d="M' + x + "," + (H - padB) + "V" + (top + rr) + "Q" + x + "," + top + " " + (x + rr) + "," + top + "H" + (x + bw - rr) + "Q" + (x + bw) + "," + top + " " + (x + bw) + "," + (top + rr) + "V" + (H - padB) + 'Z"/>';
+        }
+        svg += '<rect class="hit" x="' + (padL + i * slot) + '" y="' + padT + '" width="' + slot + '" height="' + (H - padT - padB) + '" data-i="' + i + '"/>';
+        var last = i === n - 1;
+        if (last || (i % every === 0 && n - 1 - i >= every)) {
+          var lab = new Date(r.d + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+          var lx = last && n > 1 ? W - 2 : padL + i * slot + slot / 2;
+          svg += '<text class="ax" x="' + lx + '" y="' + (H - 8) + '" text-anchor="' + (last && n > 1 ? "end" : "middle") + '">' + lab + "</text>";
+        }
+      });
+      svg += '<line x1="' + padL + '" x2="' + W + '" y1="' + (H - padB) + '" y2="' + (H - padB) + '" class="base"/></svg>';
+      el.innerHTML = svg;
+      var tip = $("[data-tip]");
+      el.querySelectorAll(".hit").forEach(function (h) {
+        var on = function (e) {
+          var r = rows[+h.dataset.i];
+          tip.innerHTML = "<b>" + new Date(r.d + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + "</b><span>" + nf.format(r.visitors) + " visitors</span><span>" + nf.format(r.views) + " page views</span>";
+          tip.hidden = false;
+          var bx = h.getBoundingClientRect();
+          tip.style.left = Math.min(innerWidth - 170, Math.max(8, bx.left + bx.width / 2 - 80)) + "px";
+          tip.style.top = (bx.top + scrollY - 70) + "px";
+          h.classList.add("on");
+        };
+        h.addEventListener("mouseenter", on); h.addEventListener("click", on);
+        h.addEventListener("mouseleave", function () { tip.hidden = true; h.classList.remove("on"); });
+      });
+      $("[data-chart-table]").innerHTML = '<table><thead><tr><th>Date</th><th>Visitors</th><th>Page views</th></tr></thead><tbody>' +
+        rows.slice().reverse().map(function (r) { return "<tr><td>" + r.d + "</td><td>" + r.visitors + "</td><td>" + r.views + "</td></tr>"; }).join("") + "</tbody></table>";
+    }
+
+    function list(title, rows, fmt, note) {
+      if (!rows || !rows.length) return '<article class="card list"><div class="card__h"><h2>' + title + '</h2></div><p class="empty">Nothing yet.</p></article>';
+      var max = rows[0].v;
+      return '<article class="card list"><div class="card__h"><h2>' + title + "</h2>" + (note ? '<span class="mono">' + note + "</span>" : "") + "</div><ol>" +
+        rows.map(function (r) {
+          var f = fmt ? fmt(r) : { label: esc(r.k), val: nf.format(r.v) };
+          return '<li><span class="lab">' + f.label + '</span><span class="val">' + f.val + '</span><i style="width:' + Math.max(2, r.v / max * 100) + '%"></i></li>';
+        }).join("") + "</ol></article>";
+    }
+
+    function lists() {
+      var d = data;
+      $("[data-lists]").innerHTML = [
+        list("Top pages", d.pages, function (r) { return { label: esc(page(r.k)), val: nf.format(r.v) + ' <small>' + nf.format(r.u) + " people</small>" }; }, "views"),
+        list("Where they came from", d.sources, null, "visits"),
+        list("Countries", d.countries, function (r) { return { label: flag(r.k) + " " + esc(country(r.k)), val: nf.format(r.v) }; }, "visits"),
+        list("Cities", d.cities, function (r) { var p = r.k.split("|"); return { label: flag(p[1]) + " " + esc(p[0]) + ' <small>' + esc(country(p[1])) + "</small>", val: nf.format(r.v) }; }, "visits"),
+        list("What they clicked", d.clicks, null, "clicks"),
+        list("Referring pages", d.referrers, null, "visits"),
+        list("Devices", d.devices, null, "visits"),
+        list("Browsers", d.browsers, null, "visits"),
+        list("Operating systems", d.os, null, "visits"),
+        list("Languages", d.languages.filter(function (r) { return r.k; }), function (r) { var n = r.k; try { n = langName ? langName.of(r.k) : r.k; } catch (e) {} return { label: esc(n), val: nf.format(r.v) }; }, "visits"),
+      ].concat(d.campaigns && d.campaigns.length ? [list("Campaigns (utm)", d.campaigns, null, "visits")] : []).join("");
+    }
+
+    function visits() {
+      var rows = data.recent;
+      if (!rows.length) { $("[data-visits]").innerHTML = '<p class="empty">No visits in this range yet.</p>'; return; }
+      $("[data-visits]").innerHTML = '<div class="vrow vrow--h mono"><span>When</span><span>Where</span><span>Came from</span><span>Landed on</span><span>Pages</span><span>Time</span><span>Device</span></div>' +
+        rows.map(function (r) {
+          var place = flag(r.c) + " " + esc([r.ci, country(r.c)].filter(Boolean).join(", "));
+          var tag = r.n ? '<em class="new">New</em>' : r.visits > 1 ? '<em class="ret">' + r.visits + " visits</em>" : '<em class="ret">Returning</em>';
+          return '<details class="vrow"><summary>' +
+            '<span data-l="When">' + when(r.start) + "</span>" +
+            '<span data-l="Where">' + place + " " + tag + "</span>" +
+            '<span data-l="Came from">' + esc(r.src) + "</span>" +
+            '<span data-l="Landed on">' + esc(page(r.pages[0] || "/")) + "</span>" +
+            '<span data-l="Pages">' + r.pages.length + "</span>" +
+            '<span data-l="Time">' + dur(r.time) + "</span>" +
+            '<span data-l="Device">' + esc(r.device + " · " + r.browser + " · " + r.os) + "</span>" +
+            "</summary><div class=\"path\"><ol>" + r.pages.map(function (p) { return "<li>" + esc(page(p)) + "</li>"; }).join("") + "</ol>" +
+            (r.clicks && r.clicks.length ? '<p><span class="mono">Clicked</span> ' + esc(r.clicks.join(", ")) + "</p>" : "") +
+            (r.rf ? '<p><span class="mono">Referrer</span> ' + esc(r.rf) + "</p>" : "") +
+            (r.uc ? '<p><span class="mono">Campaign</span> ' + esc(r.uc) + "</p>" : "") +
+            "</div></details>";
+        }).join("");
+    }
+
+    var rt; addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { if (data && !$("[data-dash]").hidden) chart(data.daily); }, 150); });
+    setInterval(function () { if (key && data && !document.hidden) load(); }, 60000);
+    load();
+  })();
+  </script>
+
+  <style is:global>
+    .adm [hidden] { display: none !important; }
+    .adm { background: var(--paper); color: var(--fg); min-height: 100vh; }
+    .adm h1 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.03em; line-height: 1.05; margin: 0; }
+    .adm h2 { font-size: 17px; margin: 0; letter-spacing: -0.01em; }
+    .adm__bar { background: var(--ai-surface); color: var(--on-ink); border-bottom: 1px solid var(--ai-edge); }
+    .adm__barin { display: flex; align-items: center; gap: 14px; height: 60px; }
+    .adm__brand { color: var(--on-ink); text-decoration: none; font-weight: 700; font-size: 18px; }
+    .adm__chip { display: inline-flex; align-items: center; gap: 8px; padding: 5px 11px; border: 1px solid var(--ai-edge); border-radius: 99px; color: #c9c1ff; }
+    .adm__chip i { width: 8px; height: 8px; border-radius: 50%; background: conic-gradient(#a78bfa, #60a5fa, #34d399, #a78bfa); }
+    .adm__out { margin-left: auto; background: none; border: 1px solid var(--on-ink-rule); color: var(--on-ink); border-radius: 99px; padding: 7px 14px; font: inherit; cursor: pointer; }
+    .adm__main { padding-top: clamp(24px, 4vw, 44px); padding-bottom: 60px; }
+    .adm__login, .adm__setup { max-width: 420px; margin: 8vh auto; background: var(--card); border: 1px solid var(--rule); border-radius: 22px; padding: 30px; display: grid; gap: 12px; }
+    .adm__login p, .adm__setup p { color: var(--fg-2); margin: 0; }
+    .adm__login input { font: inherit; font-size: 17px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: 12px; background: #fff; color: var(--fg); }
+    .adm__login .btn { justify-content: center; }
+    .adm__err { color: var(--no); min-height: 1.2em; font-size: 14px; }
+    .adm__head { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; margin-bottom: 22px; }
+    .adm__sub { color: var(--fg-3); margin: 8px 0 0; font-size: 14px; }
+    .adm__tools { display: flex; gap: 8px; align-items: center; }
+    .seg { display: inline-flex; background: var(--paper-2); border-radius: 99px; padding: 3px; }
+    .seg button { font: inherit; font-size: 14px; border: 0; background: none; color: var(--fg-2); padding: 8px 14px; border-radius: 99px; cursor: pointer; white-space: nowrap; }
+    .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .adm__ref { font-size: 18px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--rule-strong); background: var(--card); color: var(--fg); cursor: pointer; }
+    [aria-busy="true"] .adm__ref { animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 14px; }
+    .kpi { background: var(--card); border: 1px solid var(--rule); border-radius: 18px; padding: 16px 18px; display: grid; gap: 6px; }
+    .kpi .mono { color: var(--fg-3); display: flex; align-items: center; gap: 7px; }
+    .kpi b { font-size: clamp(28px, 3vw, 38px); letter-spacing: -0.03em; line-height: 1; }
+    .kpi small { color: var(--fg-3); font-size: 13px; }
+    .kpi--live { background: var(--ai-surface); border-color: var(--ai-edge); color: var(--on-ink); }
+    .kpi--live .mono, .kpi--live small { color: var(--on-ink-2); }
+    .kpi--live i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok-ink); box-shadow: 0 0 0 0 rgba(95, 196, 138, 0.6); animation: ping 1.8s infinite; }
+    @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(95, 196, 138, 0); } 100% { box-shadow: 0 0 0 0 rgba(95, 196, 138, 0); } }
+    .card { background: var(--card); border: 1px solid var(--rule); border-radius: 20px; padding: 18px 20px; margin-bottom: 14px; min-width: 0; }
+    .card__h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .card__h .mono { color: var(--fg-3); font-size: 11px; }
+    .chart { width: 100%; overflow: hidden; }
+    .chart svg { display: block; }
+    .chart .gl { stroke: var(--rule); stroke-width: 1; }
+    .chart .base { stroke: var(--rule-strong); stroke-width: 1; }
+    .chart .ax { fill: var(--fg-3); font: 11px var(--f-mono); }
+    .chart .bar { fill: var(--info); }
+    .chart .hit { fill: transparent; cursor: pointer; }
+    .chart .hit.on { fill: rgba(74, 111, 209, 0.08); }
+    .tip { position: absolute; z-index: 50; width: 160px; background: var(--ink); color: var(--on-ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; font-size: 13px; pointer-events: none; box-shadow: 0 12px 30px -12px rgba(21, 25, 55, 0.6); }
+    .tip span { color: var(--on-ink-2); }
+    .tbl { margin-top: 10px; }
+    .tbl summary { cursor: pointer; color: var(--fg-3); font-size: 11px; }
+    .tbl table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+    .tbl th, .tbl td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .grid .card { margin: 0; }
+    .grid { margin-bottom: 14px; }
+    .list ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .list li { position: relative; display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: 14.5px; overflow: hidden; }
+    .list li i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(74, 111, 209, 0.12); border-radius: 0 4px 4px 0; z-index: 0; }
+    .list .lab, .list .val { position: relative; z-index: 1; }
+    .list .lab { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .list .val { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+    .list small, .vrow small { color: var(--fg-3); font-weight: 400; }
+    .empty { color: var(--fg-3); margin: 0; font-size: 14px; }
+    .visits { display: grid; }
+    .vrow summary, .vrow--h { display: grid; grid-template-columns: 1.1fr 1.5fr 1fr 1.3fr 0.5fr 0.6fr 1.4fr; gap: 12px; align-items: center; padding: 11px 8px; font-size: 14px; border-bottom: 1px solid var(--rule); }
+    .vrow--h { color: var(--fg-3); font-size: 11px; padding-top: 0; }
+    .vrow summary { cursor: pointer; list-style: none; }
+    .vrow summary::-webkit-details-marker { display: none; }
+    .vrow summary:hover { background: var(--paper); }
+    .vrow summary span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .vrow em { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 99px; margin-left: 4px; }
+    .vrow .new { background: rgba(47, 143, 91, 0.12); color: var(--ok); }
+    .vrow .ret { background: rgba(74, 111, 209, 0.12); color: var(--info); }
+    .path { padding: 10px 14px 14px; background: var(--paper); border-bottom: 1px solid var(--rule); font-size: 14px; }
+    .path ol { margin: 0 0 6px; padding-left: 20px; display: grid; gap: 3px; }
+    .path p { margin: 4px 0 0; color: var(--fg-2); word-break: break-all; }
+    .path .mono { color: var(--fg-3); font-size: 10.5px; margin-right: 6px; }
+    .adm__note { color: var(--fg-3); font-size: 13px; max-width: 70ch; }
+    @media (max-width: 1000px) {
+      .kpis { grid-template-columns: repeat(3, 1fr); }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .vrow--h { display: none; }
+      .vrow summary { grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 14px 6px; }
+      .vrow summary span { white-space: normal; }
+      .vrow summary span::before { content: attr(data-l); display: block; font: 10.5px var(--f-mono); text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-3); }
+    }
+    @media (max-width: 640px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .kpi--live { grid-column: span 2; }
+      .grid { grid-template-columns: 1fr; }
+      .adm__tools { width: 100%; justify-content: space-between; }
+      .seg button { padding: 8px 11px; font-size: 13px; }
+    }
+  </style>
+</body>
+</html>

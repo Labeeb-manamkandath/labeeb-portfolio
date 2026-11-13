@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Blip from "../components/Blip.astro";
+import Track from "../components/Track.astro";
 
 interface Props { title: string; description: string; }
 const { title, description } = Astro.props;
@@ -36,6 +37,7 @@ const url = new URL(Astro.url.pathname, Astro.site);
     <a class="skip" href="#main">Skip to content</a>
     <slot />
     <Blip />
+    <Track />
     <script>
       // reveal-on-scroll, cheap and skipped entirely for reduced motion
       const els = document.querySelectorAll(".reveal");
