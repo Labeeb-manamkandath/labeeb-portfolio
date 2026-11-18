@@ -8,6 +8,10 @@ const roles = [
   { when: "2020 — 2023", role: "Graphic Designer", co: "Milky Foods (Remote)", desc: "Brand, campaign and interface work. This is where my habits around typography, layout and visual consistency took shape." },
   { when: "2017 — 2020", role: "Bachelor's in Information Technology", co: "Barathiyar University, India", desc: "Enough technical grounding to hold a real conversation with engineering about what a design costs to build." },
 ];
+// Credentials. Add the course name once Labeeb confirms it (the verify page doesn't expose it to us).
+const badges = [
+  { issuer: "Claude Academy", course: "", kind: "Completion badge", href: "https://academy.claude.com/verify/19caf89190d01138d5124e4401f74928" },
+];
 const expertise = [
   "AI-integrated product experiences",
   "Product strategy & UX leadership",
@@ -73,6 +77,29 @@ const expertise = [
         <div class="reveal"><Toolbox /></div>
       </div>
     </section>
+    <section class="sec" aria-labelledby="cr-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">04</span><span class="mono">Credentials</span></div>
+          <div class="sec__title reveal"><h2 id="cr-h" class="h-lg">Learning in public.</h2></div>
+        </div>
+        <ul class="badges">
+          {badges.map((b) => (
+            <li class="reveal">
+              <a class="badge" href={b.href} target="_blank" rel="noopener">
+                <span class="badge__seal" aria-hidden="true"><i></i></span>
+                <span class="badge__body">
+                  <span class="mono badge__kind">{b.kind}</span>
+                  <strong>{b.course || b.issuer}</strong>
+                  {b.course && <span class="badge__issuer">{b.issuer}</span>}
+                  <span class="mono badge__verify">Verify credential ↗</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   </main>
   <Contact />
 </Base>
@@ -92,4 +119,15 @@ const expertise = [
   .xp li .mono { color: var(--tomato); }
   @media (max-width: 860px) { .ph { grid-template-columns: minmax(0, 1fr); } .ph__photo { max-width: 260px; } .xp { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 560px) { .roles li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+  .badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+  .badge { display: flex; gap: 18px; align-items: center; padding: 22px 24px; border-radius: 22px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); text-decoration: none; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+  .badge:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -24px rgba(21, 25, 55, 0.7); }
+  .badge__seal { flex: none; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(from 0deg, #a78bfa, #60a5fa, #34d399, #a78bfa); padding: 3px; }
+  .badge__seal i { width: 100%; height: 100%; border-radius: 50%; background: #181a3a; display: grid; place-items: center; }
+  .badge__seal i::before { content: ""; width: 26px; height: 26px; background: conic-gradient(from 0deg, #c4b5fd, #93c5fd, #6ee7b7, #c4b5fd); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .badge__body { display: grid; gap: 4px; min-width: 0; }
+  .badge__kind { color: #c9c1ff; font-size: 11px; }
+  .badge strong { font-size: 21px; letter-spacing: -0.02em; line-height: 1.2; }
+  .badge__issuer { color: var(--on-ink-2); font-size: 14px; }
+  .badge__verify { color: var(--ok-ink); font-size: 11px; margin-top: 4px; }
 </style>
