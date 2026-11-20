@@ -8,6 +8,17 @@ import Contact from "../components/Contact.astro";
 import Toolbox from "../components/Toolbox.astro";
 import { ROLES } from "../data/profile.js";
 const roles = ROLES;
+// Left-side section rail (desktop): one dash per section, a preview card on hover.
+const rail = [
+  { id: "intro", t: "Intro", d: "Who I am and what I design." },
+  { id: "ai", t: "AI highlights", d: "Four AI features I designed. All four are live." },
+  { id: "work", t: "Selected work", d: "Case studies, from AI features to apps and websites." },
+  { id: "experience", t: "Experience", d: "Where I've worked." },
+  { id: "expertise", t: "Expertise", d: "What I'm strongest at." },
+  { id: "tools", t: "Tools", d: "What I work with." },
+  { id: "credentials", t: "Credentials", d: "Learning in public." },
+  { id: "contact", t: "Contact", d: "Building something with AI? Let's talk." },
+];
 const expertise = [
   "AI-integrated product experiences",
   "Product strategy & UX leadership",
@@ -28,6 +39,13 @@ const badges = [
   description="Labeeb Manamkandath is a UX UI (Product) Designer in Dubai with 5+ years of experience, designing field apps, web platforms and AI features that are live on construction sites."
 >
   <Header current="home" />
+  <nav class="rail" aria-label="Sections on this page">
+    <ol>
+      {rail.map((r) => (
+        <li><a href={`#${r.id}`} data-rail={r.id}><span class="rail__dash" aria-hidden="true"></span><span class="rail__card"><b>{r.t}</b><span>{r.d}</span></span></a></li>
+      ))}
+    </ol>
+  </nav>
   <main id="main">
     <Hero />
 
@@ -113,6 +131,20 @@ const badges = [
 </Base>
 
 <script is:inline>
+  // Section rail: mark the section currently in view.
+  (function () {
+    var links = [].slice.call(document.querySelectorAll("[data-rail]"));
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var set = function (id) { links.forEach(function (a) { a.toggleAttribute("aria-current", a.dataset.rail === id); }); };
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) set(e.target.id); });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(function (a) { var el = document.getElementById(a.dataset.rail); if (el) io.observe(el); });
+    set("intro");
+  })();
+</script>
+
+<script is:inline>
   // The AI demos used to live on the homepage. Send old links like /#voice to their new home.
   (function () {
     var h = location.hash.slice(1);
@@ -121,6 +153,19 @@ const badges = [
 </script>
 
 <style>
+  .rail { position: fixed; left: clamp(16px, 2vw, 32px); top: 50%; transform: translateY(-50%); z-index: 40; }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .rail a { position: relative; display: flex; align-items: center; height: 18px; width: 44px; text-decoration: none; }
+  .rail__dash { display: block; width: 14px; height: 2px; border-radius: 2px; background: var(--fg-3); opacity: 0.45; transition: width 0.25s var(--ease), opacity 0.25s, background 0.25s; }
+  .rail a:hover .rail__dash, .rail a:focus-visible .rail__dash { width: 22px; opacity: 0.9; }
+  .rail a[aria-current] .rail__dash { width: 28px; opacity: 1; background: var(--ink); }
+  .rail__card { position: absolute; left: 40px; top: 50%; width: 260px; display: grid; gap: 6px; padding: 14px 16px; border-radius: 14px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); box-shadow: 0 20px 40px -20px rgba(21, 25, 55, 0.6);
+    opacity: 0; visibility: hidden; transform: translate(-6px, -50%); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0s 0.2s; pointer-events: none; }
+  .rail__card b { font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rail__card span { font-size: 14.5px; line-height: 1.4; color: var(--on-ink-2); }
+  .rail a:hover .rail__card, .rail a:focus-visible .rail__card { opacity: 1; visibility: visible; transform: translate(0, -50%); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); }
+  /* only where there's room beside the content and a real pointer */
+  @media (max-width: 1279px), (hover: none) { .rail { display: none; } }
   .roles { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
   .roles li { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--rule-strong); }
   .roles__when { color: var(--fg-3); padding-top: 6px; }
