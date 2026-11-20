@@ -7,7 +7,7 @@ export default {
   status: "Live",
   lede: "A selfie check-in, matched to the worker's face and the site's location, that flows into timesheets, overtime and pay. The AI is fast, but it can be wrong. So nobody ever loses a day's attendance because of it.",
   meta: [
-    ["Role", "End-to-end Product Designer"],
+    ["Role", "End-to-end UI/UX Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Mar – Nov 2025 · 9 months"],
