@@ -169,6 +169,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
       const data = await r.json().catch(() => ({}));
       if (me !== run) return;
       if (!r.ok) {
+        window.lbTry && window.lbTry("voice", "Live AI error", data.reason || r.status);
         setSteps(null, ["listen"]);
         msg(r.status === 503
           ? "Live AI isn't switched on for this preview yet. Your words above are real; try a sample to see the structured result."
@@ -177,8 +178,10 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
       }
       setSteps("structure", ["listen", "understand", "translate"]); await wait(250);
       render(data, true);
+      window.lbTry && window.lbTry("voice", "Got a live AI result");
       setSteps("review", ["listen", "understand", "translate", "structure"]);
     } catch {
+      window.lbTry && window.lbTry("voice", "Live AI error", "network");
       setSteps(null, ["listen"]);
       msg("Couldn't reach the live AI. Try a sample instead.");
     }
@@ -209,12 +212,14 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
 
   // samples
   $$("[data-sample]").forEach((b) => b.addEventListener("click", () => {
+    window.lbTry && window.lbTry("voice", "Played a sample", b.dataset.sample);
     $$("[data-sample]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     playSample(b.dataset.sample);
   }));
 
   // type
   $("[data-type-go]").addEventListener("click", () => {
+    window.lbTry && window.lbTry("voice", "Typed a site update");
     const text = $("#vd-text").value.trim();
     if (!text) { msg("Type a short note first."); return; }
     $("[data-said-tag]").innerHTML = tag("tag--live", "Typed by you");
@@ -235,6 +240,7 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
     finalText = "";
     rec = new SR();
     rec.lang = $("#vd-lang").value;
+    window.lbTry && window.lbTry("voice", "Recorded by voice", rec.lang);
     rec.interimResults = true;
     rec.continuous = true;
     ++run; clearResult(); msg("");
@@ -270,8 +276,10 @@ import { SAMPLES, LANGS } from "../data/voice-samples.js";
     k.dataset.kind = next; k.textContent = KIND_LABEL[next];
     k.setAttribute("aria-label", `Label: ${KIND_LABEL[next]}. Tap to change.`);
     k.closest(".it").className = `it it--${next} edited`;
+    window.lbTry && window.lbTry("voice", "Corrected a label");
   });
   $("[data-submit]").addEventListener("click", () => {
+    window.lbTry && window.lbTry("voice", "Submitted the notes");
     setSteps(null, ["listen", "understand", "translate", "structure", "review"]);
     msg("Submitted. (It's a demo: nothing was sent anywhere.)");
   });

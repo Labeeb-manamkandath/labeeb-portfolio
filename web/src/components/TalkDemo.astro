@@ -116,6 +116,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
 
   async function play() {
     const me = ++run; reset();
+    window.lbTry && window.lbTry("talk", "Played the safety talk");
     $("[data-idle]").hidden = true;
     $("[data-play-label]").textContent = "Restart";
     $("[data-done]").disabled = false;
@@ -141,6 +142,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
     const left = POINTS.filter((p) => state[p.id] !== "full");
     const p = pct();
     $("[data-sum-pct]").textContent = `${p}%`;
+    window.lbTry && window.lbTry("talk", "Saw the summary", `${p}% covered`);
     $("[data-sum-line]").textContent = left.length
       ? `Good talk. ${left.length} point${left.length > 1 ? "s" : ""} remaining.`
       : "Every point covered. Nice one.";
@@ -149,6 +151,7 @@ const people = Array.from({ length: PHOTO_PEOPLE }, (_, i) => i);
   }
 
   async function scan() {
+    window.lbTry && window.lbTry("talk", "Scanned the group photo");
     $("[data-scan]").disabled = true;
     const ph = $("[data-photo]");
     ph.classList.add("scanning");

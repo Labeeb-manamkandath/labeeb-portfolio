@@ -67,13 +67,17 @@ export default async function handler(req, res) {
   const pages = new Map(), pageVisitors = new Map(), sources = new Map(), referrers = new Map(), countries = new Map(), cities = new Map();
   const devices = new Map(), browsers = new Map(), oses = new Map(), clicks = new Map(), langs = new Map(), campaigns = new Map();
   let views = 0;
+  // AI demo usage
+  const FEATURES = ["voice", "face", "workforce", "talk"];
+  const ai = new Map(FEATURES.map((f) => [f, { users: new Set(), tries: 0, actions: new Map() }]));
+  const aiUsers = new Set(); const aiDaily = new Map(); let aiTries = 0; const aiEvents = [];
   const live = new Set();
 
   lists.forEach((items, i) => {
     for (const raw of items || []) {
       let ev; try { ev = JSON.parse(raw); } catch { continue; }
       let s = sessions.get(ev.s);
-      if (!s) { s = { id: ev.s, v: ev.v, start: ev.t, last: ev.t, pages: [], dur: new Map(), clicks: [] }; sessions.set(ev.s, s); }
+      if (!s) { s = { id: ev.s, v: ev.v, start: ev.t, last: ev.t, pages: [], dur: new Map(), clicks: [], tries: [] }; sessions.set(ev.s, s); }
       s.start = Math.min(s.start, ev.t); s.last = Math.max(s.last, ev.t);
       if (now - ev.t < 5 * 60 * 1000) live.add(ev.v);
       if (ev.k === "view") {
@@ -88,6 +92,12 @@ export default async function handler(req, res) {
         }
       } else if (ev.k === "end") {
         s.dur.set(ev.p, Math.max(s.dur.get(ev.p) || 0, ev.d || 0));
+      } else if (ev.k === "try") {
+        const f = ai.get(ev.fe);
+        if (f) { f.users.add(ev.v); f.tries++; inc(f.actions, ev.a); }
+        aiUsers.add(ev.v); aiTries++; aiDaily.set(i, (aiDaily.get(i) || new Set()).add(ev.v));
+        s.tries.push({ fe: ev.fe, a: ev.a, o: ev.o });
+        aiEvents.push(ev);
       } else if (ev.k === "click") {
         inc(clicks, ev.x); s.clicks.push(ev.x);
       }
@@ -112,7 +122,7 @@ export default async function handler(req, res) {
 
   const recent = counted.sort((a, b) => b.start - a.start).slice(0, 60).map((s) => ({
     start: s.start, last: s.last, ...s.meta, pages: s.pages.sort((a, b) => a.t - b.t).map((x) => x.p), time: s.time,
-    clicks: s.clicks, visits: visitorSessions.get(s.v) || 1,
+    clicks: s.clicks, tries: s.tries, visits: visitorSessions.get(s.v) || 1,
   }));
 
   return res.status(200).json({
@@ -123,8 +133,15 @@ export default async function handler(req, res) {
       avgTime: durCount ? durTotal / durCount : 0,
       bounceRate: counted.length ? bounces / counted.length : 0,
       live: live.size,
+      aiUsers: aiUsers.size, aiTries,
+      aiShare: allVisitors.size ? aiUsers.size / allVisitors.size : 0,
     },
-    daily: daily.map((x) => ({ d: x.d, visitors: x.visitors.size, views: x.views })),
+    ai: FEATURES.map((k) => { const f = ai.get(k); return { k, users: f.users.size, tries: f.tries, actions: top(f.actions, 10) }; }),
+    aiRecent: aiEvents.sort((a, b) => b.t - a.t).slice(0, 60).map((ev) => {
+      const m = (sessions.get(ev.s) || {}).meta || {};
+      return { t: ev.t, fe: ev.fe, a: ev.a, o: ev.o, c: m.c, ci: m.ci, device: m.device, src: m.src, n: m.n };
+    }),
+    daily: daily.map((x, i) => ({ d: x.d, visitors: x.visitors.size, views: x.views, ai: (aiDaily.get(i) || new Set()).size })),
     pages: top(pages, 15).map((x) => ({ ...x, u: pageVisitors.get(x.k).size })),
     sources: top(sources), referrers: top(referrers), countries: top(countries, 15), cities: top(cities),
     devices: top(devices), browsers: top(browsers), os: top(oses), clicks: top(clicks), languages: top(langs), campaigns: top(campaigns),

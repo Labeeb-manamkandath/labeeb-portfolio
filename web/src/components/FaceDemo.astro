@@ -98,6 +98,7 @@ const steps = [
 
   function success(live) {
     stop();
+    window.lbTry && window.lbTry("face", live ? "Registered with camera" : "Finished the no-camera run");
     step("done"); cue("Done. You're registered.");
     $("[data-after]").hidden = false;
     if (!live) $("[data-tags]").innerHTML = '<span class="tag tag--sim">Simulated · no camera used</span>';
@@ -116,6 +117,7 @@ const steps = [
   // Scripted run for people without a camera
   async function demo() {
     reset(); const me = ++run;
+    window.lbTry && window.lbTry("face", "Watched without camera");
     $("[data-start]").hidden = true; $("[data-stage]").classList.add("demo");
     const script = [["find", "Looking for your face…", 900], ["fit", "Move a little closer", 1100], ["fit", "Centre your face", 900], ["hold", "Hold still", 1200], ["blink", "Now blink once", 1300]];
     for (const [id, t, ms] of script) { if (me !== run) return; step(id); cue(t); await wait(ms); }
@@ -127,9 +129,11 @@ const steps = [
     reset(); const me = ++run;
     $("[data-start]").hidden = true;
     cue("Starting the camera…");
+    window.lbTry && window.lbTry("face", "Started the camera");
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 640, height: 480 }, audio: false });
     } catch {
+      window.lbTry && window.lbTry("face", "Camera blocked or missing");
       $("[data-start]").hidden = false;
       $("[data-err]").textContent = "Couldn't open a camera. Allow it in your browser, or watch it without a camera.";
       cue("No camera"); return;
@@ -148,6 +152,7 @@ const steps = [
         });
       }
     } catch {
+      window.lbTry && window.lbTry("face", "Face detection didn't load");
       stop(); reset();
       $("[data-err]").textContent = "Face detection couldn't load in this browser. Try the version without a camera.";
       return;
