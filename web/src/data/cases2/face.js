@@ -8,7 +8,7 @@ export default {
   status: "Live",
   lede: "Workers register their face once, on site, so daily check-ins can work by selfie. The hard part wasn't the AI. It was getting a clear photo from someone in harsh sun, who can't read small text, without making them feel watched.",
   meta: [
-    ["Role", "UI/UX Designer"],
+    ["Role", "UX UI (Product) Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Jan 2025 · 6 weeks"],

@@ -9,7 +9,7 @@ export default {
   status: "Live",
   lede: "Site workers speak an update in their own language. The AI turns it into structured reports, and the worker checks them before anything is sent.",
   meta: [
-    ["Role", "UI/UX Designer"],
+    ["Role", "UX UI (Product) Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Sept 2024 · 8 weeks"],
@@ -76,7 +76,7 @@ export default {
   deeper: [
     {
       t: "Context: what I was asked to build",
-      body: `<p>Zaper is a workforce platform for construction and facility management. The brief was a faster way for field teams to report daily progress and issues to management. My role: end-to-end UI/UX design for the field app and the manager view, working with AI/ML engineers and developers.</p>
+      body: `<p>Zaper is a workforce platform for construction and facility management. The brief was a faster way for field teams to report daily progress and issues to management. My role: end-to-end UX UI design for the field app and the manager view, working with AI/ML engineers and developers.</p>
 <p>AI made sense because the input was already speech. Workers narrated problems to supervisors all day. What was missing was a way to capture that without a form.</p>`,
     },
     {

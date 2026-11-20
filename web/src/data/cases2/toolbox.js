@@ -8,7 +8,7 @@ export default {
   status: "Live on 21 sites",
   lede: "The AI listens to the morning safety talk, checks it against the checklist, and tells the supervisor what was missed. It also logs attendance from one group photo. It's designed to coach the supervisor, not grade him in front of his crew.",
   meta: [
-    ["Role", "UI/UX Designer"],
+    ["Role", "UX UI (Product) Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Nov 2024 · 6 weeks"],
