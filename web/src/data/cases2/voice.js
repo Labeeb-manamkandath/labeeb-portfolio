@@ -72,7 +72,7 @@ export default {
       after: { src: "/cases/voice/trust-after.png", cap: "The original voice note travels with every report." },
     },
   ],
-  demo: { href: "/#voice", t: "Try the voice demo", d: "Speak or type a site update and watch it become structured notes you can review. Runs in your browser." },
+  demo: { href: "/ai-work#voice", t: "Try the voice demo", d: "Speak or type a site update and watch it become structured notes you can review. Runs in your browser." },
   deeper: [
     {
       t: "Context: what I was asked to build",

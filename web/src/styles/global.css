@@ -157,15 +157,15 @@ img { height: auto; }
 #voice, #face, #workforce, #talk { padding: clamp(72px, 9vw, 136px) 0; border-top: 0; }
 #face, #talk { background: var(--paper-2); }
 .more { padding: clamp(56px, 7vw, 96px) 0; }
-:is(#demos, #voice, #face, #workforce, #talk) .sec__head { display: block; margin-bottom: clamp(32px, 4vw, 56px); }
-:is(#demos, #voice, #face, #workforce, #talk) .sec__title { max-width: none; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(24px, 4vw, 72px); align-items: end; }
-:is(#demos, #voice, #face, #workforce, #talk) .h-lg { font-size: clamp(32px, 3.6vw, 52px); max-width: 17ch; margin: 0; }
-:is(#demos, #voice, #face, #workforce, #talk) .sec__title .lede { font-size: 18px; margin: 0; max-width: 42ch; }
+:is(#demos, #ai, #voice, #face, #workforce, #talk) .sec__head { display: block; margin-bottom: clamp(32px, 4vw, 56px); }
+:is(#demos, #ai, #voice, #face, #workforce, #talk) .sec__title { max-width: none; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(24px, 4vw, 72px); align-items: end; }
+:is(#demos, #ai, #voice, #face, #workforce, #talk) .h-lg { font-size: clamp(32px, 3.6vw, 52px); max-width: 17ch; margin: 0; }
+:is(#demos, #ai, #voice, #face, #workforce, #talk) .sec__title .lede { font-size: 18px; margin: 0; max-width: 42ch; }
 :is(#voice, #face, #talk) .notes { margin-top: clamp(40px, 5vw, 64px); }
 :is(#voice, #face, #workforce, #talk) .cs-link { margin: clamp(32px, 4vw, 48px) 0 0; padding-top: 20px; border-top: 1px solid var(--rule-strong); }
 @media (max-width: 860px) {
-  :is(#demos, #voice, #face, #workforce, #talk) .sec__title { grid-template-columns: minmax(0, 1fr); }
-  :is(#demos, #voice, #face, #workforce, #talk) .sec__title .lede { margin-top: 14px; font-size: 17px; }
+  :is(#demos, #ai, #voice, #face, #workforce, #talk) .sec__title { grid-template-columns: minmax(0, 1fr); }
+  :is(#demos, #ai, #voice, #face, #workforce, #talk) .sec__title .lede { margin-top: 14px; font-size: 17px; }
 }
 .page-head + .sec { border-top: 0; padding-top: clamp(24px, 4vw, 56px); }
 
@@ -185,3 +185,5 @@ img { height: auto; }
 /* keep anchored sections clear of the sticky header */
 html { scroll-padding-top: 72px; }
 @media (max-width: 760px) { html { scroll-padding-top: 72px; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

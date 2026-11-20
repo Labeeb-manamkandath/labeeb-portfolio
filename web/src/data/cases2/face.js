@@ -68,7 +68,7 @@ export default {
       after: { src: "/cases/face/face-rereg.png", label: "Shipped flow", cap: "Mismatch after a big change, with a way to re-register." },
     },
   ],
-  demo: { href: "/#face", t: "Try face registration", d: "Use your camera to see the step-by-step guidance. Face detection runs on your device. Nothing is uploaded." },
+  demo: { href: "/ai-work#face", t: "Try face registration", d: "Use your camera to see the step-by-step guidance. Face detection runs on your device. Nothing is uploaded." },
   screens: [
     { src: "/work/images-min/face-v51-dark.jpg", w: 1400, h: 3031, t: "Explored · camera style", d: "A dark viewfinder like the native camera. Familiar, but the progress indicator was harder to see." },
     { src: "/work/images-min/face-v53-light.jpg", w: 1400, h: 3031, t: "Carried forward · light", d: "Step and progress first, the instruction above the frame, and an explicit Take Photo button." },
