@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   let b = req.body;
   if (typeof b === "string") { try { b = JSON.parse(b); } catch { b = null; } }
   if (!b || typeof b !== "object") return res.status(400).end();
-  const k = ["view", "end", "click"].includes(b.k) ? b.k : null;
+  const k = ["view", "end", "click", "try"].includes(b.k) ? b.k : null;
   if (!k || !/^[a-z0-9]{8,32}$/i.test(String(b.v)) || !/^[a-z0-9]{8,32}$/i.test(String(b.s))) return res.status(400).end();
 
   const ev = { t: Date.now(), k, v: b.v, s: b.s, p: str(b.p, 200) || "/" };
@@ -52,6 +52,12 @@ export default async function handler(req, res) {
     });
   } else if (k === "end") {
     ev.d = num(b.d, 6 * 3600 * 1000); // active time on this page, ms
+  } else if (k === "try") {
+    // someone used one of the AI demos: which one, what they did, and a short detail
+    if (!["voice", "face", "workforce", "talk"].includes(b.fe)) return res.status(400).end();
+    ev.fe = b.fe;
+    ev.a = str(b.a, 60);
+    ev.o = str(b.o, 60);
   } else {
     ev.x = str(b.x, 80); // what was clicked: Email, LinkedIn, Resume, an outside site
     ev.h = str(b.h, 200);

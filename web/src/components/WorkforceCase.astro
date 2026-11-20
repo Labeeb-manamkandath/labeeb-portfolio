@@ -133,6 +133,7 @@ const nodes = [
     const set = (st: string) => { ci.dataset.state = st; };
     go.addEventListener("click", async () => {
       const me = ++run;
+      (window as any).lbTry?.("workforce", "Tried the selfie check-in");
       go.hidden = true; res.hidden = true; set("snap");
       status.textContent = "Taking selfie…"; await wait(450);
       if (me !== run) return; set("scan");
@@ -155,7 +156,7 @@ const nodes = [
     document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
   });
   tabs.forEach((t, i) => {
-    t.addEventListener("click", () => pick(t));
+    t.addEventListener("click", () => { pick(t); (window as any).lbTry?.("workforce", "Opened a step", t.dataset.node); });
     t.addEventListener("keydown", (e) => {
       const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
       if (!d) return; e.preventDefault();

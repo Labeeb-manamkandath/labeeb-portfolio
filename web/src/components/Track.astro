@@ -1,6 +1,8 @@
 <script is:inline>
 // Anonymous, cookieless visit counting for Labeeb's /admin page.
 // A random id in this browser tells new from returning visitors; nothing personal is stored.
+// AI demo usage: components call window.lbTry(feature, action, detail). It's a no-op when not counting.
+window.lbTry = function () {};
 (function () {
   try {
     var q = new URLSearchParams(location.search);
@@ -19,6 +21,7 @@
       fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true }).catch(function () {});
     };
     var path = location.pathname;
+    window.lbTry = function (fe, a, o) { try { send({ k: "try", p: path, fe: String(fe), a: String(a), o: o == null ? "" : String(o) }); } catch (e) {} };
     send({
       k: "view", p: path, r: document.referrer, ti: document.title,
       us: q.get("utm_source") || "", um: q.get("utm_medium") || "", uc: q.get("utm_campaign") || "",
