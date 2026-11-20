@@ -1,0 +1,44 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Experiences from "../components/Experiences.astro";
+import VoiceDemo from "../components/VoiceDemo.astro";
+import TalkDemo from "../components/TalkDemo.astro";
+import FaceDemo from "../components/FaceDemo.astro";
+import WorkforceCase from "../components/WorkforceCase.astro";
+import Contact from "../components/Contact.astro";
+---
+<Base
+  title="AI Works · Labeeb Manamkandath"
+  description="Four AI features Labeeb Manamkandath designed for Zaper, all live on construction sites: voice notes in any language, guided face registration, time & attendance and the Toolbox Talk Analyzer."
+>
+  <Header current="ai" />
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <div class="sec__label reveal"><span class="sec-num">AI Works</span><span class="mono">4 features · 1 product</span></div>
+        <h1 class="h-xl reveal">Four AI features I designed. All four are live.</h1>
+        <p class="lede reveal">Shipped as part of Zaper and live with field teams on construction sites. Try each one below, then read the full case study.</p>
+      </div>
+    </section>
+    <Experiences />
+    <VoiceDemo />
+    <FaceDemo />
+    <WorkforceCase />
+    <TalkDemo />
+    <section class="sec more" aria-label="More projects">
+      <div class="wrap more__in">
+        <p class="h-lg">Eight case studies, from AI features to websites and mobile apps.</p>
+        <a class="btn" href="/projects">See all projects <span class="arr">→</span></a>
+      </div>
+    </section>
+  </main>
+  <Contact />
+</Base>
+
+<style>
+  .page-head .lede { max-width: 52ch; }
+  #demos { padding-top: 0; border-top: 0; }
+  .more__in { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .more__in p { margin: 0; max-width: 22ch; }
+</style>

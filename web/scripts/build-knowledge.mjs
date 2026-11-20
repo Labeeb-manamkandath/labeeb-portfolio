@@ -1,4 +1,4 @@
-// Builds what the chat buddy knows: the text of the built pages (home, about, approach,
+// Builds what the chat buddy knows: the text of the built pages (home, AI work, about, approach,
 // projects) and every case study, plus the links it may share. Run after `npm run build`:
 //   node scripts/build-knowledge.mjs   → writes ../api/_knowledge.js (committed)
 import { readFileSync, writeFileSync } from "node:fs";
@@ -17,7 +17,7 @@ const main = (html) => text((html.match(/<main[\s\S]*?<\/main>/) || [html])[0]);
 
 const pages = [
   ["Homepage (/)", "index.html"],
-  ["About page (/about)", "about/index.html"],
+  ["AI Work page (/ai-work)", "ai-work/index.html"],
   ["Approach page (/approach)", "approach/index.html"],
 ].map(([t, f]) => `## ${t}\n${main(dist(f))}`);
 
@@ -26,18 +26,19 @@ const cases = PROJECTS.map((p) => {
   return `## Case study: ${p.title} (/work/${p.key})\n${p.cat}, ${p.yr}. ${p.sum}\n${text(raw).replace(/^← All projects\s*/, "")}`;
 });
 
-const contact = text(dist("about/index.html").match(/<section[^>]*id="contact"[\s\S]*?<\/section>/)[0]);
+const contact = text(dist("index.html").match(/<section[^>]*id="contact"[\s\S]*?<\/section>/)[0]);
 
 const links = [
   { href: "/", label: "Homepage" },
-  { href: "/#demos", label: "AI demos" },
-  { href: "/#voice", label: "Voice notes demo" },
-  { href: "/#face", label: "Face registration demo" },
-  { href: "/#workforce", label: "Time & attendance" },
-  { href: "/#talk", label: "Toolbox Talk demo" },
+  { href: "/ai-work", label: "AI Works (all four AI features and demos)" },
+  { href: "/ai-work#voice", label: "Voice notes demo" },
+  { href: "/ai-work#face", label: "Face registration demo" },
+  { href: "/ai-work#workforce", label: "Time & attendance" },
+  { href: "/ai-work#talk", label: "Toolbox Talk demo" },
   { href: "/projects", label: "All projects" },
-  { href: "/about", label: "About Labeeb" },
-  { href: "/about#experience", label: "Experience" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#expertise", label: "Expertise" },
+  { href: "/#credentials", label: "Credentials" },
   { href: "/approach", label: "How he designs AI" },
   ...PROJECTS.map((p) => ({ href: `/work/${p.key}`, label: `${p.title} case study` })),
   { href: "https://www.linkedin.com/in/labeeb-manamkandath/", label: "LinkedIn" },

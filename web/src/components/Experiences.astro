@@ -1,5 +1,9 @@
 ---
 // The four AI features. All four are shipped and live (Labeeb, 2026-11-03).
+// On /ai-work the cards jump to the demos below them. On the homepage (home) they are
+// highlights that link across to /ai-work, with their own heading and a button.
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
 const items = [
   {
     n: "01",
@@ -39,15 +43,19 @@ const items = [
   },
 ];
 ---
-<section class="sec ex" id="demos" aria-labelledby="ex-h">
+<section class={`sec ex${home ? " ex--home" : ""}`} id={home ? "ai" : "demos"} aria-labelledby="ex-h" aria-label={home ? undefined : "The four AI features"}>
   <div class="wrap">
-    <div class="sec__head">
-      <div class="sec__label reveal"><span class="sec-num">My AI Works</span><span class="mono">4 features · 1 product</span></div>
-      <div class="sec__title reveal">
-        <h2 id="ex-h" class="h-lg">Four AI features I designed. All four are live.</h2>
-        <p class="lede">Shipped and live on construction sites. See how each one works below.</p>
+    {home ? (
+      <div class="sec__head">
+        <div class="sec__label reveal"><span class="sec-num">01</span><span class="mono">AI highlights</span></div>
+        <div class="sec__title reveal">
+          <h2 id="ex-h" class="h-lg">Four AI features I designed. All four are live.</h2>
+          <p class="lede">Part of my work on Zaper, live with field teams on construction sites. Each one has a demo you can try and a full case study.</p>
+        </div>
       </div>
-    </div>
+    ) : (
+      <h2 id="ex-h" class="sr-only">The four AI features</h2>
+    )}
 
     <ol class="ex__grid">
       {items.map((it) => (
@@ -67,16 +75,23 @@ const items = [
             )}
           </div>
           <div class="card__top"><span class="card__n mono">{it.n}</span><span class={`tag ${it.status.cls}`}>{it.status.text}</span></div>
-          <h3 class="h-md"><a class="card__t" href={it.href}>{it.title}</a></h3>
+          <h3 class="h-md"><a class="card__t" href={home ? `/ai-work${it.href}` : it.href}>{it.title}</a></h3>
           <p>{it.body}</p>
-          {it.href && <a class="card__link" href={it.href}>{it.cta} <span aria-hidden="true">↓</span></a>}
+          {it.href && <a class="card__link" href={home ? `/ai-work${it.href}` : it.href}>{home ? "See how it works" : it.cta} <span aria-hidden="true">{home ? "→" : "↓"}</span></a>}
         </li>
       ))}
     </ol>
+    {home && (
+      <div class="ex__more reveal">
+        <a class="btn" href="/ai-work">Explore all AI Works <span class="arr">→</span></a>
+        <a class="btn btn--ghost" href="/approach">How I design AI</a>
+      </div>
+    )}
   </div>
 </section>
 
 <style>
+  .ex__more { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(28px, 3vw, 40px); }
   .ex .lede .tag { vertical-align: 2px; margin: 0 2px; }
   .ex__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
   .card { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 20px; background: var(--card); border: 1px solid var(--rule); border-radius: 16px; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }

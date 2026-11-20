@@ -8,7 +8,7 @@ export default {
   status: "Live on 21 sites",
   lede: "The AI listens to the morning safety talk, checks it against the checklist, and tells the supervisor what was missed. It also logs attendance from one group photo. It's designed to coach the supervisor, not grade him in front of his crew.",
   meta: [
-    ["Role", "Senior Product Designer"],
+    ["Role", "UX UI (Product) Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Nov 2024 · 6 weeks"],
@@ -71,7 +71,7 @@ export default {
     },
   ],
   fine: "Recreated screens are based on the shipped app. Names are samples. The “Earlier design” screen is from the original design.",
-  demo: { href: "/#talk", t: "Try the talk analyzer", d: "A scripted toolbox talk plays as text, and the checklist responds as points are covered." },
+  demo: { href: "/ai-work#talk", t: "Try the talk analyzer", d: "A scripted toolbox talk plays as text, and the checklist responds as points are covered." },
   screens: [
     { src: "/work/images-min/toolbox-before.jpg", w: 900, h: 1949, t: "Before the talk", d: "The checklist is the script. One button starts the session, and full content is there if needed." },
     { src: "/cases/toolbox/tb-group.png", w: 780, h: 1688, t: "After the talk · attendance", d: "One group photo, with unmatched people listed for the supervisor to tag." },

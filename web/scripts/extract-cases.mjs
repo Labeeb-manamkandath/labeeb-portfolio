@@ -10,7 +10,7 @@ mkdirSync(out, { recursive: true });
 
 const keys = { Voice: "voice", Driver: "driver", Zaper: "zaper", Maid: "maid", Toolbox: "toolbox", Bazar: "bazar", Workforce: "workforce", Case: "case" };
 const hrefs = {
-  goBack: "/projects", goHome: "/", goAbout: "/about", goContact: "#contact", openAll: "/projects", navWork: "/projects",
+  goBack: "/projects", goHome: "/", goAbout: "/#experience", goContact: "#contact", openAll: "/projects", navWork: "/projects",
   ...Object.fromEntries(Object.entries(keys).map(([k, v]) => [`open${k}`, `/work/${v}`])),
 };
 

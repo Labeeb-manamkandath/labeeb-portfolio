@@ -3,35 +3,188 @@ import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Experiences from "../components/Experiences.astro";
-import VoiceDemo from "../components/VoiceDemo.astro";
-import TalkDemo from "../components/TalkDemo.astro";
-import FaceDemo from "../components/FaceDemo.astro";
-import WorkforceCase from "../components/WorkforceCase.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
 import Contact from "../components/Contact.astro";
+import Toolbox from "../components/Toolbox.astro";
+import { ROLES } from "../data/profile.js";
+const roles = ROLES;
+// Left-side section rail (desktop): one dash per section, a preview card on hover.
+const rail = [
+  { id: "intro", t: "Intro", d: "Who I am and what I design." },
+  { id: "ai", t: "AI highlights", d: "Four AI features I designed. All four are live." },
+  { id: "work", t: "Selected work", d: "Case studies, from AI features to apps and websites." },
+  { id: "experience", t: "Experience", d: "Where I've worked." },
+  { id: "expertise", t: "Expertise", d: "What I'm strongest at." },
+  { id: "tools", t: "Tools", d: "What I work with." },
+  { id: "credentials", t: "Credentials", d: "Learning in public." },
+  { id: "contact", t: "Contact", d: "Building something with AI? Let's talk." },
+];
+const expertise = [
+  "AI-integrated product experiences",
+  "Product strategy & UX leadership",
+  "Discovery & user research",
+  "User flows & information architecture",
+  "Interaction design",
+  "UX planning & validation",
+  "User-centric product development",
+];
+// Credentials. Add the course name once Labeeb confirms it (the verify page doesn't expose it to us).
+const badges = [
+  { issuer: "Claude Academy", course: "", kind: "Completion badge", href: "https://academy.claude.com/verify/19caf89190d01138d5124e4401f74928" },
+];
+
 ---
 <Base
-  title="Labeeb Manamkandath · Senior Product Designer (UI/UX), AI experiences"
-  description="Product designer in Dubai who designs AI features people trust and actually use: voice in any language, face check-in, live safety-talk coaching. All four are live."
+  title="Labeeb Manamkandath · UX UI (Product) Designer · UX of AI · AI Experiences"
+  description="Labeeb Manamkandath is a UX UI (Product) Designer in Dubai with 5+ years of experience, designing field apps, web platforms and AI features that are live on construction sites."
 >
   <Header current="home" />
+  <nav class="rail" aria-label="Sections on this page">
+    <ol>
+      {rail.map((r) => (
+        <li><a href={`#${r.id}`} data-rail={r.id}><span class="rail__dash" aria-hidden="true"></span><span class="rail__card"><b>{r.t}</b><span>{r.d}</span></span></a></li>
+      ))}
+    </ol>
+  </nav>
   <main id="main">
     <Hero />
-    <Experiences />
-    <VoiceDemo />
-    <FaceDemo />
-    <WorkforceCase />
-    <TalkDemo />
-    <section class="sec more" aria-label="More projects">
-      <div class="wrap more__in">
-        <p class="h-lg">Eight case studies, from AI features to websites and mobile apps.</p>
-        <a class="btn" href="/projects">See all projects <span class="arr">→</span></a>
+
+    <Experiences home />
+
+    <section class="sec" id="work" aria-labelledby="wk-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">02</span><span class="mono">Selected work</span></div>
+          <div class="sec__title reveal">
+            <h2 id="wk-h" class="h-lg">Case studies, from AI features to apps and websites.</h2>
+          </div>
+        </div>
+        <ProjectGrid only={["toolbox", "workforce", "zaper", "driver"]} />
+        <p class="cs-link reveal"><a href="/projects">See all eight projects →</a></p>
+      </div>
+    </section>
+
+    <section class="sec" id="experience" aria-labelledby="exp-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">03</span><span class="mono">Experience</span></div>
+          <div class="sec__title reveal"><h2 id="exp-h" class="h-lg">Where I've worked.</h2></div>
+        </div>
+        <ol class="roles">
+          {roles.map((r) => (
+            <li class="reveal">
+              <span class="mono roles__when">{r.when}</span>
+              <div><h3 class="h-md">{r.role}</h3><span class="mono roles__co">{r.co}</span><p>{r.desc}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" id="expertise" aria-labelledby="xp-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">04</span><span class="mono">Expertise</span></div>
+          <div class="sec__title reveal"><h2 id="xp-h" class="h-lg">What I'm strongest at.</h2></div>
+        </div>
+        <ol class="xp">
+          {expertise.map((x, i) => <li class="reveal"><span class="mono">{String(i + 1).padStart(2, "0")}</span>{x}</li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" id="tools" aria-labelledby="tl-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">05</span><span class="mono">Tools</span></div>
+          <div class="sec__title reveal"><h2 id="tl-h" class="h-lg">What I work with.</h2></div>
+        </div>
+        <div class="reveal"><Toolbox /></div>
+      </div>
+    </section>
+
+    <section class="sec" id="credentials" aria-labelledby="cr-h">
+      <div class="wrap">
+        <div class="sec__head">
+          <div class="sec__label reveal"><span class="sec-num">06</span><span class="mono">Credentials</span></div>
+          <div class="sec__title reveal"><h2 id="cr-h" class="h-lg">Learning in public.</h2></div>
+        </div>
+        <ul class="badges">
+          {badges.map((b) => (
+            <li class="reveal">
+              <a class="badge" href={b.href} target="_blank" rel="noopener">
+                <span class="badge__seal" aria-hidden="true"><i></i></span>
+                <span class="badge__body">
+                  <span class="mono badge__kind">{b.kind}</span>
+                  <strong>{b.course || b.issuer}</strong>
+                  {b.course && <span class="badge__issuer">{b.issuer}</span>}
+                  <span class="mono badge__verify">Verify credential ↗</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   </main>
   <Contact />
 </Base>
 
+<script is:inline>
+  // Section rail: mark the section currently in view.
+  (function () {
+    var links = [].slice.call(document.querySelectorAll("[data-rail]"));
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var set = function (id) { links.forEach(function (a) { a.toggleAttribute("aria-current", a.dataset.rail === id); }); };
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) set(e.target.id); });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(function (a) { var el = document.getElementById(a.dataset.rail); if (el) io.observe(el); });
+    set("intro");
+  })();
+</script>
+
+<script is:inline>
+  // The AI demos used to live on the homepage. Send old links like /#voice to their new home.
+  (function () {
+    var h = location.hash.slice(1);
+    if (["demos", "voice", "face", "workforce", "talk"].indexOf(h) > -1) location.replace("/ai-work" + (h === "demos" ? "" : "#" + h));
+  })();
+</script>
+
 <style>
-  .more__in { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-  .more__in p { margin: 0; max-width: 22ch; }
+  .rail { position: fixed; left: clamp(16px, 2vw, 32px); top: 50%; transform: translateY(-50%); z-index: 40; }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .rail a { position: relative; display: flex; align-items: center; height: 18px; width: 44px; text-decoration: none; }
+  .rail__dash { display: block; width: 14px; height: 2px; border-radius: 2px; background: var(--fg-3); opacity: 0.45; transition: width 0.25s var(--ease), opacity 0.25s, background 0.25s; }
+  .rail a:hover .rail__dash, .rail a:focus-visible .rail__dash { width: 22px; opacity: 0.9; }
+  .rail a[aria-current] .rail__dash { width: 28px; opacity: 1; background: var(--ink); }
+  .rail__card { position: absolute; left: 40px; top: 50%; width: 260px; display: grid; gap: 6px; padding: 14px 16px; border-radius: 14px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); box-shadow: 0 20px 40px -20px rgba(21, 25, 55, 0.6);
+    opacity: 0; visibility: hidden; transform: translate(-6px, -50%); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0s 0.2s; pointer-events: none; }
+  .rail__card b { font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rail__card span { font-size: 14.5px; line-height: 1.4; color: var(--on-ink-2); }
+  .rail a:hover .rail__card, .rail a:focus-visible .rail__card { opacity: 1; visibility: visible; transform: translate(0, -50%); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); }
+  /* only where there's room beside the content and a real pointer */
+  @media (max-width: 1279px), (hover: none) { .rail { display: none; } }
+  .roles { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+  .roles li { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--rule-strong); }
+  .roles__when { color: var(--fg-3); padding-top: 6px; }
+  .roles__co { display: block; color: var(--tomato); margin: 6px 0 10px; text-transform: none; letter-spacing: 0; }
+  .roles p { margin: 0; color: var(--fg-2); max-width: 62ch; }
+  .xp { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 64px); border-top: 1.5px solid var(--ink); }
+  .xp li { display: flex; gap: 16px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--rule-strong); font-size: clamp(20px, 1.9vw, 27px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+  .xp li .mono { color: var(--tomato); }
+  @media (max-width: 860px) { .xp { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .roles li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+  .badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+  .badge { display: flex; gap: 18px; align-items: center; padding: 22px 24px; border-radius: 22px; background: var(--ai-surface); border: 1px solid var(--ai-edge); color: var(--on-ink); text-decoration: none; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+  .badge:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -24px rgba(21, 25, 55, 0.7); }
+  .badge__seal { flex: none; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(from 0deg, #a78bfa, #60a5fa, #34d399, #a78bfa); padding: 3px; }
+  .badge__seal i { width: 100%; height: 100%; border-radius: 50%; background: #181a3a; display: grid; place-items: center; }
+  .badge__seal i::before { content: ""; width: 26px; height: 26px; background: conic-gradient(from 0deg, #c4b5fd, #93c5fd, #6ee7b7, #c4b5fd); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .badge__body { display: grid; gap: 4px; min-width: 0; }
+  .badge__kind { color: #c9c1ff; font-size: 11px; }
+  .badge strong { font-size: 21px; letter-spacing: -0.02em; line-height: 1.2; }
+  .badge__issuer { color: var(--on-ink-2); font-size: 14px; }
+  .badge__verify { color: var(--ok-ink); font-size: 11px; margin-top: 4px; }
 </style>

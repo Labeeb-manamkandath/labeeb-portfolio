@@ -2,11 +2,11 @@
 interface Props { current?: string }
 const { current } = Astro.props;
 const links = [
-  { href: "/#demos", label: "My AI Works", key: "home" },
+  { href: "/ai-work", label: "AI Works", key: "ai" },
   { href: "/projects", label: "Projects", key: "projects" },
-  { href: "/approach", label: "Approach", key: "approach" },
-  { href: "/about", label: "About", key: "about" },
+  { href: "/approach", label: "My Approach", key: "approach" },
   { href: "#contact", label: "Contact", key: "contact" },
+  { href: "https://www.linkedin.com/in/labeeb-manamkandath/", label: "LinkedIn ↗", key: "linkedin", ext: true },
 ];
 ---
 <header class="hd">
@@ -19,7 +19,7 @@ const links = [
     </button>
     <nav aria-label="Main" id="hd-nav">
       <ul class="hd__nav">
-        {links.map((l) => <li><a href={l.href} aria-current={current === l.key ? "page" : undefined}>{l.label}</a></li>)}
+        {links.map((l) => <li><a href={l.href} aria-current={current === l.key ? "page" : undefined} target={l.ext ? "_blank" : undefined} rel={l.ext ? "noopener" : undefined}>{l.label}</a></li>)}
       </ul>
     </nav>
     <a class="hd__cta" href="mailto:labeebmanamkandath@gmail.com"><span class="hd__spark" aria-hidden="true"></span>Say hi</a>

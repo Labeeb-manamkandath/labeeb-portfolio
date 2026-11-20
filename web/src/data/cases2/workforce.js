@@ -7,7 +7,7 @@ export default {
   status: "Live",
   lede: "A selfie check-in, matched to the worker's face and the site's location, that flows into timesheets, overtime and pay. The AI is fast, but it can be wrong. So nobody ever loses a day's attendance because of it.",
   meta: [
-    ["Role", "End-to-end Product Designer"],
+    ["Role", "End-to-end UX UI (Product) Designer"],
     ["Team", "AI/ML engineers, developers"],
     ["Platform", "iOS · Android"],
     ["Timeline", "Mar – Nov 2025 · 9 months"],
@@ -70,7 +70,7 @@ export default {
     },
   ],
   fine: "Recreated screens are based on the shipped app. Names and dates are samples. The manual attendance screen is the shipped design.",
-  demo: { href: "/#workforce", t: "Try the selfie check-in", d: "A simulated check-in: snap, match, location check, and the result a worker sees." },
+  demo: { href: "/ai-work#workforce", t: "Try the selfie check-in", d: "A simulated check-in: snap, match, location check, and the result a worker sees." },
   screens: [
     { src: "/cases/workforce/screens/home.webp", w: 680, h: 1408, framed: true, t: "Home", d: "Check-in on the first screen, with shift and status at a glance." },
     { src: "/cases/workforce/screens/ai-confirm.webp", w: 680, h: 1408, framed: true, t: "AI confirm", d: "Name, role, time and site, with Wrong or Correct." },
