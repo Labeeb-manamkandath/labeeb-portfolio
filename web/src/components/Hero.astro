@@ -13,9 +13,11 @@
         <h1 id="hero-h" class="h-xl reveal">
           I design AI that people <span class="hl">trust</span> and actually use.
         </h1>
-        <p class="lede reveal">
-          For the past 3 years <strong>I've designed an AI-powered workforce platform</strong> for construction and facility management
-          teams. <strong>I have 5+ years of design experience.</strong>
+        <p class="lede reveal hero__lines">
+          <span>For the past 3 years</span>
+          <span><strong>I've designed an AI-powered workforce platform</strong></span>
+          <span>for construction and facility management teams.</span>
+          <span><strong>I have 5+ years of design experience.</strong></span>
         </p>
         <div class="hero__cta reveal">
           <a class="btn" href="/projects">View my work <span class="arr">→</span></a>
@@ -66,6 +68,9 @@
   .hero__meta span:nth-child(2) { color: var(--fg); }
   .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
   .hero h1 { font-size: clamp(44px, 6vw, 92px); max-width: 13ch; }
+  .hero__lines { max-width: 54ch; }
+  .hero__lines span { display: block; }
+  @media (max-width: 560px) { .hero__lines span { display: inline; } }
   .hero__copy .lede strong { color: var(--fg); font-weight: 650; }
   .hero__copy .lede { margin: clamp(22px, 2.6vw, 34px) 0 0; max-width: 46ch; }
   .hl { position: relative; white-space: nowrap; }
