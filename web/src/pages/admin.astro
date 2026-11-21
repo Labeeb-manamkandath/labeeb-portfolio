@@ -78,6 +78,7 @@ import "../styles/global.css";
         <div class="visits" data-visits></div>
       </article>
 
+      <p class="adm__note" data-hidden-note></p>
       <p class="adm__note">Visitors are anonymous: no names, no cookies and no IP addresses are stored. Location comes from the network and is usually right to the city. This browser is excluded from the counts.</p>
     </section>
   </main>
@@ -97,7 +98,7 @@ import "../styles/global.css";
     var dur = function (ms) { if (!ms) return "–"; var s = Math.round(ms / 1000); if (s < 60) return s + "s"; var m = Math.floor(s / 60); return m < 60 ? m + "m " + (s % 60) + "s" : Math.floor(m / 60) + "h " + (m % 60) + "m"; };
     var pct = function (x) { return Math.round(x * 100) + "%"; };
     var NAMES = { voice: "Voice notes", case: "Face registration", workforce: "Time & attendance", toolbox: "Toolbox Talk", zaper: "Zaper website", bazar: "Bazar", driver: "Driver timeline", maid: "Maid companion" };
-    var page = function (p) { if (p === "/") return "Home"; var m = p.match(/^\/work\/([^/]+)/); if (m) return "Case study · " + (NAMES[m[1]] || m[1]); var t = p.replace(/^\//, "").replace(/\/$/, ""); return t ? t.charAt(0).toUpperCase() + t.slice(1) : p; };
+    var page = function (p) { if (p === "/") return "Home"; if (/^\/ai-work\/?$/.test(p)) return "AI Works"; var m = p.match(/^\/work\/([^/]+)/); if (m) return "Case study · " + (NAMES[m[1]] || m[1]); var t = p.replace(/^\//, "").replace(/\/$/, ""); return t ? t.charAt(0).toUpperCase() + t.slice(1) : p; };
     var when = function (t) {
       var d = new Date(t), now = new Date(), diff = (now - d) / 60000;
       if (diff < 1) return "just now";
@@ -125,7 +126,7 @@ import "../styles/global.css";
         .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
         .then(function (x) {
           $("[data-dash]").removeAttribute("aria-busy");
-          if (x.s === 200) { data = x.j; show("dash"); render(); return; }
+          if (x.s === 200) { data = x.j; show("dash"); render(); hideSelf(); return; }
           if (x.s === 503 && x.j.error === "setup") {
             show("setup");
             $("[data-setup-msg]").textContent = x.j.need === "ADMIN_PASSWORD"
@@ -138,6 +139,21 @@ import "../styles/global.css";
         })
         .catch(function () { show("login"); $("[data-err]").textContent = "Couldn't reach the server. Try again."; });
     }
+
+    function post(body) {
+      return fetch("/api/admin", { method: "POST", headers: { "x-admin-key": key, "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(function (r) { return r.ok; });
+    }
+    // This browser is yours: hide its id from the stats once (it used to be counted before /admin turned counting off).
+    function hideSelf() {
+      var me = ""; try { me = localStorage.getItem("lb-vid") || ""; if (localStorage.getItem("lb-hid") === me) return; } catch (e) { return; }
+      if (!me) return;
+      post({ hide: me }).then(function (ok) { if (ok) { try { localStorage.setItem("lb-hid", me); } catch (e) {} load(); } });
+    }
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-hide]"), u = e.target.closest("[data-unhide-all]");
+      if (b) { b.disabled = true; b.textContent = "Hiding…"; post({ hide: b.dataset.hide }).then(load); }
+      if (u) { u.disabled = true; post({ unhideAll: true }).then(load); }
+    });
 
     $("[data-login]").addEventListener("submit", function (e) {
       e.preventDefault(); key = $("#pw").value; $("[data-err]").textContent = "";
@@ -172,6 +188,7 @@ import "../styles/global.css";
       aiUse();
       lists();
       visits();
+      $("[data-hidden-note]").innerHTML = data.hidden ? nf.format(data.hidden) + (data.hidden === 1 ? " device is" : " devices are") + ' hidden from these numbers (yours). <button type="button" class="hide-btn" data-unhide-all>Show them again</button>' : "";
     }
 
     var FEAT = { voice: "Voice notes", face: "Face registration", workforce: "Time & attendance", talk: "Toolbox Talk Analyzer" };
@@ -280,6 +297,7 @@ import "../styles/global.css";
             (r.tries && r.tries.length ? '<p><span class="mono">Tried AI</span> ' + esc(r.tries.map(function (x) { return (FEAT[x.fe] || x.fe) + ": " + x.a + (x.o ? " (" + x.o + ")" : ""); }).join(" · ")) + "</p>" : "") +
             (r.rf ? '<p><span class="mono">Referrer</span> ' + esc(r.rf) + "</p>" : "") +
             (r.uc ? '<p><span class="mono">Campaign</span> ' + esc(r.uc) + "</p>" : "") +
+            (r.v ? '<p><button type="button" class="hide-btn" data-hide="' + esc(r.v) + '">This is me · hide this device</button></p>' : "") +
             "</div></details>";
         }).join("");
     }
@@ -333,6 +351,9 @@ import "../styles/global.css";
     @media (max-width: 900px) { .aif { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 640px) { .ail__r { grid-template-columns: minmax(0, 1fr); gap: 2px; } .ail__r span { white-space: normal; } .ail__r span:first-child { color: var(--fg-3); font-size: 12.5px; } }
     @media (max-width: 420px) { .aif { grid-template-columns: minmax(0, 1fr); } }
+    .hide-btn { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--rule-strong); background: var(--card); color: var(--fg); cursor: pointer; }
+    .hide-btn:hover { border-color: var(--ink); }
+    .hide-btn:disabled { opacity: 0.6; cursor: default; }
     .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 14px; }
     .kpi { background: var(--card); border: 1px solid var(--rule); border-radius: 18px; padding: 16px 18px; display: grid; gap: 6px; }
     .kpi .mono { color: var(--fg-3); display: flex; align-items: center; gap: 7px; }
