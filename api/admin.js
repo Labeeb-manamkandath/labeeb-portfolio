@@ -48,6 +48,19 @@ export default async function handler(req, res) {
   }
   if (!storeReady()) return res.status(503).json({ error: "setup", need: "store" });
 
+  // Hide or unhide a device (Labeeb's own browsers) from every count, past visits included.
+  if (req.method === "POST") {
+    let b = req.body; if (typeof b === "string") { try { b = JSON.parse(b); } catch { b = null; } }
+    const ok = (v) => /^[a-z0-9]{8,32}$/i.test(String(v || ""));
+    try {
+      if (b && ok(b.hide)) await pipeline([["SADD", "ignore", String(b.hide)]]);
+      else if (b && ok(b.unhide)) await pipeline([["SREM", "ignore", String(b.unhide)]]);
+      else if (b && b.unhideAll) await pipeline([["DEL", "ignore"]]);
+      else return res.status(400).json({ error: "Nothing to do." });
+    } catch (e) { return res.status(502).json({ error: "Couldn't update the stats store." }); }
+    return res.status(200).json({ ok: true });
+  }
+
   const days = Math.max(1, Math.min(90, parseInt(req.query.days, 10) || 30));
   const dates = [];
   for (let i = days - 1; i >= 0; i--) dates.push(dayKey(new Date(now - i * 86400000)));
@@ -55,12 +68,13 @@ export default async function handler(req, res) {
 
   let lists;
   try {
-    lists = await pipeline(uniq.map((d) => ["LRANGE", `ev:${d}`, "0", "-1"]));
+    lists = await pipeline([["SMEMBERS", "ignore"], ...uniq.map((d) => ["LRANGE", `ev:${d}`, "0", "-1"])]);
   } catch (e) {
     console.error("[admin]", String(e && e.message).slice(0, 200));
     return res.status(502).json({ error: "Couldn't read the stats store." });
   }
 
+  const ignore = new Set(lists.shift() || []);
   const daily = uniq.map((d) => ({ d, visitors: new Set(), views: 0 }));
   const allVisitors = new Set(), newVisitors = new Set();
   const sessions = new Map();
@@ -76,6 +90,7 @@ export default async function handler(req, res) {
   lists.forEach((items, i) => {
     for (const raw of items || []) {
       let ev; try { ev = JSON.parse(raw); } catch { continue; }
+      if (ignore.has(ev.v)) continue;
       let s = sessions.get(ev.s);
       if (!s) { s = { id: ev.s, v: ev.v, start: ev.t, last: ev.t, pages: [], dur: new Map(), clicks: [], tries: [] }; sessions.set(ev.s, s); }
       s.start = Math.min(s.start, ev.t); s.last = Math.max(s.last, ev.t);
@@ -121,12 +136,12 @@ export default async function handler(req, res) {
   const counted = [...sessions.values()].filter((s) => s.meta);
 
   const recent = counted.sort((a, b) => b.start - a.start).slice(0, 60).map((s) => ({
-    start: s.start, last: s.last, ...s.meta, pages: s.pages.sort((a, b) => a.t - b.t).map((x) => x.p), time: s.time,
+    v: s.v, start: s.start, last: s.last, ...s.meta, pages: s.pages.sort((a, b) => a.t - b.t).map((x) => x.p), time: s.time,
     clicks: s.clicks, tries: s.tries, visits: visitorSessions.get(s.v) || 1,
   }));
 
   return res.status(200).json({
-    days, tz: "Asia/Dubai", generated: now,
+    days, tz: "Asia/Dubai", generated: now, hidden: ignore.size,
     totals: {
       visitors: allVisitors.size, newVisitors: newVisitors.size, views, sessions: counted.length,
       pagesPerSession: counted.length ? views / counted.length : 0,
