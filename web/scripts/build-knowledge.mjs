@@ -42,7 +42,7 @@ const links = [
   { href: "/approach", label: "How he designs AI" },
   ...PROJECTS.map((p) => ({ href: `/work/${p.key}`, label: `${p.title} case study` })),
   { href: "https://www.linkedin.com/in/labeeb-manamkandath/", label: "LinkedIn" },
-  { href: "https://drive.google.com/file/d/1T2q3xYoZ1Y3RMQuTSOXnXOsSAmCl3WTx/view?usp=sharing", label: "Resume" },
+  { href: "/resume/Labeeb_UI_UX_Product_Designer_CV.pdf", label: "Resume" },
   { href: "mailto:labeebmanamkandath@gmail.com", label: "Email Labeeb" },
 ];
 

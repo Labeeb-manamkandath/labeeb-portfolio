@@ -2,10 +2,10 @@
 interface Props { current?: string }
 const { current } = Astro.props;
 const links = [
+  { href: "/", label: "Home", key: "home" },
   { href: "/ai-work", label: "AI Works", key: "ai" },
   { href: "/projects", label: "Projects", key: "projects" },
   { href: "/approach", label: "My Approach", key: "approach" },
-  { href: "#contact", label: "Contact", key: "contact" },
   { href: "https://www.linkedin.com/in/labeeb-manamkandath/", label: "LinkedIn ↗", key: "linkedin", ext: true },
 ];
 ---
