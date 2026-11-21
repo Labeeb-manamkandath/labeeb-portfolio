@@ -4,5 +4,5 @@ export const ROLES = [
   { when: "2020 — 2023", role: "Graphic Designer", co: "Milky Foods (Remote)", short: "Brand, campaign and interface work.", desc: "Brand, campaign and interface work. This is where my habits around typography, layout and visual consistency took shape." },
   { when: "2017 — 2020", role: "Bachelor's in Information Technology", co: "Barathiyar University, India", short: "Technical grounding for working closely with engineering.", desc: "Enough technical grounding to hold a real conversation with engineering about what a design costs to build." },
 ];
-export const RESUME = "https://drive.google.com/file/d/1T2q3xYoZ1Y3RMQuTSOXnXOsSAmCl3WTx/view?usp=sharing";
+export const RESUME = "/resume/Labeeb_UI_UX_Product_Designer_CV.pdf";
 export const LINKEDIN = "https://www.linkedin.com/in/labeeb-manamkandath/";
